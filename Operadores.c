@@ -77,9 +77,13 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
 
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
-                dir = (*comp).registros[CodReg]; //offset del registro
-                dir += a.operando >> 16 & 0xFFFF; //Le sumo el offset del operando
+                printf("cod reg: %d\n",CodReg);
+                dir = (*comp).registros[CodReg]; //puntero contenido por el registro
+                printf("dir 1 %x\n",dir);
+                dir += a.operando >> 8 & 0xFFFF; //Le sumo el offset del operando
+                printf("dir 2 %x\n",dir);
                 TradLogicaFisica(&dir, *comp, &flag);
+                printf("dir 3 %d\n",dir);
                 if(flag)
                     InsertaMemoria(comp, dir, ValorB, 4);
         break;
@@ -418,7 +422,7 @@ void SYS(Toperando op, Componentes *comp)
 
 void JMP(Toperando offset, Componentes *comp)
 {
-    printf("Offset: %x\n",offset.operando);
+    //printf("Offset: %x\n",offset.operando);
     (*comp).registros[IP] = offset.operando & 0xFFFF;
 }
 

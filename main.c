@@ -50,11 +50,12 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
         /*for (int i=0;i<25;i++)
             printf("%x\t",comp.memoria[i]);
         printf("\n");
-        printf("\n");
-        /*for (int i=25;i<45;i++)
+        printf("\n");*/
+        for (int i=comp.tabladesegmentos[1][0];i<comp.tabladesegmentos[1][0]+10;i++)
             printf("%x\t",comp.memoria[i]);
         printf("\n");
-        printf("\n"); */
+        printf("\n");
+        printf("-\t-\t-\t-\t-\t-\t-\t-\n");
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
         //printf("dir fisica de ip: %d\n",dirip);
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
@@ -196,7 +197,7 @@ void LeeArchivo(Componentes *comp){ //, char argv[]
     uint8_t lect;
     uint16_t tam;
 
-    arch = fopen("prueba2.vmx","rb"); //argv
+    arch = fopen("sample.vmx","rb"); //argv
     if (arch == NULL)
         printf("No se pudo leer el archivo\n");
     else{
