@@ -111,7 +111,7 @@ void leer(Componentes *comp)
     if(no_error)
         for(i=0; i<cant_celdas; i++)
         {
-            scanf("%d\n", &num);
+            scanf("%d", &num);
             InsertaMemoria(comp, dir, num, tamanio);
             dir += tamanio;
         }
@@ -128,7 +128,7 @@ void Imprime(Componentes *comp)
     char nro_binario[33];
 
     ind = (*comp).registros[EDX] ;
-    printf("Indice : %x\n",ind);
+   // printf("Indice : %x\n",ind);
     TradLogicaFisica(&ind , *comp , &no_error) ;
     if(no_error == 1 )
     {
@@ -198,14 +198,14 @@ void MOV(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorB;
 
-    printf("MOV POS 0 DE MEMORIA: %x\n",comp->memoria[0]);
+    //printf("MOV POS 0 DE MEMORIA: %x\n",comp->memoria[0]);
     ValorOperando(b, &ValorB, comp);
 
-    printf("\t\tVALOR B: %x\n",ValorB);
+    //printf("\t\tVALOR B: %x\n",ValorB);
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
-    printf("MOV POS 0 DE MEMORIA DESPUES: %x\n",comp->memoria[0]);
+    //printf("MOV POS 0 DE MEMORIA DESPUES: %x\n",comp->memoria[0]);
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)
@@ -294,8 +294,8 @@ void CMP(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
@@ -431,6 +431,7 @@ void SYS(Toperando op, Componentes *comp)
 
 void JMP(Toperando offset, Componentes *comp)
 {
+    printf("Offset: %x\n",offset.operando);
     (*comp).registros[IP] = offset.operando & 0xFFFF;
 }
 

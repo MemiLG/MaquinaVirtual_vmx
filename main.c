@@ -42,63 +42,73 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 
         Llamada_Disassembler(comp);
 
+    //printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
+
 	while (comp.error == 0 && IP_no_caido)
     {
 
-          for (int i=0;i<25;i++)
-                printf("%x\t",comp.memoria[i]);
+        /*for (int i=0;i<25;i++)
+            printf("%x\t",comp.memoria[i]);
         printf("\n");
         printf("\n");
+        /*for (int i=25;i<45;i++)
+            printf("%x\t",comp.memoria[i]);
+        printf("\n");
+        printf("\n"); */
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
-        printf("dir fisica de ip: %x\n",dirip);
+        //printf("dir fisica de ip: %d\n",dirip);
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
-        printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
+       // printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
         if (IP_no_caido){
 
             instruccion = comp.memoria[dirip];
             abc = obtener_abc(instruccion);
 
-            printf("Contenido de Ip antes: %d\n",comp.registros[5]);
-            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
+           // printf("Contenido de Ip antes: %d\n",comp.registros[5]);
+          // printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
 
             comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
             CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
 
-            printf("\t OpB.tipo = %x\t OpB.operando: %x\n",B.tipo,B.operando);
+           /* printf("\t OpB.tipo = %x\t OpB.operando: %x\n",B.tipo,B.operando);
             printf("Contenido de Ip despues de la carga de B: %d\n",comp.registros[5]);
-            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
+            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]); */
 
             CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            printf("\t OpA.tipo = %x\t OpA.operando: %x\n",A.tipo,A.operando);
+           /* printf("\t OpA.tipo = %x\t OpA.operando: %x\n",A.tipo,A.operando);
             printf("Contenido de Ip despues de la carga de A: %d\n",comp.registros[5]);
-            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
+            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]); */
 
             //comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
-            printf("Contenido de Ip para la proxima instruccion: %d\n",comp.registros[5]);
-            printf("Contenido de la memoria en la pos 10: %x\n",comp.memoria[10]);
-            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
+            //printf("Contenido de Ip para la proxima instruccion: %d\n",comp.registros[5]);
+            //printf("Contenido de la memoria en la pos 10: %x\n",comp.memoria[10]);
+            //printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
 
             EjecutarOperacion(abc,A,B,&comp);
 
-            printf("DS en la pos 0: %x\n",comp.memoria[25]);
+           /* printf("DS en la pos 0: %x\n",comp.memoria[25]);
             printf("Registro EDX(contenido): %x\n",comp.registros[13]);
             printf("Contenido registro ECX: %x\n",comp.registros[12]);
             printf("Contenido de EAX: %x\n",comp.registros[10]);
-            printf("\n");
+            printf("\n"); */
         }
 
 	}
 
+	//printf("\n \n dirip: %d\n",dirip);
+
 	if (comp.error == 1 )
         printf("MV finaliza por error de instruccion invalida\n");
-    else if (comp.error == 2)
-        printf("MV finaliza por error de division por 0\n");
-    else if(comp.error == 3)
-        printf("MV finaliza por error de caida de segmento\n");
     else
-        printf("MV finaliza exitosamente con 0 errores\n");
+        if (comp.error == 2)
+            printf("MV finaliza por error de division por 0\n");
+        else
+            if(comp.error == 3 && dirip>comp.tabladesegmentos[0][1])
+                printf("MV finaliza por error de caida de segmento\n");
+            else
+                printf("MV finaliza exitosamente con 0 errores\n");
     return 0;
 }
 
@@ -128,7 +138,8 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
             break;
         case 0x03 : JP(b, comp);
             break;
-        case 0x04 : JN(b, comp);
+        case 0x04 : printf("Operando B: %x\n",b.operando);
+            JN(b, comp);
             break;
         case 0x05 : JNZ(b, comp);
             break;
@@ -182,7 +193,7 @@ void LeeArchivo(Componentes *comp){ //, char argv[]
     uint8_t lect;
     uint16_t tam;
 
-    arch = fopen("test3.vmx","rb"); //argv
+    arch = fopen("prueba2.vmx","rb"); //argv
     if (arch == NULL)
         printf("No se pudo leer el archivo\n");
     else{
