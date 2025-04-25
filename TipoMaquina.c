@@ -31,9 +31,9 @@ int LeerMemoria(Componentes comp, int dir, int bytes){
         result |= aux;
     }
 
-    des = (4-bytes)*8;
+    /*des = (4-bytes)*8;
     result = (result << des) >> des;
-
+    */
     return result;
 }
 
@@ -46,11 +46,15 @@ void modificaCC(Componentes *comp, int num)
         if(num == 0)
             (*comp).registros[8] = (*comp).registros[8] | 0x40000000;
 }
-
+/**
+*  Precondiciones: dir tiene que ser una direccion fisica valida del DS
+*                  byte tiene que ser mayor a cero y menor o igual a 4
+*
+*/
 void InsertaMemoria(Componentes *comp,int dir,int dato, int byte){
 int i, aux = 0;
     for (i=0;i<byte;i++){
-        aux = ((dato>>24)-i*8) & 0xFF;
+        aux = (dato>>(24-i*8)) & 0xFF;
         (*comp).memoria[dir+i] = aux;
     }
 }

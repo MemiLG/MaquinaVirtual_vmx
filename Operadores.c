@@ -32,7 +32,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 			if(segmento == 0b01) //toma el 4to byte AL
 				*aux = (*aux & 0xFF);
 			else if (segmento == 0b10) //toma el 3er byte AH
-				*aux = (*aux>>8)&& 0xFF;
+				*aux = (*aux>>8)& 0xFF;
 			else if (segmento == 0b11) //registro de 2 bytes (dos ultimos bytes)
 				*aux = *aux & 0xFFFF;
 			break;
@@ -67,35 +67,30 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
         //De registro
         case 1:  CodReg = a.operando >> 4 & 0xF;
                  SecReg = a.operando >> 2 & 0x3;
-                 dir = (*comp).registros[CodReg];
-                 TradLogicaFisica(&dir, *comp, &flag);
 
                  switch(SecReg)
                  {
                     //EAX (los 4 bytes)
-                    case 0: InsertaMemoria(comp, dir, ValorB, 4);
+                    case 0: (*comp).registros[CodReg] = ValorB;
                     break;
 
                     //AL (4to byte)
-                    case 1: ValorB &= 0xFF;
-                            InsertaMemoria(comp, dir, ValorB, 1);
+                    case 1: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFFFF00 ^ ValorB & 0xFF;
                     break;
 
                     //AH (3er byte)
-                    case 2: ValorB = ValorB >> 8 & 0xFF;
-                            InsertaMemoria(comp, dir, ValorB, 1);
+                    case 2: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF00FF ^ (ValorB & 0xFF)<<8;
                     break;
 
                     //AX (2 bytes)
-                    case 3: ValorB &= 0xFFFF;
-                            InsertaMemoria(comp, dir, ValorB, 2);
+                    case 3: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF0000 ^ ValorB & 0xFFFF;
                     break;
                  }
         break;
 
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
-                dir = (*comp).registros[CodReg] & 0xFFFF; //offset del registro
+                dir = (*comp).registros[CodReg]; //offset del registro
                 dir += a.operando >> 16 & 0xFFFF; //Le sumo el offset del operando
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
@@ -129,27 +124,25 @@ void Imprime(Componentes *comp)
 
     int ind,i, no_error,nro, cociente, nro_aux, j=-1;
     int16_t cantidad_cl, tamanio_ch,formato;
-    int32_t masc;
     int8_t resto;
     char nro_binario[33];
 
     ind = (*comp).registros[EDX] ;
+    printf("Indice : %x\n",ind);
     TradLogicaFisica(&ind , *comp , &no_error) ;
-    if(no_error == 0 )
+    if(no_error == 1 )
     {
 
         cantidad_cl = (*comp).registros[ECX] & 0xFF ;
         tamanio_ch =( (*comp).registros[ECX] >> 8 ) & 0xFF ;
         formato = (*comp).registros[EAX] & 0xFF ;
 
-        masc = mascara(tamanio_ch);
-
-        printf("[%04X] : ",ind);
+        printf("[%04x] : ",ind);
 
         for( i=0 ; i < cantidad_cl ; i++)
         {
 
-            nro= LeerMemoria(*comp, ind , tamanio_ch) & masc; //Devuelve numero de 32 bits
+            nro= LeerMemoria(*comp, ind , tamanio_ch);//Devuelve numero de 32 bits
             if((formato & 0x01) == 0x01 ) //Decimal
 
                 printf("%d\t", nro);
@@ -200,43 +193,19 @@ void Imprime(Componentes *comp)
 
 }
 
-int32_t mascara(int16_t tamanio_ch)
-{
-
-    switch(tamanio_ch)
-    {
-        case 1:
-
-            return 0xFF;
-            break;
-
-        case 2:
-
-            return 0xFFFF;
-            break;
-
-        case 3:
-
-            return 0xFFFFFF;
-            break;
-
-        case 4:
-
-            return 0xFFFFFFFF;
-            break;
-    }
-
-}
-
 //---------------------Dos operandos----------------------
 void MOV(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorB;
 
+    printf("MOV POS 0 DE MEMORIA: %x\n",comp->memoria[0]);
     ValorOperando(b, &ValorB, comp);
+
+    printf("\t\tVALOR B: %x\n",ValorB);
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
+    printf("MOV POS 0 DE MEMORIA DESPUES: %x\n",comp->memoria[0]);
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)

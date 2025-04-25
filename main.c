@@ -20,12 +20,12 @@ typedef struct{
 //--PROTOTIPOS--
 TDatos obtener_abc(int8_t);
 void EjecutarOperacion(TDatos,Toperando,Toperando,Componentes *);
-void LeeArchivo(Componentes *, char argv[ARCHIVO]);
+void LeeArchivo(Componentes *); //, char argv[ARCHIVO]
 void IniciaRegistros(Componentes*);
 void CargaOperando(int8_t,Toperando*,Componentes*);
 
 //--EJECUCION--
-int main(int argc, char *argv[]) //argc indica la cantidad de argumentos ingresados por consola. *argv[] es una matriz de punteros a un matrices de caracteres
+int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingresados por consola. *argv[] es una matriz de punteros a un matrices de caracteres
 {
 
 	TDatos abc ;
@@ -35,22 +35,55 @@ int main(int argc, char *argv[]) //argc indica la cantidad de argumentos ingresa
 	int dirip, IP_no_caido=1;
 
 	IniciaRegistros(&comp);
-	LeeArchivo(&comp, argv[1]);
-    if (strcmp(argv[2],"-d"))
-        Disassembler(comp,abc,dirip);
+	LeeArchivo(&comp);//, argv[1]
+    //if (strcmp(argv[2],"-d"))
+        //Disassembler(comp,abc,dirip);
 
 	while (comp.error == 0 && IP_no_caido)
     {
 
+          for (int i=0;i<25;i++)
+                printf("%x\t",comp.memoria[i]);
+        printf("\n");
+        printf("\n");
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
+        printf("dir fisica de ip: %x\n",dirip);
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
+        printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
         if (IP_no_caido){
+
             instruccion = comp.memoria[dirip];
             abc = obtener_abc(instruccion);
-            CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
-            CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
+
+            printf("Contenido de Ip antes: %d\n",comp.registros[5]);
+            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
+
             comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
+            CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
+
+            printf("\t OpB.tipo = %x\t OpB.operando: %x\n",B.tipo,B.operando);
+            printf("Contenido de Ip despues de la carga de B: %d\n",comp.registros[5]);
+            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
+
+            CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
+
+            printf("\t OpA.tipo = %x\t OpA.operando: %x\n",A.tipo,A.operando);
+            printf("Contenido de Ip despues de la carga de A: %d\n",comp.registros[5]);
+            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
+
+            //comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
+
+            printf("Contenido de Ip para la proxima instruccion: %d\n",comp.registros[5]);
+            printf("Contenido de la memoria en la pos 10: %x\n",comp.memoria[10]);
+            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
+
             EjecutarOperacion(abc,A,B,&comp);
+
+            printf("DS en la pos 0: %x\n",comp.memoria[25]);
+            printf("Registro EDX(contenido): %x\n",comp.registros[13]);
+            printf("Contenido registro ECX: %x\n",comp.registros[12]);
+            printf("Contenido de EAX: %x\n",comp.registros[10]);
+            printf("\n");
         }
 
 	}
@@ -84,23 +117,23 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
 
     switch (abc.CodOperacion){
 
-        case 0x00 : SYS(a, comp);
+        case 0x00 : SYS(b, comp);
             break;
-        case 0x01 : JMP(a, comp);
+        case 0x01 : JMP(b, comp);
             break;
-        case 0x02 : JZ(a, comp);
+        case 0x02 : JZ(b, comp);
             break;
-        case 0x03 : JP(a, comp);
+        case 0x03 : JP(b, comp);
             break;
-        case 0x04 : JN(a, comp);
+        case 0x04 : JN(b, comp);
             break;
-        case 0x05 : JNZ(a, comp);
+        case 0x05 : JNZ(b, comp);
             break;
-        case 0x06 : JNP(a, comp);
+        case 0x06 : JNP(b, comp);
             break;
-        case 0x07 : JNN(a, comp);
+        case 0x07 : JNN(b, comp);
             break;
-        case 0x08 : NOT(a,comp);
+        case 0x08 : NOT(b,comp);
             break;
         case 0x0F : STOP(comp);
             break;
@@ -138,7 +171,7 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
     }
 }
 
-void LeeArchivo(Componentes *comp, char argv[]){
+void LeeArchivo(Componentes *comp){ //, char argv[]
     FILE *arch;
     Theader cab;
     str ident;
@@ -146,16 +179,16 @@ void LeeArchivo(Componentes *comp, char argv[]){
     uint8_t lect;
     uint16_t tam;
 
-    arch = fopen(argv,"rb"); //argv
+    arch = fopen("test3.vmx","rb"); //argv
     if (arch == NULL)
         printf("No se pudo leer el archivo\n");
     else{
 
         fread(&ident,sizeof(str),1,arch);
-        fread(&lect,sizeof(uint8_t),1,arch);
+        fread(&lect,sizeof(uint8_t),1,arch);;
         fread(&tam,sizeof(uint16_t),1,arch);
         strcpy(cab.identificador,ident.ident);
-        cab.TamanioCodigo = tam;
+        cab.TamanioCodigo = (tam>>8) & 0xFF;
         cab.version = lect;
         boo = ValidaEjecucion(cab);
         if (boo){
