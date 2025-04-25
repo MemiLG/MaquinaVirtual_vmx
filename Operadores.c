@@ -77,13 +77,9 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
 
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
-                printf("cod reg: %d\n",CodReg);
                 dir = (*comp).registros[CodReg]; //puntero contenido por el registro
-                printf("dir 1 %x\n",dir);
                 dir += a.operando >> 8 & 0xFFFF; //Le sumo el offset del operando
-                printf("dir 2 %x\n",dir);
                 TradLogicaFisica(&dir, *comp, &flag);
-                printf("dir 3 %d\n",dir);
                 if(flag)
                     InsertaMemoria(comp, dir, ValorB, 4);
         break;
@@ -119,7 +115,6 @@ void Imprime(Componentes *comp)
     char nro_binario[33];
 
     ind = (*comp).registros[EDX] ;
-   // printf("Indice : %x\n",ind);
     TradLogicaFisica(&ind , *comp , &no_error) ;
     if(no_error == 1 )
     {
@@ -189,22 +184,19 @@ void MOV(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorB;
 
-    //printf("MOV POS 0 DE MEMORIA: %x\n",comp->memoria[0]);
     ValorOperando(b, &ValorB, comp);
 
-    //printf("\t\tVALOR B: %x\n",ValorB);
 
     if ((*comp).error == 0)
-        asignaValor(a, ValorB, comp);
-    //printf("MOV POS 0 DE MEMORIA DESPUES: %x\n",comp->memoria[0]);
+        asignaValor(a, ValorB, comp);;
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
@@ -218,8 +210,8 @@ void SUB(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
@@ -235,8 +227,8 @@ void SWAP(Toperando a, Toperando b, Componentes *comp)
 
     if((a.tipo==1 && b.tipo==1) || (a.tipo==3 && b.tipo==3)) //Ambos operandos de registro o memoria
     {
-        ValorOperando(a, &ValorB, comp);
-        ValorOperando(b, &ValorA, comp);
+        ValorOperando(a, &ValorA, comp);
+        ValorOperando(b, &ValorB, comp);
 
         if ((*comp).error == 0)
         {
@@ -250,8 +242,8 @@ void MUL(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
@@ -265,8 +257,8 @@ void DIV(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0){
         if (ValorB == 0)
@@ -299,8 +291,8 @@ void SHL(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
@@ -314,8 +306,8 @@ void SHR(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);;
 
     if ((*comp).error == 0)
     {
@@ -329,8 +321,8 @@ void AND(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if (comp->error == 0)
     {
@@ -344,8 +336,8 @@ void OR(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
@@ -359,8 +351,8 @@ void XOR(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
@@ -374,8 +366,8 @@ void LDL(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
@@ -388,8 +380,8 @@ void LDH(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    ValorOperando(a, &ValorB, comp);
-    ValorOperando(b, &ValorA, comp);
+    ValorOperando(a, &ValorA, comp);
+    ValorOperando(b, &ValorB, comp);;
 
     if ((*comp).error == 0)
     {
@@ -400,13 +392,13 @@ void LDH(Toperando a, Toperando b, Componentes *comp)
 
 void RND(Toperando a, Toperando b, Componentes *comp)
 {
-    int ValorB, res;
+    int ValorA, res;
 
-    ValorOperando(a, &ValorB, comp);
+    ValorOperando(a, &ValorA, comp);
 
     if (comp->error == 0)
     {
-        res = rand() % (ValorB + 1);
+        res = rand() % (ValorA + 1);
         asignaValor(a, res, comp);
     }
 }
@@ -422,7 +414,6 @@ void SYS(Toperando op, Componentes *comp)
 
 void JMP(Toperando offset, Componentes *comp)
 {
-    //printf("Offset: %x\n",offset.operando);
     (*comp).registros[IP] = offset.operando & 0xFFFF;
 }
 
@@ -440,7 +431,6 @@ void JP(Toperando offset, Componentes *comp)
 
 void JN(Toperando offset, Componentes *comp)
 {
-    printf("offset antes del JMP: %x\n", offset);
     if((*comp).registros[CC] >> 31 & 0x1)
         JMP(offset, comp);
 }

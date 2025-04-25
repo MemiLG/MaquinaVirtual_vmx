@@ -51,11 +51,11 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
             printf("%x\t",comp.memoria[i]);
         printf("\n");
         printf("\n");*/
-        for (int i=comp.tabladesegmentos[1][0];i<comp.tabladesegmentos[1][0]+10;i++)
+       /* for (int i=comp.tabladesegmentos[1][0];i<comp.tabladesegmentos[1][0]+10;i++)
             printf("%x\t",comp.memoria[i]);
         printf("\n");
         printf("\n");
-        printf("-\t-\t-\t-\t-\t-\t-\t-\n");
+        printf("-\t-\t-\t-\t-\t-\t-\t-\n");*/
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
         //printf("dir fisica de ip: %d\n",dirip);
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
@@ -91,7 +91,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
             //printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
 
             EjecutarOperacion(abc,A,B,&comp);
-   //         printf("EDX: %x\n\n", comp.registros[EDX]);
+            //printf("ECX: %x\n\n", comp.registros[ECX]);
            /* printf("DS en la pos 0: %x\n",comp.memoria[25]);
             printf("Registro EDX(contenido): %x\n",comp.registros[13]);
             printf("Contenido registro ECX: %x\n",comp.registros[12]);
@@ -142,8 +142,7 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
             break;
         case 0x03 : JP(b, comp);
             break;
-        case 0x04 : printf("Operando B: %x      Operando A: %x\n",b.operando, a.operando);
-            JN(b, comp);
+        case 0x04 : JN(b, comp);
             break;
         case 0x05 : JNZ(b, comp);
             break;
