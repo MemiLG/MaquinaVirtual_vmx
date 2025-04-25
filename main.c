@@ -76,6 +76,9 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 
             CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
+      //      printf("Operando A: %x      Tipo: %d\n", A.operando, A.tipo);
+      //      printf("Operando B: %x      Tipo: %d\n", B.operando, B.tipo);
+
            /* printf("\t OpA.tipo = %x\t OpA.operando: %x\n",A.tipo,A.operando);
             printf("Contenido de Ip despues de la carga de A: %d\n",comp.registros[5]);
             printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]); */
@@ -87,7 +90,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
             //printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
 
             EjecutarOperacion(abc,A,B,&comp);
-
+   //         printf("EDX: %x\n\n", comp.registros[EDX]);
            /* printf("DS en la pos 0: %x\n",comp.memoria[25]);
             printf("Registro EDX(contenido): %x\n",comp.registros[13]);
             printf("Contenido registro ECX: %x\n",comp.registros[12]);
@@ -138,7 +141,7 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
             break;
         case 0x03 : JP(b, comp);
             break;
-        case 0x04 : printf("Operando B: %x\n",b.operando);
+        case 0x04 : printf("Operando B: %x      Operando A: %x\n",b.operando, a.operando);
             JN(b, comp);
             break;
         case 0x05 : JNZ(b, comp);

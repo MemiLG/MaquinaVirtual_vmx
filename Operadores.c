@@ -4,19 +4,6 @@
 #include "TipoMaquina.h"
 #include <stdint.h> //para usar int8_t
 
-//Registros
-#define CS 0
-#define DS 1
-#define IP 5
-#define CC 8
-#define AC 9
-#define EAX 10
-#define EBX 11
-#define ECX 12
-#define EDX 13
-#define EEX 14
-#define EFX 15
-
 //--------------------Funciones extras--------------------
 void ValorOperando(Toperando op, int *aux, Componentes *comp)
 {
@@ -449,6 +436,7 @@ void JP(Toperando offset, Componentes *comp)
 
 void JN(Toperando offset, Componentes *comp)
 {
+    printf("offset antes del JMP: %x\n", offset);
     if((*comp).registros[CC] >> 31 & 0x1)
         JMP(offset, comp);
 }
