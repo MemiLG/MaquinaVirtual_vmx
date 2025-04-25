@@ -59,6 +59,8 @@ int i, aux = 0;
     }
 }
 
+//-------------------- Disassembler --------------------
+
 void Disassembler(Componentes comp,TDatos abc, int i)
 {
 
@@ -66,20 +68,23 @@ void Disassembler(Componentes comp,TDatos abc, int i)
     int32_t auxb,auxa;
     int ind=i;
 
-    printf("[%04X]\t %02X\t",i,comp.memoria[i]);
-    // Muestra los valores en hexadecimal.
+    printf("[%04X] %02X ",i,comp.memoria[i]);
     auxa=auxb=0X0;
     Op_AB(abc.OpB,comp,&auxb,&ind);
     Op_AB(abc.OpA,comp,&auxa,&ind);
 
-    printf("|\t");
+    for(int u =0;u< 10 - (abc.OpA+abc.OpB) ;u++)
 
-    printf("%s\t",Operaciones[abc.CodOperacion]);
+        printf("    ");
+
+    printf(" | ");
+
+    printf(" %s ",Operaciones[abc.CodOperacion]);
 
     if(abc.OpA != 0x0)
     {
         Significado(abc.OpA,auxa);
-        printf(",\t");
+        printf(", ");
     }
 
     Significado(abc.OpB,auxb);
@@ -120,7 +125,7 @@ void Op_AB(int8_t Op, Componentes comp, int32_t *aux,int *i)
 
         (*i)++;
         *aux = *aux << 8;
-        printf("%02X\t",comp.memoria[*i]);
+        printf(" %02X ",comp.memoria[*i]);
         *aux =(*aux) | comp.memoria[*i];
         inicio ++;
 
@@ -147,7 +152,7 @@ void Significado(int8_t op, int32_t auxiliar)
             else
                 if (aux1 == 0b01)                                  // 1 byte de registro (XL)
 
-                    printf("%cL",Registross[aux1][1]);
+                    printf("%cL",Registross[aux2][1]);
 
                 else
                         if(aux1 == 0b10)
@@ -179,6 +184,9 @@ void Significado(int8_t op, int32_t auxiliar)
     }
 
 }
+
+//-------------------- Tabla de segmentos --------------------
+
 void setBaseCS(Componentes *comp, uint16_t valor){
     valor = 0;
     (*comp).tabladesegmentos[0][0] = valor;

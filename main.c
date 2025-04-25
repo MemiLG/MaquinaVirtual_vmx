@@ -23,6 +23,7 @@ void EjecutarOperacion(TDatos,Toperando,Toperando,Componentes *);
 void LeeArchivo(Componentes *); //, char argv[ARCHIVO]
 void IniciaRegistros(Componentes*);
 void CargaOperando(int8_t,Toperando*,Componentes*);
+void Llamada_Disassembler(Componentes );
 
 //--EJECUCION--
 int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingresados por consola. *argv[] es una matriz de punteros a un matrices de caracteres
@@ -36,8 +37,10 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 
 	IniciaRegistros(&comp);
 	LeeArchivo(&comp);//, argv[1]
-    //if (strcmp(argv[2],"-d"))
-        //Disassembler(comp,abc,dirip);
+
+   // if (strcmp(argv[2],"-d"))
+
+        Llamada_Disassembler(comp);
 
 	while (comp.error == 0 && IP_no_caido)
     {
@@ -244,4 +247,27 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
     }
     else
         (*comp).error = 3;
+}
+
+void Llamada_Disassembler(Componentes comp){
+
+    int fin ;
+    int8_t instruccion;
+    TDatos abc;
+
+
+    comp.registros[5] = comp.registros[0];
+    fin = (comp.tabladesegmentos[0][1] + comp.tabladesegmentos[0][0]);
+
+
+    while(comp.registros[5] < fin )
+    {
+
+        instruccion = comp.memoria[comp.registros[5]];
+        abc = obtener_abc(instruccion);
+        Disassembler(comp,abc,comp.registros[5]);
+        comp.registros[5] += abc.OpA + abc.OpB +1;
+
+    }
+
 }

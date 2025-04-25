@@ -40,5 +40,6 @@ void setBaseCS(Componentes *, uint16_t );
 void setBaseDS(Componentes *,uint16_t );
 void setTamanioCS(Componentes *,uint16_t );
 void setTamanioDS(Componentes *,uint16_t );
+void Llamada_Disassembler(Componentes);
 
 #endif // TIPOMAQUINA_H_INCLUDED
