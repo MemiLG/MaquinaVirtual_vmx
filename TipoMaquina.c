@@ -4,7 +4,7 @@
 #define TOTAL 31
 
 int DireccionFisicaValida(int dir, int16_t fila, Componentes comp){
-    return (dir<=comp.tabladesegmentos[fila][1]-1);
+    return (dir<=comp.tabladesegmentos[fila][1]-1 && dir>=comp.tabladesegmentos[fila][0]);
 }
 
 void TradLogicaFisica(int *dir, Componentes comp, int *flag){
@@ -15,7 +15,7 @@ void TradLogicaFisica(int *dir, Componentes comp, int *flag){
     fila = *dir >> 16 & 0xFFFF; //guarda el codigo de segmento (la fila de la tabla de segmento)
     aux = (*dir & 0xFFFF); //agarra el offset del segmento
     aux = comp.tabladesegmentos[fila][0] + aux;
-    if (fila<=FIL && DireccionFisicaValida(aux,fila,comp))
+    if (fila<FIL && DireccionFisicaValida(aux,fila,comp))
         *dir = aux;
     else
         *flag = 0;

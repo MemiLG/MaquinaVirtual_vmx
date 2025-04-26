@@ -82,6 +82,8 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
                     InsertaMemoria(comp, dir, ValorB, 4);
+                else
+                    (*comp).error = 3;
         break;
     }
 }
@@ -186,9 +188,8 @@ void MOV(Toperando a, Toperando b, Componentes *comp)
 
     ValorOperando(b, &ValorB, comp);
 
-
     if ((*comp).error == 0)
-        asignaValor(a, ValorB, comp);;
+        asignaValor(a, ValorB, comp);
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)

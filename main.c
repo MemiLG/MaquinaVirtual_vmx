@@ -43,7 +43,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
         Llamada_Disassembler(comp);
 
     //printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
-
+    //printf("Contenido de IP al comienzo: %d\n",comp.registros[5]);
 	while (comp.error == 0 && IP_no_caido)
     {
 
@@ -59,8 +59,9 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
         //printf("IP ANTES DE EJECUTAR: %d\n",comp.registros[IP]);
         //printf("ERROR AL COMENZAR WHILE: %d\n",comp.error);
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
-        //printf("dir fisica de ip: %d\n",dirip);
+        //printf("dir logica de ip: %d\n",dirip);
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
+        //printf("BOOLEANO: %d\n",IP_no_caido);
         //printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
         if (IP_no_caido){
 
@@ -93,6 +94,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
             //printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
             EjecutarOperacion(abc,A,B,&comp);
             TradLogicaFisica(&dirip,comp,&IP_no_caido);
+            //printf("ERROR: %d\n",comp.error);
             //printf("ECX: %x\n\n", comp.registros[ECX]);
             //printf("IP DESPUES DE EJECUTAR: %d\n",comp.registros[IP]);
             //printf("BOOLEANO DESPUES DE EJECUCION: %d\n",IP_no_caido);
@@ -114,7 +116,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
         if (comp.error == 2)
             printf("MV finaliza por error de division por 0\n");
         else
-            if(comp.error == 3 && dirip>comp.tabladesegmentos[0][1])
+            if(comp.error == 3 ^ dirip == comp.tabladesegmentos[0][1])
                 printf("MV finaliza por error de caida de segmento\n");
             else
                 printf("MV finaliza exitosamente con 0 errores\n");
