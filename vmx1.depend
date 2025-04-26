@@ -20,7 +20,7 @@
 1745604965 c:\arqui\mv\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
-1745609081 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c
+1745677524 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c
 	<stdio.h>
 	<stdlib.h>
 	"TipoMaquina.h"
