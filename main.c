@@ -42,21 +42,21 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 
         Llamada_Disassembler(comp);
 
-    //printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
+    printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
 
 	while (comp.error == 0 && IP_no_caido)
     {
 
-        /*for (int i=0;i<25;i++)
+        /*for (int i=0;i<50;i++)
             printf("%x\t",comp.memoria[i]);
         printf("\n");
-        printf("\n");*/
+        printf("\n"); */
        /* for (int i=comp.tabladesegmentos[1][0];i<comp.tabladesegmentos[1][0]+10;i++)
             printf("%x\t",comp.memoria[i]);
         printf("\n");
         printf("\n");
         printf("-\t-\t-\t-\t-\t-\t-\t-\n");*/
-        //printf("IP ANTES DE EJECUTAR: %d\n",comp.registros[IP]);
+        printf("IP ANTES DE EJECUTAR: %d\n",comp.registros[IP]);
         //printf("ERROR AL COMENZAR WHILE: %d\n",comp.error);
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
         //printf("dir fisica de ip: %d\n",dirip);
@@ -94,7 +94,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
             EjecutarOperacion(abc,A,B,&comp);
             TradLogicaFisica(&dirip,comp,&IP_no_caido);
             //printf("ECX: %x\n\n", comp.registros[ECX]);
-            //printf("IP DESPUES DE EJECUTAR: %d\n",comp.registros[IP]);
+            printf("IP DESPUES DE EJECUTAR: %d\n",comp.registros[IP]);
             //printf("BOOLEANO DESPUES DE EJECUCION: %d\n",IP_no_caido);
             //printf("ERROR AL FINALIZAR EJECUCION: %d\n",comp.error);
            /* printf("DS en la pos 0: %x\n",comp.memoria[25]);
@@ -199,7 +199,7 @@ void LeeArchivo(Componentes *comp){ //, char argv[]
     str ident;
     int boo,i;
     uint8_t lect;
-    uint16_t tam;
+    uint16_t tam,aux=0;
 
     arch = fopen("sample.vmx","rb"); //argv
     if (arch == NULL)
@@ -209,8 +209,12 @@ void LeeArchivo(Componentes *comp){ //, char argv[]
         fread(&ident,sizeof(str),1,arch);
         fread(&lect,sizeof(uint8_t),1,arch);;
         fread(&tam,sizeof(uint16_t),1,arch);
+        printf("tam: %x\n",tam);
         strcpy(cab.identificador,ident.ident);
-        cab.TamanioCodigo = (tam>>8) & 0xFF;
+        aux = (tam>>8) & 0xFF;
+        tam = (tam<<8) & 0xFF00;
+        cab.TamanioCodigo = 0;
+        cab.TamanioCodigo = (cab.TamanioCodigo | aux) | tam;
         cab.version = lect;
         boo = ValidaEjecucion(cab);
         if (boo){

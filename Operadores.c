@@ -449,8 +449,9 @@ void JNP(Toperando offset, Componentes *comp)
 
 void JNN(Toperando offset, Componentes *comp)
 {
-    if(((*comp).registros[CC] >> 31 & 0x1) == 0)
+    if(((*comp).registros[CC] >> 31 & 0x1) == 0){
         JMP(offset, comp);
+    }
 }
 
 void NOT(Toperando a, Componentes *comp)
