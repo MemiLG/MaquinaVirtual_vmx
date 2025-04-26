@@ -47,51 +47,26 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 	while (comp.error == 0 && IP_no_caido)
     {
 
-        /*for (int i=0;i<50;i++)
-            printf("%x\t",comp.memoria[i]);
-        printf("\n");
-        printf("\n"); */
-       /* for (int i=comp.tabladesegmentos[1][0];i<comp.tabladesegmentos[1][0]+10;i++)
-            printf("%x\t",comp.memoria[i]);
-        printf("\n");
-        printf("\n");
-        printf("-\t-\t-\t-\t-\t-\t-\t-\n");*/
-        //printf("IP ANTES DE EJECUTAR: %d\n",comp.registros[IP]);
-        //printf("ERROR AL COMENZAR WHILE: %d\n",comp.error);
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
-        //printf("dir logica de ip: %d\n",dirip);
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
-        //printf("BOOLEANO: %d\n",IP_no_caido);
-        //printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
         if (IP_no_caido){
 
             instruccion = comp.memoria[dirip];
             abc = obtener_abc(instruccion);
-
-           // printf("Contenido de Ip antes: %d\n",comp.registros[5]);
-          // printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
             comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
+
             if(abc.OpB!=0)
                 CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
+
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            //comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
-
-            //printf("Contenido de Ip para la proxima instruccion: %d\n",comp.registros[5]);
-            //printf("Contenido de la memoria en la pos 10: %x\n",comp.memoria[10]);
-            //printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
             EjecutarOperacion(abc,A,B,&comp);
             TradLogicaFisica(&dirip,comp,&IP_no_caido);
-            //printf("ERROR: %d\n",comp.error);
-            //printf("ECX: %x\n\n", comp.registros[ECX]);
-            //printf("IP DESPUES DE EJECUTAR: %d\n",comp.registros[IP]);
-            //printf("BOOLEANO DESPUES DE EJECUCION: %d\n",IP_no_caido);
         }
 
 	}
 
-	//printf("\n \n dirip: %d\n",dirip);
 
 	if (comp.error == 1 )
         printf("MV finaliza por error de instruccion invalida\n");
