@@ -70,10 +70,9 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 
            // printf("Contenido de Ip antes: %d\n",comp.registros[5]);
           // printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
-
             comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
-            CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
-
+            if(abc.OpB!=0)
+                CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
@@ -88,12 +87,6 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
             //printf("ECX: %x\n\n", comp.registros[ECX]);
             //printf("IP DESPUES DE EJECUTAR: %d\n",comp.registros[IP]);
             //printf("BOOLEANO DESPUES DE EJECUCION: %d\n",IP_no_caido);
-            //printf("ERROR AL FINALIZAR EJECUCION: %d\n",comp.error);
-           /* printf("DS en la pos 0: %x\n",comp.memoria[25]);
-            printf("Registro EDX(contenido): %x\n",comp.registros[13]);
-            printf("Contenido registro ECX: %x\n",comp.registros[12]);
-            printf("Contenido de EAX: %x\n",comp.registros[10]);
-            printf("\n"); */
         }
 
 	}
