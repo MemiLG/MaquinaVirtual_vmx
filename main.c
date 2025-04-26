@@ -59,7 +59,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
         //printf("dir fisica de ip: %d\n",dirip);
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
-       // printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
+        printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
         if (IP_no_caido){
 
             instruccion = comp.memoria[dirip];
@@ -86,7 +86,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 
             //comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
-            //printf("Contenido de Ip para la proxima instruccion: %d\n",comp.registros[5]);
+            printf("Contenido de Ip para la proxima instruccion: %d\n",comp.registros[5]);
             //printf("Contenido de la memoria en la pos 10: %x\n",comp.memoria[10]);
             //printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
 
