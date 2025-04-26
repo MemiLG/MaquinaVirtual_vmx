@@ -56,10 +56,12 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
         printf("\n");
         printf("\n");
         printf("-\t-\t-\t-\t-\t-\t-\t-\n");*/
+        //printf("IP ANTES DE EJECUTAR: %d\n",comp.registros[IP]);
+        //printf("ERROR AL COMENZAR WHILE: %d\n",comp.error);
         dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
         //printf("dir fisica de ip: %d\n",dirip);
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
-        printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
+        //printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
         if (IP_no_caido){
 
             instruccion = comp.memoria[dirip];
@@ -74,8 +76,8 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
            /* printf("\t OpB.tipo = %x\t OpB.operando: %x\n",B.tipo,B.operando);
             printf("Contenido de Ip despues de la carga de B: %d\n",comp.registros[5]);
             printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]); */
-
-            CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
+            if(abc.OpA!=0)
+                CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
       //      printf("Operando A: %x      Tipo: %d\n", A.operando, A.tipo);
       //      printf("Operando B: %x      Tipo: %d\n", B.operando, B.tipo);
@@ -86,12 +88,15 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 
             //comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
-            printf("Contenido de Ip para la proxima instruccion: %d\n",comp.registros[5]);
+            //printf("Contenido de Ip para la proxima instruccion: %d\n",comp.registros[5]);
             //printf("Contenido de la memoria en la pos 10: %x\n",comp.memoria[10]);
             //printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]);
-
             EjecutarOperacion(abc,A,B,&comp);
+            TradLogicaFisica(&dirip,comp,&IP_no_caido);
             //printf("ECX: %x\n\n", comp.registros[ECX]);
+            //printf("IP DESPUES DE EJECUTAR: %d\n",comp.registros[IP]);
+            //printf("BOOLEANO DESPUES DE EJECUCION: %d\n",IP_no_caido);
+            //printf("ERROR AL FINALIZAR EJECUCION: %d\n",comp.error);
            /* printf("DS en la pos 0: %x\n",comp.memoria[25]);
             printf("Registro EDX(contenido): %x\n",comp.registros[13]);
             printf("Contenido registro ECX: %x\n",comp.registros[12]);
@@ -258,7 +263,7 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
         }
         (*a).operando = LeerMemoria(*comp,dir,bytes);
         (*comp).registros[5] += bytes; //suma la cantidad de bytes que se movio al offset (mueve IP)
-    }
+        }
     else
         (*comp).error = 3;
 }
