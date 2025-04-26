@@ -74,18 +74,8 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
             comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
             CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
 
-           /* printf("\t OpB.tipo = %x\t OpB.operando: %x\n",B.tipo,B.operando);
-            printf("Contenido de Ip despues de la carga de B: %d\n",comp.registros[5]);
-            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]); */
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
-
-      //      printf("Operando A: %x      Tipo: %d\n", A.operando, A.tipo);
-      //      printf("Operando B: %x      Tipo: %d\n", B.operando, B.tipo);
-
-           /* printf("\t OpA.tipo = %x\t OpA.operando: %x\n",A.tipo,A.operando);
-            printf("Contenido de Ip despues de la carga de A: %d\n",comp.registros[5]);
-            printf("Cont de memoria: %x\n",comp.memoria[comp.registros[5]]); */
 
             //comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
