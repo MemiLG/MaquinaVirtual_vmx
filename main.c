@@ -116,7 +116,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
         if (comp.error == 2)
             printf("MV finaliza por error de division por 0\n");
         else
-            if(comp.error == 3 ^ dirip == comp.tabladesegmentos[0][1])
+            if(comp.error == 3 ^ dirip > comp.tabladesegmentos[0][1])
                 printf("MV finaliza por error de caida de segmento\n");
             else
                 printf("MV finaliza exitosamente con 0 errores\n");
