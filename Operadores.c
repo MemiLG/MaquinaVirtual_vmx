@@ -123,11 +123,11 @@ void Imprime(Componentes *comp)
         tamanio_ch =( (*comp).registros[ECX] >> 8 ) & 0xFF ;
         formato = (*comp).registros[EAX] & 0xFF ;
 
-        printf("[%04x] : ",ind);
 
         for( i=0 ; i < cantidad_cl ; i++)
         {
 
+            printf("[%04X] : ",ind);
             nro= LeerMemoria(*comp, ind , tamanio_ch);//Devuelve numero de 32 bits
             if((formato & 0x01) == 0x01 ) //Decimal
 
