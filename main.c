@@ -16,6 +16,7 @@ typedef struct{
     Si comp.error = 2: Corto la ejecucion por el error de division por cero
     Si comp.error = 3: Corto la ejecucion por el error de caida de segmento
     Si comp.error = 4: La ejecucion finalizo exitosamente con 0 errores.
+    Si comp.error = 5: Corto por lectura incorrecta del archivo
 */
 //--PROTOTIPOS--
 TDatos obtener_abc(int8_t);
@@ -38,8 +39,7 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 	IniciaRegistros(&comp);
 	LeeArchivo(&comp);//, argv[1]
 
-   // if (strcmp(argv[2],"-d"))
-
+   // if (strcmp(argv[2],"-d") && comp.error!=5)
         Llamada_Disassembler(comp);
 
     //printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
@@ -77,7 +77,10 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
             if(comp.error == 3 ^ dirip > comp.tabladesegmentos[0][1])
                 printf("MV finaliza por error de caida de segmento\n");
             else
-                printf("MV finaliza exitosamente con 0 errores\n");
+                if (comp.error == 5)
+                    printf("MV finaliza por error de archivo\n");
+                else
+                    printf("MV finaliza exitosamente con 0 errores\n");
     return 0;
 }
 
@@ -162,8 +165,10 @@ void LeeArchivo(Componentes *comp){ //, char argv[]
     uint16_t tam,aux=0;
 
     arch = fopen("sample.vmx","rb"); //argv
-    if (arch == NULL)
+    if (arch == NULL){
         printf("No se pudo leer el archivo\n");
+        (*comp).error = 5;
+    }
     else{
 
         fread(&ident,sizeof(str),1,arch);
@@ -187,8 +192,10 @@ void LeeArchivo(Componentes *comp){ //, char argv[]
                 i++;
             }
         }
-        else
+        else{
             printf("No es un archivo valido\n");
+            (*comp).error = 5;
+        }
         fclose(arch);
     }
 }
