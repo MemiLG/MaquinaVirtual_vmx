@@ -21,13 +21,13 @@ typedef struct{
 //--PROTOTIPOS--
 TDatos obtener_abc(int8_t);
 void EjecutarOperacion(TDatos,Toperando,Toperando,Componentes *);
-void LeeArchivo(Componentes *); //, char argv[ARCHIVO]
+void LeeArchivo(Componentes *, char argv[ARCHIVO]);
 void IniciaRegistros(Componentes*);
 void CargaOperando(int8_t,Toperando*,Componentes*);
 void Llamada_Disassembler(Componentes );
 
 //--EJECUCION--
-int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingresados por consola. *argv[] es una matriz de punteros a un matrices de caracteres
+int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingresados por consola. *argv[] es una matriz de punteros a un matrices de caracteres
 {
 
 	TDatos abc ;
@@ -37,13 +37,12 @@ int main() // int argc, char *argv[] argc indica la cantidad de argumentos ingre
 	int dirip, IP_no_caido=1;
 
 	IniciaRegistros(&comp);
-	LeeArchivo(&comp);//, argv[1]
+	LeeArchivo(&comp, argv[1]);
 
-   // if (strcmp(argv[2],"-d") && comp.error!=5)
+    if (strcmp(argv[2],"-d") && comp.error!=5)
         Llamada_Disassembler(comp);
 
-    //printf("tamanio de codigo: %d\n",comp.tabladesegmentos[0][1]);
-    //printf("Contenido de IP al comienzo: %d\n",comp.registros[5]);
+
 	while (comp.error == 0 && IP_no_caido)
     {
 
@@ -156,7 +155,7 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
     }
 }
 
-void LeeArchivo(Componentes *comp){ //, char argv[]
+void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
@@ -164,7 +163,7 @@ void LeeArchivo(Componentes *comp){ //, char argv[]
     uint8_t lect;
     uint16_t tam,aux=0;
 
-    arch = fopen("sample.vmx","rb"); //argv
+    arch = fopen(argv,"rb");
     if (arch == NULL){
         printf("No se pudo leer el archivo\n");
         (*comp).error = 5;

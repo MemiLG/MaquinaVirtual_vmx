@@ -137,7 +137,10 @@ void Imprime(Componentes *comp)
 
             if((formato & 0X02) == 0x02) //Caracteres
 
-                printf("%c\t", nro);
+                if(nro<32 || nro>255)
+                    printf(".\t");
+                else
+                    printf("%c\t", nro);
 
             if((formato & 0x04) == 0x04) //Octal
 

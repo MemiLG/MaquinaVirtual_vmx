@@ -12,8 +12,8 @@ void TradLogicaFisica(int *dir, Componentes comp, int *flag){
     int16_t fila;
 
     *flag = 1;
-    fila = *dir >> 16 & 0xFFFF; //guarda el codigo de segmento (la fila de la tabla de segmento)
-    aux = (*dir & 0xFFFF); //agarra el offset del segmento
+    fila = *dir >> 16 & 0xFFFF;
+    aux = (*dir & 0xFFFF);
     aux = comp.tabladesegmentos[fila][0] + aux;
     if (fila<FIL && DireccionFisicaValida(aux,fila,comp))
         *dir = aux;
@@ -47,11 +47,7 @@ void modificaCC(Componentes *comp, int num)
         if(num == 0)
             (*comp).registros[8] = (*comp).registros[8] | 0x40000000;
 }
-/**
-*  Precondiciones: dir tiene que ser una direccion fisica valida del DS
-*                  byte tiene que ser mayor a cero y menor o igual a 4
-*
-*/
+
 void InsertaMemoria(Componentes *comp,int dir,int dato, int byte){
 int i, aux = 0;
     for (i=0;i<byte;i++){
