@@ -138,7 +138,7 @@ void Imprime(Componentes *comp)
             if((formato & 0X02) == 0x02) //Caracteres
 
                 if(nro<32 || nro>255)
-                    printf(".\t");
+                    printf("....\t");
                 else
                     printf("%c\t", nro);
 
