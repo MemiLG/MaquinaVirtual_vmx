@@ -21,7 +21,7 @@ typedef struct{
 //--PROTOTIPOS--
 TDatos obtener_abc(int8_t);
 void EjecutarOperacion(TDatos,Toperando,Toperando,Componentes *);
-void LeeArchivo(Componentes *, char argv[ARCHIVO]);
+void LeeArchivo(Componentes *); //, char argv[ARCHIVO]
 void IniciaRegistros(Componentes*);
 void CargaOperando(int8_t,Toperando*,Componentes*);
 void Llamada_Disassembler(Componentes );
@@ -37,9 +37,10 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	int dirip, IP_no_caido=1;
 
 	IniciaRegistros(&comp);
-	LeeArchivo(&comp, argv[1]);
+	LeeArchivo(&comp); //, argv[1]
 
-    if (strcmp(argv[2],"-d") && comp.error!=5)
+    //if (strcmp(argv[2],"-d") && comp.error!=5)
+    if (comp.error!=5)
         Llamada_Disassembler(comp);
 
 
@@ -155,7 +156,7 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
     }
 }
 
-void LeeArchivo(Componentes *comp, char argv[]){
+void LeeArchivo(Componentes *comp){ //, char argv[]
     FILE *arch;
     Theader cab;
     str ident;
@@ -163,7 +164,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     uint8_t lect;
     uint16_t tam,aux=0;
 
-    arch = fopen(argv,"rb");
+    arch = fopen("sample.vmx","rb"); //argv
     if (arch == NULL){
         printf("No se pudo leer el archivo\n");
         (*comp).error = 5;
