@@ -8,7 +8,7 @@
 void ValorOperando(Toperando op, int *aux, Componentes *comp)
 {
     int8_t segmento;
-    int pos, pos2, fl=1;
+    int pos, pos2, fl=1, des=0;
 
 	switch(op.tipo){ //sacar el dato del operando
 		case 0b01:
@@ -16,12 +16,22 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 			pos = (op.operando>>4)& 0xF;
 			*aux = comp->registros[pos];// no entra en ningin if: registro completo
 
-			if(segmento == 0b01) //toma el 4to byte AL
+			if(segmento == 0b01){ //toma el 4to byte AL
 				*aux = (*aux & 0xFF);
-			else if (segmento == 0b10) //toma el 3er byte AH
+				des = 24;
+			}
+			else if (segmento == 0b10){ //toma el 3er byte AH
 				*aux = (*aux>>8)& 0xFF;
-			else if (segmento == 0b11) //registro de 2 bytes (dos ultimos bytes)
+				des = 16;
+			}
+			else if (segmento == 0b11){ //registro de 2 bytes (dos ultimos bytes)
 				*aux = *aux & 0xFFFF;
+				des = 16;
+			}
+
+            if (des>0){
+                *aux = (*aux<<des)>>des;
+            }
 			break;
 
 		case 0b10:
