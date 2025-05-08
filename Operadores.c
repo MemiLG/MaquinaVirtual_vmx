@@ -36,6 +36,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 
 		case 0b10:
 		    *aux = op.operando;
+		    *aux = (*aux<<16)>>16;
             break;
 
 		case 0b11:
