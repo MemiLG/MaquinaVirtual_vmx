@@ -171,7 +171,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     else{
 
         fread(&ident,sizeof(str),1,arch);
-        fread(&lect,sizeof(uint8_t),1,arch);;
+        fread(&lect,sizeof(uint8_t),1,arch);
         fread(&tam,sizeof(uint16_t),1,arch);
         strcpy(cab.identificador,ident.ident);
         aux = (tam>>8) & 0xFF;
@@ -179,16 +179,21 @@ void LeeArchivo(Componentes *comp, char argv[]){
         cab.TamanioCodigo = 0;
         cab.TamanioCodigo = (cab.TamanioCodigo | aux) | tam;
         cab.version = lect;
-        boo = ValidaEjecucion(cab);
+        boo = ValidaEjecucion(cab.identificador,cab.version);
         if (boo){
-            setBaseCS(comp,cab.TamanioCodigo);
-            setTamanioCS(comp,cab.TamanioCodigo);
-            setBaseDS(comp,cab.TamanioCodigo);
-            setTamanioDS(comp,cab.TamanioCodigo);
-            i=0;
-            while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
-                (*comp).memoria[i] = lect;
-                i++;
+            if (cab.version == 1){
+                setBaseCS(comp,0);
+                setTamanioCS(comp,cab.TamanioCodigo);
+                setBaseDS(comp,cab.TamanioCodigo);
+                setTamanioDS(comp,cab.TamanioCodigo);
+                i=0;
+                while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
+                    (*comp).memoria[i] = lect;
+                    i++;
+                }
+            }
+            else{
+
             }
         }
         else{

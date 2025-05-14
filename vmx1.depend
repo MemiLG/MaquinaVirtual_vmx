@@ -3,7 +3,7 @@
 	<string.h>
 	"Cabecera.h"
 
-1745289624 c:\arqui\mv\maquinavirtual_vmx\cabecera.h
+1747228256 c:\arqui\mv\maquinavirtual_vmx\cabecera.h
 	<stdint.h>
 	<string.h>
 
@@ -25,7 +25,7 @@
 	<stdlib.h>
 	"TipoMaquina.h"
 
-1746622934 source:c:\arqui\mv\maquinavirtual_vmx\main.c
+1746730874 source:c:\arqui\mv\maquinavirtual_vmx\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>

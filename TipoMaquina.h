@@ -38,8 +38,14 @@ void Op_AB(int8_t , Componentes , int32_t *,int*);
 void Significado(int8_t , int32_t);
 void setBaseCS(Componentes *, uint16_t );
 void setBaseDS(Componentes *,uint16_t );
+void setBaseES(Componentes *,uint16_t );
+void setBaseSS(Componentes *,uint16_t );
+void setBaseKS(Componentes *,uint16_t );
 void setTamanioCS(Componentes *,uint16_t );
 void setTamanioDS(Componentes *,uint16_t );
+void setTamanioES(Componentes *,uint16_t );
+void setTamanioSS(Componentes *,uint16_t );
+void setTamanioKS(Componentes *,uint16_t );
 void Llamada_Disassembler(Componentes);
 
 #endif // TIPOMAQUINA_H_INCLUDED

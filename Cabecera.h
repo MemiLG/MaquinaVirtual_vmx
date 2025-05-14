@@ -9,6 +9,6 @@ typedef struct {
     uint16_t TamanioCodigo;
 
 }Theader;
-int ValidaEjecucion(Theader );
+int ValidaEjecucion(char [], uint8_t);
 
 #endif // CABECERA_H_INCLUDED

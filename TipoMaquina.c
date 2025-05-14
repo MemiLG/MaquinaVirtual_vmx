@@ -185,7 +185,6 @@ void Significado(int8_t op, int32_t auxiliar)
 //-------------------- Tabla de segmentos --------------------
 
 void setBaseCS(Componentes *comp, uint16_t valor){
-    valor = 0;
     (*comp).tabladesegmentos[0][0] = valor;
 }
 void setTamanioCS(Componentes *comp,uint16_t valor){
@@ -196,4 +195,22 @@ void setBaseDS (Componentes *comp, uint16_t valor){
 }
 void setTamanioDS(Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[1][1] = 16884 - valor; //verificar el tema del tamanio y su relacion con el manejo de memoria.
+}
+void setBaseES(Componentes *comp, uint16_t valor){
+    (*comp).tabladesegmentos[2][0] = valor;
+}
+void setTamanioES(Componentes *comp,uint16_t valor){
+    (*comp).tabladesegmentos[2][1] = valor;
+}
+void setBaseSS(Componentes *comp, uint16_t valor){
+    (*comp).tabladesegmentos[3][0] = valor;
+}
+void setTamanioSS(Componentes *comp,uint16_t valor){
+    (*comp).tabladesegmentos[3][1] = valor;
+}
+void setBaseKS(Componentes *comp, uint16_t valor){
+    (*comp).tabladesegmentos[4][0] = valor;
+}
+void setTamanioKS(Componentes *comp,uint16_t valor){
+    (*comp).tabladesegmentos[4][1] = valor;
 }
