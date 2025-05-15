@@ -37,6 +37,10 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	int dirip, IP_no_caido=1;
 
 	IniciaRegistros(&comp);
+
+	//--CREACION Y CARGA DEL PARAM SEGMENT--
+
+
 	LeeArchivo(&comp, argv[1]);
     if (strcmp(argv[2],"-d") && comp.error!=5){
         Llamada_Disassembler(comp);
@@ -230,9 +234,6 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 tam = (tam<<8) & 0xFF00;
                 cab.OffsetEntry = 0;
                 cab.OffsetEntry = (cab.OffsetEntry | aux) | tam;
-
-                //--INICIALIZACION Y CREACION DEL PARAM SEGMENT--
-                //Inicializar el param segment con los argumentos pasados por consola. Calcular tamanio del segmento.
 
                 //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
 
