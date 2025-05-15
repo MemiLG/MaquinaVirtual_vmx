@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1745289674 source:c:\arqui\mv\maquinavirtual_vmx\cabecera.c
+1747228277 source:c:\arqui\mv\maquinavirtual_vmx\cabecera.c
 	<string.h>
 	"Cabecera.h"
 
-1747228256 c:\arqui\mv\maquinavirtual_vmx\cabecera.h
+1747318799 c:\arqui\mv\maquinavirtual_vmx\cabecera.h
 	<stdint.h>
 	<string.h>
 
@@ -17,7 +17,7 @@
 1745616370 c:\arqui\mv\maquinavirtual_vmx\operadores.h
 	"TipoMaquina.h"
 
-1745604965 c:\arqui\mv\maquinavirtual_vmx\tipomaquina.h
+1747346526 c:\arqui\mv\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
 1746665006 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c

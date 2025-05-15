@@ -12,11 +12,14 @@ typedef struct{
 /*
     CORTES DE EJECUCION DE LA MV:
 
-    Si comp.error = 1: Corto la ejecucion por el error de instruccion invalida
-    Si comp.error = 2: Corto la ejecucion por el error de division por cero
-    Si comp.error = 3: Corto la ejecucion por el error de caida de segmento
-    Si comp.error = 4: La ejecucion finalizo exitosamente con 0 errores.
-    Si comp.error = 5: Corto por lectura incorrecta del archivo
+    Si comp.error = 1: Corta la ejecucion por el error de instruccion invalida
+    Si comp.error = 2: Corta la ejecucion por el error de division por cero
+    Si comp.error = 3: Corta la ejecucion por el error de caida de segmento
+    Si comp.error = 4: Corta por archivo no compatible.
+    Si comp.error = 5: Corta por memoria insuficiente.
+    Si comp.error = 6: Corta por Stack overflow.
+    Si comp.error = 7: Corta por Stack underflow.
+
 */
 //--PROTOTIPOS--
 TDatos obtener_abc(int8_t);
@@ -39,8 +42,10 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	IniciaRegistros(&comp);
 
 	//--CREACION Y CARGA DEL PARAM SEGMENT--
-
-
+    /* if (strcmp(argv[],"-p")
+           while(argv[i]!=null)
+            comp.memoria[j] = argv[i];
+    */
 	LeeArchivo(&comp, argv[1]);
     if (strcmp(argv[2],"-d") && comp.error!=5){
         Llamada_Disassembler(comp);
@@ -80,7 +85,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(comp.error == 3 ^ dirip > comp.tabladesegmentos[0][1])
                 printf("MV finaliza por error de caida de segmento\n");
             else
-                if (comp.error == 5)
+                if (comp.error == 4)
                     printf("MV finaliza por error de archivo\n");
                 else
                     printf("MV finaliza exitosamente con 0 errores\n");
@@ -189,7 +194,8 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 setBaseCS(comp,0);
                 setTamanioCS(comp,cab.TamanioCodigo);
                 setBaseDS(comp,cab.TamanioCodigo);
-                setTamanioDS(comp,cab.TamanioCodigo);
+                aux = 16884 - cab.TamanioCodigo;
+                setTamanioDS(comp,aux);
                 i=0;
                 while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
                     (*comp).memoria[i] = lect;
@@ -237,14 +243,23 @@ void LeeArchivo(Componentes *comp, char argv[]){
 
                 //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
 
+                setBaseKS(comp,comp->tabladesegmentos[0][1]);
+                setTamanioKS(comp,cab.TamanioConst);
+                setBaseCS(comp,cab.TamanioConst);
+                setTamanioCS(comp,cab.TamanioCodigo);
+                setBaseDS(comp,cab.TamanioCodigo);
+                setTamanioDS(comp,cab.TamanioData);
+                setBaseES(comp,cab.TamanioData);
+                setTamanioES(comp,cab.TamanioExtra);
+                setBaseSS(comp,cab.TamanioExtra);
+                setTamanioSS(comp,cab.TamanioStack);
 
-
-
+                comp->registros[5] = 0x00020000 & cab.OffsetEntry;
             }
         }
         else{
             printf("No es un archivo valido\n");
-            (*comp).error = 5;
+            (*comp).error = 4;
         }
         fclose(arch);
     }

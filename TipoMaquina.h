@@ -15,6 +15,7 @@ typedef struct{
 	int tabladesegmentos[FIL][COL];
 	int error;
 	int registros[TAMR];
+	int tamanio;
 }Componentes;
 
 typedef struct{

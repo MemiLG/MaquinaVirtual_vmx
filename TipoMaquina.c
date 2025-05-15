@@ -210,7 +210,7 @@ void setBaseDS (Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[3][0] = valor;
 }
 void setTamanioDS(Componentes *comp, uint16_t valor){
-    (*comp).tabladesegmentos[3][1] = 16884 - valor;
+    (*comp).tabladesegmentos[3][1] = valor;
 }
 void setBaseES(Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[4][0] = valor;
@@ -222,5 +222,5 @@ void setBaseSS(Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[5][0] = valor;
 }
 void setTamanioSS(Componentes *comp,uint16_t valor){
-    (*comp).tabladesegmentos[5][1] = valor;
+    (*comp).tabladesegmentos[5][1] = comp->tamanio - valor;
 }
