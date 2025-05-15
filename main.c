@@ -194,6 +194,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
             }
             else{
 
+
             }
         }
         else{
