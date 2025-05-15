@@ -194,6 +194,50 @@ void LeeArchivo(Componentes *comp, char argv[]){
             }
             else{
 
+                //--LECTURA DE LOS TAMANIOS DE CADA SEGMENTO--
+
+                aux = 0;
+                fread(&tam,sizeof(uint16_t),1,arch);
+                aux = (tam>>8) & 0xFF;
+                tam = (tam<<8) & 0xFF00;
+                cab.TamanioData = 0;
+                cab.TamanioData = (cab.TamanioData | aux) | tam;
+
+                aux = 0;
+                fread(&tam,sizeof(uint16_t),1,arch);
+                aux = (tam>>8) & 0xFF;
+                tam = (tam<<8) & 0xFF00;
+                cab.TamanioExtra = 0;
+                cab.TamanioExtra = (cab.TamanioExtra | aux) | tam;
+
+                aux = 0;
+                fread(&tam,sizeof(uint16_t),1,arch);
+                aux = (tam>>8) & 0xFF;
+                tam = (tam<<8) & 0xFF00;
+                cab.TamanioStack = 0;
+                cab.TamanioStack = (cab.TamanioStack | aux) | tam;
+
+                aux = 0;
+                fread(&tam,sizeof(uint16_t),1,arch);
+                aux = (tam>>8) & 0xFF;
+                tam = (tam<<8) & 0xFF00;
+                cab.TamanioConst = 0;
+                cab.TamanioConst = (cab.TamanioConst | aux) | tam;
+
+                aux = 0;
+                fread(&tam,sizeof(uint16_t),1,arch);
+                aux = (tam>>8) & 0xFF;
+                tam = (tam<<8) & 0xFF00;
+                cab.OffsetEntry = 0;
+                cab.OffsetEntry = (cab.OffsetEntry | aux) | tam;
+
+                //--INICIALIZACION Y CREACION DEL PARAM SEGMENT--
+                //Inicializar el param segment con los argumentos pasados por consola. Calcular tamanio del segmento.
+
+                //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
+
+
+
 
             }
         }
@@ -212,6 +256,9 @@ void IniciaRegistros( Componentes *comp )
 	(*comp).registros[1] = 0x00010000 ;
 	(*comp).registros[5] = (*comp).registros[0];
 	(*comp).error = 0;
+	for(int i=0; i<FIL; i++)
+        for (int j=0; j<COL; j++)
+            comp->tabladesegmentos[i][j] = 0;
 
 }
 

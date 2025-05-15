@@ -3,11 +3,13 @@
 #include "TipoMaquina.h"
 #define TOTAL 31
 
-int DireccionFisicaValida(int dir, int16_t fila, Componentes comp){
+int DireccionFisicaValida(int dir, int16_t fila, Componentes comp)
+{
     return (dir<=comp.tabladesegmentos[fila][1]-1 && dir>=comp.tabladesegmentos[fila][0]);
 }
 
-void TradLogicaFisica(int *dir, Componentes comp, int *flag){
+void TradLogicaFisica(int *dir, Componentes comp, int *flag)
+{
     int aux;
     int16_t fila;
 
@@ -21,7 +23,8 @@ void TradLogicaFisica(int *dir, Componentes comp, int *flag){
         *flag = 0;
 }
 
-int LeerMemoria(Componentes comp, int dir, int bytes){
+int LeerMemoria(Componentes comp, int dir, int bytes)
+{
     int result=0, i, aux=0, des;
 
     for(i=0; i<bytes; i++)
@@ -48,7 +51,8 @@ void modificaCC(Componentes *comp, int num)
             (*comp).registros[8] = (*comp).registros[8] | 0x40000000;
 }
 
-void InsertaMemoria(Componentes *comp,int dir,int dato, int byte){
+void InsertaMemoria(Componentes *comp,int dir,int dato, int byte)
+{
 int i, aux = 0;
     for (i=0;i<byte;i++){
         aux = (dato>>(24-i*8)) & 0xFF;
@@ -184,33 +188,39 @@ void Significado(int8_t op, int32_t auxiliar)
 
 //-------------------- Tabla de segmentos --------------------
 
-void setBaseCS(Componentes *comp, uint16_t valor){
+void setBasePS(Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[0][0] = valor;
 }
-void setTamanioCS(Componentes *comp,uint16_t valor){
+void setTamanioPS(Componentes *comp,uint16_t valor){
     (*comp).tabladesegmentos[0][1] = valor;
 }
-void setBaseDS (Componentes *comp, uint16_t valor){
+void setBaseKS(Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[1][0] = valor;
 }
-void setTamanioDS(Componentes *comp, uint16_t valor){
-    (*comp).tabladesegmentos[1][1] = 16884 - valor; //verificar el tema del tamanio y su relacion con el manejo de memoria.
+void setTamanioKS(Componentes *comp,uint16_t valor){
+    (*comp).tabladesegmentos[1][1] = valor;
 }
-void setBaseES(Componentes *comp, uint16_t valor){
+void setBaseCS(Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[2][0] = valor;
 }
-void setTamanioES(Componentes *comp,uint16_t valor){
+void setTamanioCS(Componentes *comp,uint16_t valor){
     (*comp).tabladesegmentos[2][1] = valor;
 }
-void setBaseSS(Componentes *comp, uint16_t valor){
+void setBaseDS (Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[3][0] = valor;
 }
-void setTamanioSS(Componentes *comp,uint16_t valor){
-    (*comp).tabladesegmentos[3][1] = valor;
+void setTamanioDS(Componentes *comp, uint16_t valor){
+    (*comp).tabladesegmentos[3][1] = 16884 - valor;
 }
-void setBaseKS(Componentes *comp, uint16_t valor){
+void setBaseES(Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[4][0] = valor;
 }
-void setTamanioKS(Componentes *comp,uint16_t valor){
+void setTamanioES(Componentes *comp,uint16_t valor){
     (*comp).tabladesegmentos[4][1] = valor;
+}
+void setBaseSS(Componentes *comp, uint16_t valor){
+    (*comp).tabladesegmentos[5][0] = valor;
+}
+void setTamanioSS(Componentes *comp,uint16_t valor){
+    (*comp).tabladesegmentos[5][1] = valor;
 }
