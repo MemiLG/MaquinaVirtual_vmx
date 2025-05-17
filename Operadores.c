@@ -489,3 +489,77 @@ void STOP(Componentes *comp)
         (*comp).error = 4;
 }
 
+void push(Toperando op, Componentes *comp)
+{
+    int valor;
+
+    if(comp->registros[SP] - 4 < comp->registros[SS])
+        comp->error = 6;
+    else
+    {
+        comp->registros[SP] -= 4;
+        ValorOperando(op, &valor, comp);
+        propagar_signo(&valor, op.tipo);
+        poneP(valor, comp);
+    }
+}
+
+void pop(Toperando *op, Componentes *comp)
+{
+    int op_aux;
+
+    sacaP(&op_aux, comp);
+    if(comp->error != 7)
+    {
+        asignaValor(*op, op_aux, comp);
+        comp->registros[SP] += 4;
+    }
+}
+
+void call(Toperando offset, Componentes *comp)
+{
+    push(comp->registros[IP], comp); //No funciona porque comp->registros[IP] no es de tipo Toperando y no puede usar asignaValor
+    jmp(offset, comp);
+}
+
+void ret(Toperando offset, Componentes *comp)
+{
+    pop(comp->registros[IP], comp);
+}
+
+void propagar_signo(int *valor, int8_t tipo)
+{
+    int8_t des, byte;
+
+    switch(a.tipo)
+        //De registro
+        case 1:  SecReg = a.operando >> 2 & 0x3;
+
+                 switch(SecReg)
+                    //EAX (los 4 bytes)
+                    case 0: byte = 4;
+                    break;
+
+                    //AL (4to byte)
+                    case 1: byte = 1;
+                    break;
+
+                    //AH (3er byte)
+                    case 2: byte = 2;
+                            *valor &= 0xFFFFFF00;
+                    break;
+
+                    //AX (2 bytes)
+                    case 3: byte = 2;
+                    break;
+        break;
+
+        //Inmediato
+        case 2: byte = 2;
+
+        //Memoria
+        case 3: byte = 3;
+
+    des = (4-byte)*8;
+    *valor = (*valor << des) >> des;
+}
