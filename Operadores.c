@@ -483,57 +483,54 @@ void NOT(Toperando a, Componentes *comp)
     }
 }
 
-void STOP(Componentes *comp)
-{
-    if ((*comp).error==0)
-        (*comp).error = 4;
-}
-
 void push(Toperando op, Componentes *comp)
 {
     int valor;
 
-    if(comp->registros[SP] - 4 < comp->registros[SS])
+    if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
         comp->error = 6;
     else
     {
         comp->registros[SP] -= 4;
         ValorOperando(op, &valor, comp);
-        propagar_signo(&valor, op.tipo);
-        poneP(valor, comp);
+        propagar_signo(&valor, op);
+        (*comp).memoria[comp->registros[SP]] = valor;
     }
 }
 
-void pop(Toperando *op, Componentes *comp)
+void pop(Toperando op, Componentes *comp)
 {
     int op_aux;
 
-    sacaP(&op_aux, comp);
-    if(comp->error != 7)
+    if(comp->registros[SP] > comp->tabladesegmentos[5][1]) //Si no esta vacia
+        comp->error = 7;
+    else
     {
-        asignaValor(*op, op_aux, comp);
+        op_aux = (*comp).memoria[comp->registros[SP]];
+        asignaValor(op, op_aux, comp);
         comp->registros[SP] += 4;
     }
 }
 
-void call(Toperando offset, Componentes *comp)
+void call(Toperando op, Componentes *comp)
 {
-//    push(comp->registros[IP], comp); //No funciona porque comp->registros[IP] no es de tipo Toperando y no puede usar asignaValor
-    jmp(offset, comp);
+    if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
+        comp->error = 6;
+    else
+    {
+        comp->registros[SP] -= 4;
+        (*comp).memoria[comp->registros[SP]] = comp->registros[IP];
+    }
+    jmp(op, comp);
 }
 
-void ret(Toperando offset, Componentes *comp)
-{
-    pop(comp->registros[IP], comp);
-}
-
-/*void propagar_signo(int *valor, int8_t tipo)
+void propagar_signo(int *valor, Toperando op)
 {
     int8_t des, byte;
 
-    switch(a.tipo)
+    switch(op.tipo)
         //De registro
-        case 1:  SecReg = a.operando >> 2 & 0x3;
+        case 1:  SecReg = op.operando >> 2 & 0x3;
 
                  switch(SecReg)
                     //EAX (los 4 bytes)
@@ -563,4 +560,22 @@ void ret(Toperando offset, Componentes *comp)
     des = (4-byte)*8;
     *valor = (*valor << des) >> des;
 }
-*/
+
+//----------------------Sin operando-----------------------
+
+void STOP(Componentes *comp)
+{
+    if ((*comp).error==0)
+        (*comp).error = 4;
+}
+
+void ret(Componentes *comp)
+{
+    if(comp->registros[SP] > comp->tabladesegmentos[5][1]) //Si no esta vacia
+        comp->error = 7;
+    else
+    {
+        comp->registros[IP] = comp->memoria[comp->registros[SP]];
+        comp->registros[SP] += 4;
+    }
+}
