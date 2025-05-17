@@ -211,7 +211,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     str ident;
     int boo,i;
     uint8_t lect;
-    uint16_t tam,aux=0;
+    uint16_t tam,aux=0,ultam=0;
 
     arch = fopen(argv,"rb");
     if (arch == NULL){
@@ -284,16 +284,35 @@ void LeeArchivo(Componentes *comp, char argv[]){
 
                 //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
 
-                setBaseKS(comp,comp->tabladesegmentos[0][1]);
-                setTamanioKS(comp,cab.TamanioConst);
-                setBaseCS(comp,cab.TamanioConst);
+                if (comp->tabladesegmentos[0][1]>0)
+                    ultam = comp->tabladesegmentos[0][1];
+
+                if (cab.TamanioConst>0){
+                    setBaseKS(comp,ultam);
+                    setTamanioKS(comp,cab.TamanioConst);
+                    ultam = cab.TamanioConst;
+                }
+
+                setBaseCS(comp,ultam);
                 setTamanioCS(comp,cab.TamanioCodigo);
-                setBaseDS(comp,cab.TamanioCodigo);
-                setTamanioDS(comp,cab.TamanioData);
-                setBaseES(comp,cab.TamanioData);
-                setTamanioES(comp,cab.TamanioExtra);
-                setBaseSS(comp,cab.TamanioExtra);
-                setTamanioSS(comp,cab.TamanioStack);
+                ultam = cab.TamanioCodigo;
+
+                if(cab.TamanioData>0){
+                    setBaseDS(comp,ultam);
+                    setTamanioDS(comp,cab.TamanioData);
+                    ultam = cab.TamanioData;
+                }
+
+                if (cab.TamanioExtra>0){
+                    setBaseES(comp,ultam);
+                    etTamanioES(comp,cab.TamanioExtra);
+                    ultam = cab.TamanioExtra;
+                }
+
+                if (cab.TamanioStack>0){
+                    setBaseSS(comp,ultam);
+                    setTamanioSS(comp,cab.TamanioStack);
+                }
 
                 comp->registros[5] = 0x00020000 & cab.OffsetEntry;
             }
