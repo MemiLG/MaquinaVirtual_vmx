@@ -518,7 +518,7 @@ void pop(Toperando *op, Componentes *comp)
 
 void call(Toperando offset, Componentes *comp)
 {
-    push(comp->registros[IP], comp); //No funciona porque comp->registros[IP] no es de tipo Toperando y no puede usar asignaValor
+//    push(comp->registros[IP], comp); //No funciona porque comp->registros[IP] no es de tipo Toperando y no puede usar asignaValor
     jmp(offset, comp);
 }
 
@@ -527,7 +527,7 @@ void ret(Toperando offset, Componentes *comp)
     pop(comp->registros[IP], comp);
 }
 
-void propagar_signo(int *valor, int8_t tipo)
+/*void propagar_signo(int *valor, int8_t tipo)
 {
     int8_t des, byte;
 
@@ -563,3 +563,4 @@ void propagar_signo(int *valor, int8_t tipo)
     des = (4-byte)*8;
     *valor = (*valor << des) >> des;
 }
+*/

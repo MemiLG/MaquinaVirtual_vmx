@@ -37,7 +37,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	Componentes comp;
 	Toperando A, B;
 	int8_t instruccion ;
-	int dirip, IP_no_caido=1;
+	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam, i=2, j,dir,puntparam[10]={0};
+	uint16_t tamparam = 0;
 
 	IniciaRegistros(&comp);
 
@@ -46,6 +47,46 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
            while(argv[i]!=null)
             comp.memoria[j] = argv[i];
     */
+
+    while (i<argc){
+        if (argv[i][0] == 'm'){ //Se indica la cantidad de memoria que tendra la mem principal
+            sscanf(argv[i],"m=%d",&maxmemoria);
+            maxmemoria *=1024;
+        }
+        else
+            if (strcmp(argv[i],"-d"))
+                boodisassembler = 1;
+            else
+                if (strcmp(argv[i],"-p")){
+                    i++;
+                    cantparam = 0;
+                    dir = 0;
+                    for (i;i<argc;i++){
+                        j=0;
+                        puntparam[cantparam] = dir;
+                        cantparam++;
+                        while(argv[i][j]){
+                            InsertaMemoria(&comp,dir,argv[i][j],1);
+                            tamparam++;
+                            dir +=1;
+                            j++;
+                        }
+                        InsertaMemoria(&comp,dir,0,1);
+                        tamparam++;
+                        dir +=1;
+                    }
+                    for (j=0;j<cantparam;j++){
+                        InsertaMemoria(&comp, dir,puntparam[j],4);
+                        tamparam+=4;
+                        dir+=1;
+                    }
+                    setTamanioPS(&comp,tamparam);
+                }
+                //else
+                    //FALTA EL IF SI ES UNA IMAGEN
+        i++;
+    }
+
 	LeeArchivo(&comp, argv[1]);
     if (strcmp(argv[2],"-d") && comp.error!=5){
         Llamada_Disassembler(comp);
