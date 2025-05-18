@@ -46,7 +46,7 @@ void setBasePS(Componentes *,uint16_t );
 void setTamanioCS(Componentes *,uint16_t );
 void setTamanioDS(Componentes *,uint16_t );
 void setTamanioES(Componentes *,uint16_t );
-void setTamanioSS(Componentes *,uint16_t );
+void setTamanioSS(Componentes *,uint16_t,uint16_t);
 void setTamanioKS(Componentes *,uint16_t );
 void setTamanioPS(Componentes *,uint16_t );
 void Llamada_Disassembler(Componentes);

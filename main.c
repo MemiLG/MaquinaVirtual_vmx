@@ -42,16 +42,11 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
 	IniciaRegistros(&comp);
 
-	//--CREACION Y CARGA DEL PARAM SEGMENT--
-    /* if (strcmp(argv[],"-p")
-           while(argv[i]!=null)
-            comp.memoria[j] = argv[i];
-    */
-
     while (i<argc){
         if (argv[i][0] == 'm'){ //Se indica la cantidad de memoria que tendra la mem principal
             sscanf(argv[i],"m=%d",&maxmemoria);
             maxmemoria *=1024;
+            comp.tamanio = maxmemoria;
         }
         else
             if (strcmp(argv[i],"-d"))
@@ -88,7 +83,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     }
 
 	LeeArchivo(&comp, argv[1]);
-    if (strcmp(argv[2],"-d") && comp.error!=5){
+    if (boodisassembler && comp.error!=4 && comp.error!=5){
         Llamada_Disassembler(comp);
     }
 
@@ -209,7 +204,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
-    int boo,i;
+    int boo,i,tamanioseg = 0, dir; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
     uint8_t lect;
     uint16_t tam,aux=0,ultam=0;
 
@@ -228,6 +223,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
         tam = (tam<<8) & 0xFF00;
         cab.TamanioCodigo = 0;
         cab.TamanioCodigo = (cab.TamanioCodigo | aux) | tam;
+        tamanioseg += cab.TamanioCodigo;
         cab.version = lect;
         boo = ValidaEjecucion(cab.identificador,cab.version);
         if (boo){
@@ -247,12 +243,15 @@ void LeeArchivo(Componentes *comp, char argv[]){
 
                 //--LECTURA DE LOS TAMANIOS DE CADA SEGMENTO--
 
+                tamanioseg += comp->tabladesegmentos[0][1];
+
                 aux = 0;
                 fread(&tam,sizeof(uint16_t),1,arch);
                 aux = (tam>>8) & 0xFF;
                 tam = (tam<<8) & 0xFF00;
                 cab.TamanioData = 0;
                 cab.TamanioData = (cab.TamanioData | aux) | tam;
+                tamanioseg += cab.TamanioData;
 
                 aux = 0;
                 fread(&tam,sizeof(uint16_t),1,arch);
@@ -260,6 +259,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 tam = (tam<<8) & 0xFF00;
                 cab.TamanioExtra = 0;
                 cab.TamanioExtra = (cab.TamanioExtra | aux) | tam;
+                tamanioseg += cab.TamanioExtra;
 
                 aux = 0;
                 fread(&tam,sizeof(uint16_t),1,arch);
@@ -267,6 +267,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 tam = (tam<<8) & 0xFF00;
                 cab.TamanioStack = 0;
                 cab.TamanioStack = (cab.TamanioStack | aux) | tam;
+                tamanioseg += cab.TamanioStack;
 
                 aux = 0;
                 fread(&tam,sizeof(uint16_t),1,arch);
@@ -274,6 +275,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 tam = (tam<<8) & 0xFF00;
                 cab.TamanioConst = 0;
                 cab.TamanioConst = (cab.TamanioConst | aux) | tam;
+                tamanioseg += cab.TamanioConst;
 
                 aux = 0;
                 fread(&tam,sizeof(uint16_t),1,arch);
@@ -283,38 +285,48 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 cab.OffsetEntry = (cab.OffsetEntry | aux) | tam;
 
                 //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
+                if (tamanioseg <= comp->tamanio){
 
-                if (comp->tabladesegmentos[0][1]>0)
-                    ultam = comp->tabladesegmentos[0][1];
+                    if (comp->tabladesegmentos[0][1]>0)
+                        ultam = comp->tabladesegmentos[0][1];
 
-                if (cab.TamanioConst>0){
-                    setBaseKS(comp,ultam);
-                    setTamanioKS(comp,cab.TamanioConst);
-                    ultam = cab.TamanioConst;
+                    if (cab.TamanioConst>0){
+                        setBaseKS(comp,ultam);
+                        setTamanioKS(comp,cab.TamanioConst);
+                        ultam = cab.TamanioConst;
+                    }
+
+                    setBaseCS(comp,ultam);
+                    setTamanioCS(comp,cab.TamanioCodigo);
+                    ultam = cab.TamanioCodigo;
+
+                    if(cab.TamanioData>0){
+                        setBaseDS(comp,ultam);
+                        setTamanioDS(comp,cab.TamanioData);
+                        ultam = cab.TamanioData;
+                    }
+
+                    if (cab.TamanioExtra>0){
+                        setBaseES(comp,ultam);
+                        setTamanioES(comp,cab.TamanioExtra);
+                        ultam = cab.TamanioExtra;
+                    }
+                    if (cab.TamanioStack>0){
+                        setBaseSS(comp,ultam);
+                        tamanioseg -= comp->tamanio;
+                        setTamanioSS(comp,cab.TamanioStack,(uint16_t)tamanioseg);
+                    }
+
+                    comp->registros[5] = 0x00020000 & cab.OffsetEntry;
+
+                    while(fread(&lect,sizeof(uint8_t),1,arch)>0){
+                        dir =  0x00020000;
+                        InsertaMemoria(comp,dir,lect,1);
+                        dir +=1;
+                    }
                 }
-
-                setBaseCS(comp,ultam);
-                setTamanioCS(comp,cab.TamanioCodigo);
-                ultam = cab.TamanioCodigo;
-
-                if(cab.TamanioData>0){
-                    setBaseDS(comp,ultam);
-                    setTamanioDS(comp,cab.TamanioData);
-                    ultam = cab.TamanioData;
-                }
-
-                if (cab.TamanioExtra>0){
-                    setBaseES(comp,ultam);
-                    etTamanioES(comp,cab.TamanioExtra);
-                    ultam = cab.TamanioExtra;
-                }
-
-                if (cab.TamanioStack>0){
-                    setBaseSS(comp,ultam);
-                    setTamanioSS(comp,cab.TamanioStack);
-                }
-
-                comp->registros[5] = 0x00020000 & cab.OffsetEntry;
+                else
+                    comp->error = 5; //memoria insuficiente
             }
         }
         else{
@@ -332,6 +344,7 @@ void IniciaRegistros( Componentes *comp )
 	(*comp).registros[1] = 0x00010000 ;
 	(*comp).registros[5] = (*comp).registros[0];
 	(*comp).error = 0;
+	(*comp).tamanio = 16384;
 	for(int i=0; i<FIL; i++)
         for (int j=0; j<COL; j++)
             comp->tabladesegmentos[i][j] = 0;

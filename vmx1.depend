@@ -17,10 +17,10 @@
 1747487601 c:\arqui\mv\maquinavirtual_vmx\operadores.h
 	"TipoMaquina.h"
 
-1747346526 c:\arqui\mv\maquinavirtual_vmx\tipomaquina.h
+1747598946 c:\arqui\mv\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
-1747346614 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c
+1747598902 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c
 	<stdio.h>
 	<stdlib.h>
 	"TipoMaquina.h"
