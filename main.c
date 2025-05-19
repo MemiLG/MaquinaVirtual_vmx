@@ -25,9 +25,10 @@ typedef struct{
 TDatos obtener_abc(int8_t);
 void EjecutarOperacion(TDatos,Toperando,Toperando,Componentes *);
 void LeeArchivo(Componentes *, char argv[ARCHIVO]);
-void IniciaRegistros(Componentes*);
+void IniciaComponentes(Componentes*);
 void CargaOperando(int8_t,Toperando*,Componentes*);
 void Llamada_Disassembler(Componentes );
+void CargaRegistros (Componentes*);
 
 //--EJECUCION--
 int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingresados por consola. *argv[] es una matriz de punteros a un matrices de caracteres
@@ -35,12 +36,12 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
 	TDatos abc ;
 	Componentes comp;
-	Toperando A, B;
+	Toperando A, B, pargv, pargc, fin;
 	int8_t instruccion ;
 	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam, i=2, j,dir,puntparam[10]={0}, punteroparam = -1;
 	uint16_t tamparam = 0;
 
-	IniciaRegistros(&comp);
+	IniciaComponentes(&comp);
 
     while (i<argc){
         if (argv[i][0] == 'm'){ //Se indica la cantidad de memoria que tendra la mem principal
@@ -86,6 +87,14 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	LeeArchivo(&comp, argv[1]);
 
 	//FALTA HACER LOS PUSH DEL INICIO DE LA SUBRUTINA PRINCIPAL
+	pargc.tipo = pargv.tipo = fin.tipo = 2;
+	pargv.operando = punteroparam;
+	pargc.operando = cantparam;
+	fin.operando = -1;
+
+	push(pargv,&comp);
+	push(pargc,&comp);
+	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
     if (boodisassembler && comp.error!=4 && comp.error!=5){
         Llamada_Disassembler(comp);
@@ -352,7 +361,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     }
 }
 
-void IniciaRegistros( Componentes *comp )
+void IniciaComponentes( Componentes *comp )
 {
 
 	(*comp).registros[0] = 0 ;
@@ -414,5 +423,8 @@ void Llamada_Disassembler(Componentes comp){
         comp.registros[5] += abc.OpA + abc.OpB +1;
 
     }
+
+}
+void CargaRegistros(Componetes *comp){
 
 }
