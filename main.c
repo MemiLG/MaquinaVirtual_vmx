@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	Componentes comp;
 	Toperando A, B;
 	int8_t instruccion ;
-	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam, i=2, j,dir,puntparam[10]={0};
+	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam, i=2, j,dir,puntparam[10]={0}, punteroparam = -1;
 	uint16_t tamparam = 0;
 
 	IniciaRegistros(&comp);
@@ -70,6 +70,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                         tamparam++;
                         dir +=1;
                     }
+                    punteroparam = dir;
                     for (j=0;j<cantparam;j++){
                         InsertaMemoria(&comp, dir,puntparam[j],4);
                         tamparam+=4;
@@ -83,6 +84,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     }
 
 	LeeArchivo(&comp, argv[1]);
+
+	//FALTA HACER LOS PUSH DEL INICIO DE LA SUBRUTINA PRINCIPAL
+
     if (boodisassembler && comp.error!=4 && comp.error!=5){
         Llamada_Disassembler(comp);
     }
@@ -124,7 +128,16 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 if (comp.error == 4)
                     printf("MV finaliza por error de archivo\n");
                 else
-                    printf("MV finaliza exitosamente con 0 errores\n");
+                    if (comp.error == 5)
+                        printf("MV finaliza por error de memoria insuficiente");
+                    else
+                        if (comp.error == 6)
+                            printf("MV finaliza por error de stack overflow");
+                        else
+                            if (comp.error == 7)
+                                printf("MV finaliza por error de Stack underflow");
+                            else
+                                printf("MV finaliza exitosamente con 0 errores\n");
     return 0;
 }
 
@@ -317,7 +330,9 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         setTamanioSS(comp,cab.TamanioStack,(uint16_t)tamanioseg);
                     }
 
-                    comp->registros[5] = 0x00020000 & cab.OffsetEntry;
+                    comp->registros[5] = 0x00020000 | cab.OffsetEntry;
+                    comp->registros[6] = 0x00050000 | comp->tabladesegmentos[5][1]; //pone al sp al tope de la pila
+
 
                     while(fread(&lect,sizeof(uint8_t),1,arch)>0){
                         dir =  0x00020000;
