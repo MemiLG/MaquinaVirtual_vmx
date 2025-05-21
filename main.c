@@ -335,8 +335,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                     }
                     if (cab.TamanioStack>0){
                         setBaseSS(comp,ultam);
-                        tamanioseg -= comp->tamanio;
-                        setTamanioSS(comp,cab.TamanioStack,(uint16_t)tamanioseg);
+                        setTamanioSS(comp,cab.TamanioStack);
                     }
 
                     comp->registros[5] = 0x00020000 | cab.OffsetEntry;
@@ -364,9 +363,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
 void IniciaComponentes( Componentes *comp )
 {
 
-	(*comp).registros[0] = 0 ;
-	(*comp).registros[1] = 0x00010000 ;
-	(*comp).registros[5] = (*comp).registros[0];
+	(*comp).registros[0] = 0x00020000 ;
 	(*comp).error = 0;
 	(*comp).tamanio = 16384;
 	for(int i=0; i<FIL; i++)
@@ -425,6 +422,19 @@ void Llamada_Disassembler(Componentes comp){
     }
 
 }
-void CargaRegistros(Componetes *comp){
+void CargaRegistros(Componentes *comp){
+    if (comp->tabladesegmentos[1][1]>0)
+        comp->registros[4] = 0x00010000;
+    else
+        comp->registros[4] = -1;
+    if(comp->tabladesegmentos[3][1]>0)
+        comp->registros[1] = 0x00030000;
+    else
+        comp->registros[1] = -1;
+    if(comp->tabladesegmentos[4][1]>0)
+        comp->registros[2] = 0x00040000;
+    else
+        comp->registros[2] = -1;
 
+        comp->registros[3] = 0x00050000;
 }

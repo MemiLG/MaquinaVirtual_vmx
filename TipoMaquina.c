@@ -221,6 +221,6 @@ void setTamanioES(Componentes *comp,uint16_t valor){
 void setBaseSS(Componentes *comp, uint16_t valor){
     (*comp).tabladesegmentos[5][0] = valor;
 }
-void setTamanioSS(Componentes *comp,uint16_t valor,uint16_t exceso){
-    (*comp).tabladesegmentos[5][1] = valor + exceso;
+void setTamanioSS(Componentes *comp,uint16_t valor){
+    (*comp).tabladesegmentos[5][1] = valor;
 }
