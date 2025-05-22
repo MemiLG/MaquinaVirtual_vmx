@@ -38,22 +38,22 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	Componentes comp;
 	Toperando A, B, pargv, pargc, fin;
 	int8_t instruccion ;
-	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam, i=2, j,dir,puntparam[10]={0}, punteroparam = -1;
+	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad, booimagen;
 	uint16_t tamparam = 0;
 
 	IniciaComponentes(&comp);
 
     while (i<argc){
-        if (argv[i][0] == 'm'){ //Se indica la cantidad de memoria que tendra la mem principal
+        if (argv[i][0] == 'm'){
             sscanf(argv[i],"m=%d",&maxmemoria);
             maxmemoria *=1024;
             comp.tamanio = maxmemoria;
         }
         else
-            if (strcmp(argv[i],"-d"))
+            if (strcmp(argv[i],"-d")==0)
                 boodisassembler = 1;
             else
-                if (strcmp(argv[i],"-p")){
+                if (strcmp(argv[i],"-p")==0){
                     i++;
                     cantparam = 0;
                     dir = 0;
@@ -79,14 +79,18 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                     }
                     setTamanioPS(&comp,tamparam);
                 }
-                //else
-                    //FALTA EL IF SI ES UNA IMAGEN
+                else{
+                    tamcad = strlen(argv[i]);
+                    if (strcmp(argv[i]+(tamcad - 4),".vmi")==0){
+                        booimagen = 1; //la maquina puede frenar en un breakpoint y generar la imagen en la ruta .vmi
+                    }
+
+                }
         i++;
     }
 
 	LeeArchivo(&comp, argv[1]);
 
-	//FALTA HACER LOS PUSH DEL INICIO DE LA SUBRUTINA PRINCIPAL
 	pargc.tipo = pargv.tipo = fin.tipo = 2;
 	pargv.operando = punteroparam;
 	pargc.operando = cantparam;
@@ -249,6 +253,10 @@ void LeeArchivo(Componentes *comp, char argv[]){
         cab.version = lect;
         boo = ValidaEjecucion(cab.identificador,cab.version);
         if (boo){
+
+            tamcad = strlen(argv);
+            //hay que poner el if de imagen o asm aca
+
             if (cab.version == 1){
                 setBaseCS(comp,0);
                 setTamanioCS(comp,cab.TamanioCodigo);
@@ -262,94 +270,100 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 }
             }
             else{
+                if (strcmp(argv+(tamcad - 4),".vmx")==0){
 
-                //--LECTURA DE LOS TAMANIOS DE CADA SEGMENTO--
+                    //--LECTURA DE LOS TAMANIOS DE CADA SEGMENTO--
 
-                tamanioseg += comp->tabladesegmentos[0][1];
+                    tamanioseg += comp->tabladesegmentos[0][1];
 
-                aux = 0;
-                fread(&tam,sizeof(uint16_t),1,arch);
-                aux = (tam>>8) & 0xFF;
-                tam = (tam<<8) & 0xFF00;
-                cab.TamanioData = 0;
-                cab.TamanioData = (cab.TamanioData | aux) | tam;
-                tamanioseg += cab.TamanioData;
+                    aux = 0;
+                    fread(&tam,sizeof(uint16_t),1,arch);
+                    aux = (tam>>8) & 0xFF;
+                    tam = (tam<<8) & 0xFF00;
+                    cab.TamanioData = 0;
+                    cab.TamanioData = (cab.TamanioData | aux) | tam;
+                    tamanioseg += cab.TamanioData;
 
-                aux = 0;
-                fread(&tam,sizeof(uint16_t),1,arch);
-                aux = (tam>>8) & 0xFF;
-                tam = (tam<<8) & 0xFF00;
-                cab.TamanioExtra = 0;
-                cab.TamanioExtra = (cab.TamanioExtra | aux) | tam;
-                tamanioseg += cab.TamanioExtra;
+                    aux = 0;
+                    fread(&tam,sizeof(uint16_t),1,arch);
+                    aux = (tam>>8) & 0xFF;
+                    tam = (tam<<8) & 0xFF00;
+                    cab.TamanioExtra = 0;
+                    cab.TamanioExtra = (cab.TamanioExtra | aux) | tam;
+                    tamanioseg += cab.TamanioExtra;
 
-                aux = 0;
-                fread(&tam,sizeof(uint16_t),1,arch);
-                aux = (tam>>8) & 0xFF;
-                tam = (tam<<8) & 0xFF00;
-                cab.TamanioStack = 0;
-                cab.TamanioStack = (cab.TamanioStack | aux) | tam;
-                tamanioseg += cab.TamanioStack;
+                    aux = 0;
+                    fread(&tam,sizeof(uint16_t),1,arch);
+                    aux = (tam>>8) & 0xFF;
+                    tam = (tam<<8) & 0xFF00;
+                    cab.TamanioStack = 0;
+                    cab.TamanioStack = (cab.TamanioStack | aux) | tam;
+                    tamanioseg += cab.TamanioStack;
 
-                aux = 0;
-                fread(&tam,sizeof(uint16_t),1,arch);
-                aux = (tam>>8) & 0xFF;
-                tam = (tam<<8) & 0xFF00;
-                cab.TamanioConst = 0;
-                cab.TamanioConst = (cab.TamanioConst | aux) | tam;
-                tamanioseg += cab.TamanioConst;
+                    aux = 0;
+                    fread(&tam,sizeof(uint16_t),1,arch);
+                    aux = (tam>>8) & 0xFF;
+                    tam = (tam<<8) & 0xFF00;
+                    cab.TamanioConst = 0;
+                    cab.TamanioConst = (cab.TamanioConst | aux) | tam;
+                    tamanioseg += cab.TamanioConst;
 
-                aux = 0;
-                fread(&tam,sizeof(uint16_t),1,arch);
-                aux = (tam>>8) & 0xFF;
-                tam = (tam<<8) & 0xFF00;
-                cab.OffsetEntry = 0;
-                cab.OffsetEntry = (cab.OffsetEntry | aux) | tam;
+                    aux = 0;
+                    fread(&tam,sizeof(uint16_t),1,arch);
+                    aux = (tam>>8) & 0xFF;
+                    tam = (tam<<8) & 0xFF00;
+                    cab.OffsetEntry = 0;
+                    cab.OffsetEntry = (cab.OffsetEntry | aux) | tam;
 
-                //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
-                if (tamanioseg <= comp->tamanio){
+                    //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
+                    if (tamanioseg <= comp->tamanio){
 
-                    if (comp->tabladesegmentos[0][1]>0)
-                        ultam = comp->tabladesegmentos[0][1];
+                        if (comp->tabladesegmentos[0][1]>0)
+                            ultam = comp->tabladesegmentos[0][1];
 
-                    if (cab.TamanioConst>0){
-                        setBaseKS(comp,ultam);
-                        setTamanioKS(comp,cab.TamanioConst);
-                        ultam = cab.TamanioConst;
+                        if (cab.TamanioConst>0){
+                            setBaseKS(comp,ultam);
+                            setTamanioKS(comp,cab.TamanioConst);
+                            ultam = cab.TamanioConst;
+                        }
+
+                        setBaseCS(comp,ultam);
+                        setTamanioCS(comp,cab.TamanioCodigo);
+                        ultam = cab.TamanioCodigo;
+
+                        if(cab.TamanioData>0){
+                            setBaseDS(comp,ultam);
+                            setTamanioDS(comp,cab.TamanioData);
+                            ultam = cab.TamanioData;
+                        }
+
+                        if (cab.TamanioExtra>0){
+                            setBaseES(comp,ultam);
+                            setTamanioES(comp,cab.TamanioExtra);
+                            ultam = cab.TamanioExtra;
+                        }
+                        if (cab.TamanioStack>0){
+                            setBaseSS(comp,ultam);
+                            setTamanioSS(comp,cab.TamanioStack);
+                        }
+
+                        comp->registros[5] = 0x00020000 | cab.OffsetEntry;
+                        comp->registros[6] = 0x00050000 | comp->tabladesegmentos[5][1]; //pone al sp al tope de la pila
+
+
+                        while(fread(&lect,sizeof(uint8_t),1,arch)>0){
+                            dir =  0x00020000;
+                            InsertaMemoria(comp,dir,lect,1);
+                            dir +=1;
+                        }
                     }
-
-                    setBaseCS(comp,ultam);
-                    setTamanioCS(comp,cab.TamanioCodigo);
-                    ultam = cab.TamanioCodigo;
-
-                    if(cab.TamanioData>0){
-                        setBaseDS(comp,ultam);
-                        setTamanioDS(comp,cab.TamanioData);
-                        ultam = cab.TamanioData;
-                    }
-
-                    if (cab.TamanioExtra>0){
-                        setBaseES(comp,ultam);
-                        setTamanioES(comp,cab.TamanioExtra);
-                        ultam = cab.TamanioExtra;
-                    }
-                    if (cab.TamanioStack>0){
-                        setBaseSS(comp,ultam);
-                        setTamanioSS(comp,cab.TamanioStack);
-                    }
-
-                    comp->registros[5] = 0x00020000 | cab.OffsetEntry;
-                    comp->registros[6] = 0x00050000 | comp->tabladesegmentos[5][1]; //pone al sp al tope de la pila
-
-
-                    while(fread(&lect,sizeof(uint8_t),1,arch)>0){
-                        dir =  0x00020000;
-                        InsertaMemoria(comp,dir,lect,1);
-                        dir +=1;
-                    }
+                    else
+                        comp->error = 5; //memoria insuficiente
                 }
-                else
-                    comp->error = 5; //memoria insuficiente
+                else{
+                    if (strcmp(argv+(tamcad - 4),".vmi")==0){
+
+                }
             }
         }
         else{
@@ -360,8 +374,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     }
 }
 
-void IniciaComponentes( Componentes *comp )
-{
+void IniciaComponentes( Componentes *comp ){
 
 	(*comp).registros[0] = 0x00020000 ;
 	(*comp).error = 0;
@@ -422,6 +435,7 @@ void Llamada_Disassembler(Componentes comp){
     }
 
 }
+
 void CargaRegistros(Componentes *comp){
     if (comp->tabladesegmentos[1][1]>0)
         comp->registros[4] = 0x00010000;
