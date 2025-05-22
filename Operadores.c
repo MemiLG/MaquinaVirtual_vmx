@@ -7,7 +7,7 @@
 //--------------------Funciones extras--------------------
 void ValorOperando(Toperando op, int *aux, Componentes *comp)
 {
-    int8_t segmento;
+    int8_t segmento, tamanio;
     int pos, pos2, fl=1, des=0;
 
 	switch(op.tipo){ //sacar el dato del operando
@@ -46,6 +46,15 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 			TradLogicaFisica(&pos2, *comp,&fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);
+                tamanio = a.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
+                switch(tamanio)
+                {
+                    case 2: *aux &= 0xFFFF;
+                    break;
+
+                    case 3: *aux &= 0xFF;
+                    break;
+                }
 			}
             else{
                 comp->error=3; //valor de corte por la flag. Caida de segmento
@@ -58,7 +67,8 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 void asignaValor(Toperando a, int ValorB, Componentes *comp)
 {
     int dir, flag=1;
-    int8_t CodReg, SecReg;
+    int16_t w;
+    int8_t CodReg, SecReg, tamanio;
 
     switch(a.tipo)
     {
@@ -92,11 +102,51 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
                 dir += a.operando >> 8 & 0xFFFF; //Le sumo el offset del operando
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
-                    InsertaMemoria(comp, dir, ValorB, 4);
+                {
+                    tamanio = a.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
+                    InsertaMemoria(comp, dir+tamanio, ValorB, 4-tamanio);
+                }
                 else
                     (*comp).error = 3;
         break;
     }
+}
+
+void propagar_signo(int *valor, Toperando op)
+{
+    int8_t des, byte;
+
+    switch(op.tipo)
+        //De registro
+        case 1:  SecReg = op.operando >> 2 & 0x3;
+
+                 switch(SecReg)
+                    //EAX (los 4 bytes)
+                    case 0: byte = 4;
+                    break;
+
+                    //AL (4to byte)
+                    case 1: byte = 1;
+                    break;
+
+                    //AH (3er byte)
+                    case 2: byte = 2;
+                            *valor &= 0xFFFFFF00;
+                    break;
+
+                    //AX (2 bytes)
+                    case 3: byte = 2;
+                    break;
+        break;
+
+        //Inmediato
+        case 2: byte = 2;
+
+        //Memoria
+        case 3: byte = 3;
+
+    des = (4-byte)*8;
+    *valor = (*valor << des) >> des;
 }
 
 void leer(Componentes *comp)
@@ -520,45 +570,8 @@ void call(Toperando op, Componentes *comp)
     {
         comp->registros[SP] -= 4;
         (*comp).memoria[comp->registros[SP]] = comp->registros[IP];
+        jmp(op, comp);
     }
-    jmp(op, comp);
-}
-
-void propagar_signo(int *valor, Toperando op)
-{
-    int8_t des, byte;
-
-    switch(op.tipo)
-        //De registro
-        case 1:  SecReg = op.operando >> 2 & 0x3;
-
-                 switch(SecReg)
-                    //EAX (los 4 bytes)
-                    case 0: byte = 4;
-                    break;
-
-                    //AL (4to byte)
-                    case 1: byte = 1;
-                    break;
-
-                    //AH (3er byte)
-                    case 2: byte = 2;
-                            *valor &= 0xFFFFFF00;
-                    break;
-
-                    //AX (2 bytes)
-                    case 3: byte = 2;
-                    break;
-        break;
-
-        //Inmediato
-        case 2: byte = 2;
-
-        //Memoria
-        case 3: byte = 3;
-
-    des = (4-byte)*8;
-    *valor = (*valor << des) >> des;
 }
 
 //----------------------Sin operando-----------------------
