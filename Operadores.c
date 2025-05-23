@@ -198,7 +198,7 @@ void Imprime(Componentes *comp)
 
                 printf("%d\t", nro);
 
-            if((formato & 0X02) == 0x02) //Caracteres
+            if((formato & 0X02) == 0x02){ //Caracteres
 
                 if(nro<32 || nro>255)
 
@@ -206,6 +206,7 @@ void Imprime(Componentes *comp)
                 else
 
                     printf("%c\t", nro);
+            }
 
             if((formato & 0x04) == 0x04) //Octal
 
@@ -257,12 +258,51 @@ void Imprime(Componentes *comp)
 void GeneraImagen(Componentes comp)
 {
     FILE *arch;
+    char ident;
+    uint8_t version;
+    uint16_t tamanio;
+    int tabla, tamem=0;
 
     arch = fopen(comp.img.nombre,"wb");
     if (arch == NULL)
         printf("No se pudo abrir el archivo\n");
     else{
+        ident = 'V';
+        fwrite(&ident,sizeof(char),1,arch);
+        ident = 'M';
+        fwrite(&ident,sizeof(char),1,arch);
+        ident = 'I';
+        fwrite(&ident,sizeof(char),1,arch);
+        ident = '2';
+        fwrite(&ident,sizeof(char),1,arch);
+        ident = '5';
+        fwrite(&ident,sizeof(char),1,arch);
 
+        version = 1;
+        fwrite(&version,sizeof(uint8_t),1,arch);
+
+        tamanio = comp.tamanio;
+        tamanio /= 1024;
+        fwrite(&tamanio,sizeof(uint16_t),1,arch);
+
+        for(int i=0;i<16;i++){
+            fwrite(&(comp.registros[i]),sizeof(int),1,arch);
+        }
+
+        for(int i=0;i<6;i++){
+            tabla = comp.tabladesegmentos[i][0]<<16;
+            tabla |= comp.tabladesegmentos[i][1];
+            tamem += comp.tabladesegmentos[i][1];
+            fwrite(&tabla,sizeof(int),1,arch);
+        }
+        for(int i=0;i<2;i++)
+            fwrite(&tabla,sizeof(int),1,arch);
+
+        for(int i=0;i<tamem;i++){
+            fwrite(&(comp.memoria[i]),sizeof(uint8_t),1,arch);
+        }
+
+        fclose(arch);
     }
 }
 //---------------------Dos operandos----------------------
@@ -590,7 +630,7 @@ void call(Toperando op, Componentes *comp)
     {
         comp->registros[SP] -= 4;
         (*comp).memoria[comp->registros[SP]] = comp->registros[IP];
-        jmp(op, comp);
+        JMP(op, comp);
     }
 }
 

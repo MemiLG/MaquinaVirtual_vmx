@@ -55,7 +55,11 @@ void JNZ (Toperando , Componentes *);
 void JNP (Toperando , Componentes *);
 void JNN (Toperando , Componentes *);
 void NOT (Toperando , Componentes *);
+void push (Toperando , Componentes *);
+void pop (Toperando , Componentes *);
+void call (Toperando , Componentes *);
 
 //--OPERADORES SIN OPERANDOS--
 void STOP(Componentes *);
+void ret(Componentes *);
 #endif // OPERADORES_H_INCLUDED

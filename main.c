@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	Componentes comp;
 	Toperando A, B, pargv, pargc, fin;
 	int8_t instruccion ;
-	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad, booimagen;
+	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad;
 	uint16_t tamparam = 0;
 
 	IniciaComponentes(&comp);
@@ -83,8 +83,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 else{
                     tamcad = strlen(argv[i]);
                     if (strcmp(argv[i]+(tamcad - 4),".vmi")==0){
-                        comp.img.booimagen; //la maquina puede frenar en un breakpoint y generar la imagen en la ruta .vmi
-                        srtcpy(comp.img.nombre,argv[i]);
+                        comp.img.booimagen=1; //la maquina puede frenar en un breakpoint y generar la imagen en la ruta .vmi
+                        strcpy(comp.img.nombre,argv[i]);
                     }
 
                 }
@@ -190,7 +190,15 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
             break;
         case 0x07 : JNN(b, comp);
             break;
-        case 0x08 : NOT(b,comp);
+        case 0x08 : NOT(b, comp);
+            break;
+        case 0x0B : push(b, comp);
+            break;
+        case 0x0C : pop(b, comp);
+            break;
+        case 0x0D : call(b, comp);
+            break;
+        case 0x0E: ret(comp);
             break;
         case 0x0F : STOP(comp);
             break;
@@ -505,8 +513,9 @@ void CargaRegistros(Componentes *comp){
         comp->registros[1] = -1;
     if(comp->tabladesegmentos[4][1]>0)
         comp->registros[2] = 0x00040000;
-    else
+    else{
         comp->registros[2] = -1;
+    }
 
         comp->registros[3] = 0x00050000;
 }
