@@ -29,6 +29,7 @@ void IniciaComponentes(Componentes*);
 void CargaOperando(int8_t,Toperando*,Componentes*);
 void Llamada_Disassembler(Componentes );
 void CargaRegistros (Componentes*);
+int DarVuelta (int valor);
 
 //--EJECUCION--
 int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingresados por consola. *argv[] es una matriz de punteros a un matrices de caracteres
@@ -230,9 +231,9 @@ void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
-    int boo,i,tamanioseg = 0, dir; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
+    int boo,i,tamanioseg = 0, dir, lect4, tamcad; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
     uint8_t lect;
-    uint16_t tam,aux=0,ultam=0;
+    uint16_t tam,aux=0,ultam=0,base=0;
 
     arch = fopen(argv,"rb");
     if (arch == NULL){
@@ -248,29 +249,28 @@ void LeeArchivo(Componentes *comp, char argv[]){
         aux = (tam>>8) & 0xFF;
         tam = (tam<<8) & 0xFF00;
         cab.TamanioCodigo = 0;
-        cab.TamanioCodigo = (cab.TamanioCodigo | aux) | tam;
+        cab.TamanioCodigo = (cab.TamanioCodigo | aux) | tam; //en la opcion de vmi, esta variable guarda el tamanio de la memoria en kib
         tamanioseg += cab.TamanioCodigo;
         cab.version = lect;
         boo = ValidaEjecucion(cab.identificador,cab.version);
         if (boo){
 
             tamcad = strlen(argv);
-            //hay que poner el if de imagen o asm aca
+            if (strcmp(argv+(tamcad - 4),".vmx")==0){
 
-            if (cab.version == 1){
-                setBaseCS(comp,0);
-                setTamanioCS(comp,cab.TamanioCodigo);
-                setBaseDS(comp,cab.TamanioCodigo);
-                aux = 16884 - cab.TamanioCodigo;
-                setTamanioDS(comp,aux);
-                i=0;
-                while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
-                    (*comp).memoria[i] = lect;
-                    i++;
+                if (cab.version == 1){
+                    setBaseCS(comp,0);
+                    setTamanioCS(comp,cab.TamanioCodigo);
+                    setBaseDS(comp,cab.TamanioCodigo);
+                    aux = 16884 - cab.TamanioCodigo;
+                    setTamanioDS(comp,aux);
+                    i=0;
+                    while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
+                        (*comp).memoria[i] = lect;
+                        i++;
+                    }
                 }
-            }
-            else{
-                if (strcmp(argv+(tamcad - 4),".vmx")==0){
+                else{
 
                     //--LECTURA DE LOS TAMANIOS DE CADA SEGMENTO--
 
@@ -359,10 +359,30 @@ void LeeArchivo(Componentes *comp, char argv[]){
                     }
                     else
                         comp->error = 5; //memoria insuficiente
-                }
-                else{
-                    if (strcmp(argv+(tamcad - 4),".vmi")==0){
 
+                }
+            }
+            else{ //if el archivo es vmi
+                if (cab.TamanioCodigo*1024 < comp->tamanio){
+                    for(int j=0; j<16; j++){
+                        fread(&lect4,4,1,arch);
+                        comp->registros[j] = DarVuelta(lect4);
+                    }
+                    for (int j=0; j<6; j++){
+                        fread(&lect4,4,1,arch);
+                        tamanioseg = DarVuelta(lect4);
+                        base = tamanioseg;
+                        tam = tamanioseg<<16;
+                        comp->tabladesegmentos[j][0] = base;
+                        comp->tabladesegmentos[j][1] = tam;
+                    }
+                    for(int j=0;j<2;j++) //lee los 2 valores que sobran de la tabla de segmentos
+                        fread(&lect4,4,1,arch);
+                    i=0;
+                    while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
+                        (*comp).memoria[i] = lect;
+                        i++;
+                    }
                 }
             }
         }
@@ -451,4 +471,17 @@ void CargaRegistros(Componentes *comp){
         comp->registros[2] = -1;
 
         comp->registros[3] = 0x00050000;
+}
+
+int DarVuelta(int valor){
+    int var1=0, var2=0, var3=0, var4=0, valorfinal=0;
+
+    var1 = (valor & 0x000000FF)<<24;
+    var2 = ((valor>>8) & 0x000000FF)<<16;
+    var3 = ((valor>>16) & 0x000000FF)<<8;
+    var4 = (valor>>24) & 0x000000FF;
+
+    valorfinal = valorfinal | var1 | var2 | var3 | var4;
+
+    return valorfinal;
 }
