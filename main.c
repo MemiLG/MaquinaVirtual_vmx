@@ -83,7 +83,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 else{
                     tamcad = strlen(argv[i]);
                     if (strcmp(argv[i]+(tamcad - 4),".vmi")==0){
-                        booimagen = 1; //la maquina puede frenar en un breakpoint y generar la imagen en la ruta .vmi
+                        comp.img.booimagen; //la maquina puede frenar en un breakpoint y generar la imagen en la ruta .vmi
+                        srtcpy(comp.img.nombre,argv[i]);
                     }
 
                 }
@@ -101,7 +102,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	push(pargc,&comp);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
-    if (boodisassembler && comp.error!=4 && comp.error!=5){
+    if (boodisassembler && comp.error == 0){
         Llamada_Disassembler(comp);
     }
 
@@ -231,7 +232,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
-    int boo,i,tamanioseg = 0, dir, lect4, tamcad; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
+    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
     uint8_t lect;
     uint16_t tam,aux=0,ultam=0,base=0;
 
@@ -363,19 +364,22 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 }
             }
             else{ //if el archivo es vmi
-                if (cab.TamanioCodigo*1024 < comp->tamanio){
-                    for(int j=0; j<16; j++){
-                        fread(&lect4,4,1,arch);
-                        comp->registros[j] = DarVuelta(lect4);
-                    }
-                    for (int j=0; j<6; j++){
-                        fread(&lect4,4,1,arch);
-                        tamanioseg = DarVuelta(lect4);
-                        base = tamanioseg;
-                        tam = tamanioseg<<16;
-                        comp->tabladesegmentos[j][0] = base;
-                        comp->tabladesegmentos[j][1] = tam;
-                    }
+                comp->tamanio = cab.TamanioCodigo*1024;
+                tamtot = 0;
+                for(int j=0; j<16; j++){
+                    fread(&lect4,4,1,arch);
+                    comp->registros[j] = DarVuelta(lect4);
+                }
+                for (int j=0; j<6; j++){
+                    fread(&lect4,4,1,arch);
+                    tamanioseg = DarVuelta(lect4);
+                    base = tamanioseg;
+                    tam = tamanioseg<<16;
+                    tamtot += tam;
+                    comp->tabladesegmentos[j][0] = base;
+                    comp->tabladesegmentos[j][1] = tam;
+                }
+                if(tamtot<=comp->tamanio){
                     for(int j=0;j<2;j++) //lee los 2 valores que sobran de la tabla de segmentos
                         fread(&lect4,4,1,arch);
                     i=0;
@@ -384,6 +388,8 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         i++;
                     }
                 }
+                else
+                    (*comp).error = 5;
             }
         }
         else{

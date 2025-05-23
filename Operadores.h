@@ -26,6 +26,7 @@ void asignaValor(Toperando , int , Componentes *);
 int32_t mascara(int16_t );
 void Imprime(Componentes *);
 void leer(Componentes *);
+void GeneraImagen(Componentes);
 
 //--OPERADORES CON DOS OPERANDOS--
 void MOV (Toperando , Toperando , Componentes *);

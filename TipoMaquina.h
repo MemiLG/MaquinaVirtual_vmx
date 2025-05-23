@@ -1,6 +1,6 @@
 #ifndef TIPOMAQUINA_H_INCLUDED
 #define TIPOMAQUINA_H_INCLUDED
-#define TAM 16384
+#define TAM 30720
 #define TAMR 16
 #define TOTAL 31
 #define TOTALR 17
@@ -11,11 +11,17 @@
 typedef char stringg[5];
 
 typedef struct{
+    int booimagen;
+    char nombre[50];
+} Imagen;
+
+typedef struct{
 	uint8_t memoria[TAM];
 	int tabladesegmentos[FIL][COL];
 	int error;
 	int registros[TAMR];
 	int tamanio;
+	Imagen img;
 }Componentes;
 
 typedef struct{

@@ -46,7 +46,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 			TradLogicaFisica(&pos2, *comp,&fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);
-                tamanio = a.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
+                tamanio = op.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
                 switch(tamanio)
                 {
                     case 2: *aux &= 0xFFFF;
@@ -114,13 +114,13 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
 
 void propagar_signo(int *valor, Toperando op)
 {
-    int8_t des, byte;
+    int8_t des, byte, SecReg;
 
-    switch(op.tipo)
+    switch(op.tipo){
         //De registro
         case 1:  SecReg = op.operando >> 2 & 0x3;
 
-                 switch(SecReg)
+                 switch(SecReg){
                     //EAX (los 4 bytes)
                     case 0: byte = 4;
                     break;
@@ -137,6 +137,7 @@ void propagar_signo(int *valor, Toperando op)
                     //AX (2 bytes)
                     case 3: byte = 2;
                     break;
+                 }
         break;
 
         //Inmediato
@@ -144,6 +145,7 @@ void propagar_signo(int *valor, Toperando op)
 
         //Memoria
         case 3: byte = 3;
+    }
 
     des = (4-byte)*8;
     *valor = (*valor << des) >> des;
@@ -252,6 +254,17 @@ void Imprime(Componentes *comp)
 
 }
 
+void GeneraImagen(Componentes comp)
+{
+    FILE *arch;
+
+    arch = fopen(comp.img.nombre,"wb");
+    if (arch == NULL)
+        printf("No se pudo abrir el archivo\n");
+    else{
+
+    }
+}
 //---------------------Dos operandos----------------------
 void MOV(Toperando a, Toperando b, Componentes *comp)
 {
