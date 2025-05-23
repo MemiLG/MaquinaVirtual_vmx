@@ -34,15 +34,15 @@
 	"TipoMaquina.h"
 	"Cabecera.h"
 
-1745290919 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\cabecera.c
+1747967971 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\cabecera.c
 	<string.h>
 	"Cabecera.h"
 
-1745290919 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\cabecera.h
+1747487038 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\cabecera.h
 	<stdint.h>
 	<string.h>
 
-1745555725 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\main.c
+1747970727 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -51,10 +51,10 @@
 	"TipoMaquina.h"
 	"Cabecera.h"
 
-1745290919 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.h
+1747487795 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.h
 	"TipoMaquina.h"
 
-1745555605 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.h
+1747970685 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
 1745551560 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.c
@@ -64,7 +64,7 @@
 	"TipoMaquina.h"
 	<stdint.h>
 
-1745555893 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.c
+1747972186 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.c
 	<stdio.h>
 	<stdlib.h>
 	"TipoMaquina.h"

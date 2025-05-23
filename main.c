@@ -435,15 +435,47 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
 
 void Llamada_Disassembler(Componentes comp){
 
-    int fin ;
+    int fin, inicio , flag, cant_mueve,fin_KS ; // ------------------------> cant_mueve cantidad quese tiene que mover el IP / inicio : Es de donde empieza el IP si de KS o directamente del CS
     int8_t instruccion;
     TDatos abc;
 
+    if (comp.tabladesegmentos[1][0] != 0)//--------------------------------> Es el KS
+    {
+    	inicio = comp.registros[4]; //-------------------------------------> Comienzo desde el Constant segment
+        fin_KS = comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0];
+        TradLogicaFisica(&fin_KS, comp, &flag);
 
-    comp.registros[5] = comp.registros[0];
-    fin = (comp.tabladesegmentos[0][1] + comp.tabladesegmentos[0][0]);
+    }else{
 
+        inicio = comp.registros[5]; // -------------------------------------> Comienza desde el Code Segment
+        fin_KS = comp.registros[5]-1;
+    }
+    fin = (comp.tabladesegmentos[0][1] + comp.tabladesegmentos[0][0]); //--> El final va a ser el mismo, en el CS
+    TradLogicaFisica(&fin, comp, &flag);
 
+    if(flag)
+    {
+
+        while(inicio < fin )
+        {
+
+            if(inicio > fin_KS ) //-------------------------------------> fin_KS es el límite de KS, Entra al CS
+            {
+                if(inicio == fin_KS+1)
+                    printf(">");
+                instruccion = comp.memoria[inicio];
+                abc = obtener_abc(instruccion);
+       		}else
+                abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // ------------> Entra al KS
+
+            Disassembler(comp,abc,inicio,&cant_mueve);
+        	inicio += cant_mueve; // ---------------------------------------> cant_mueve cantidad quese tiene que mover el IP
+        }
+
+   	 }else
+
+        comp.error = 9 ; // Error por disassembler -------------------------> SI todo va bien no debería saltar nunca; :)
+/*
     while(comp.registros[5] < fin )
     {
 
@@ -453,7 +485,7 @@ void Llamada_Disassembler(Componentes comp){
         comp.registros[5] += abc.OpA + abc.OpB +1;
 
     }
-
+*/
 }
 
 void CargaRegistros(Componentes *comp){

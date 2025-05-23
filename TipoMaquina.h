@@ -34,7 +34,7 @@ void modificaCC(Componentes*, int );
 int LeerMemoria(Componentes , int , int );
 void TradLogicaFisica(int*, Componentes , int*);
 void InsertaMemoria(Componentes *, int ,int, int );
-void Disassembler(Componentes,TDatos,int);
+void Disassembler(Componentes,TDatos,int,int*);
 void Op_AB(int8_t , Componentes , int32_t *,int*);
 void Significado(int8_t , int32_t);
 void setBaseCS(Componentes *, uint16_t );

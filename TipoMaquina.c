@@ -60,36 +60,86 @@ int i, aux = 0;
     }
 }
 
-//-------------------- Disassembler --------------------
+//---------------------- Disassembler -------------------------
 
-void Disassembler(Componentes comp,TDatos abc, int i)
+void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
 {
 
-    stringg Operaciones[TOTAL] = {"SYS","JMP","JZ","JP","JN","JNZ","JNP","JNN","NOT","","","","","","","STOP","MOV","ADD","SUB","SWAP","MUL","DIV","CMP","SHL","SHR","AND","OR","XOR","LDL","LDH","RND"};
+    stringg Operaciones[TOTAL] = {"SYS","JMP","JZ","JP","JN","JNZ","JNP","JNN","NOT","","","PUSH","POP","CALL","RET","STOP","MOV","ADD","SUB","SWAP","MUL","DIV","CMP","SHL","SHR","AND","OR","XOR","LDL","LDH","RND"};
     int32_t auxb,auxa;
-    int ind=i;
+    int ind=i , terminator = 0x00, ind_cad, cant_caracteres,limite_cadena;
+    char cad[8];
 
-    printf("[%04X] %02X ",i,comp.memoria[i]);
-    auxa=auxb=0X0;
-    Op_AB(abc.OpB,comp,&auxb,&ind);
-    Op_AB(abc.OpA,comp,&auxa,&ind);
+    printf("[%04X] %02X ",ind,comp.memoria[ind]);
 
-    for(int u =0;u< 10 - (abc.OpA+abc.OpB) ;u++)
-
-        printf("    ");
-
-    printf(" | ");
-
-    printf(" %s ",Operaciones[abc.CodOperacion]);
-
-    if(abc.OpA != 0x0)
+    if(abc.OpA == 0x00 &&  abc.OpB == 0x00 && abc.CodOperacion == 0x00 )//-----------------------------> Esta en el KS
     {
-        Significado(abc.OpA,auxa);
-        printf(", ");
-    }
+        ind_cad = 0;
+        cant_caracteres = 0;
+        while( comp.memoria[ind] != terminator )
+        {
+            ind++;
+            cant_caracteres ++;
+            if(cant_caracteres == 7)
 
-    Significado(abc.OpB,auxb);
-    printf("\n");
+                printf(" ..");
+
+            else
+                if(cant_caracteres <7)
+
+                    printf(" %02X ",comp.memoria[ind]);
+
+            if(comp.memoria[ind] > 0x30 && comp.memoria[ind]<0x5B )
+
+                cad[ind_cad] = comp.memoria[ind];
+
+            else
+
+                cad[ind_cad] = '.';
+
+            ind_cad ++;
+        }
+
+        for(int u =0;u< 10 - cant_caracteres ;u++)
+
+       		 printf("    ");
+
+        printf(" | ");
+
+        if(comp.memoria[ind] == terminator && cant_caracteres == 7 )
+
+            printf(" 00");
+
+        cad[ind_cad] = '\0';
+        printf(" %s \n",cad);
+        *cant_mueve = cant_caracteres+1;
+
+
+    }else{ // ------------------------------------------------------------------------> // Esta en el CodeSegment
+
+    	auxa=auxb=0X0;
+        Op_AB(abc.OpB,comp,&auxb,&ind);
+    	Op_AB(abc.OpA,comp,&auxa,&ind);
+
+    	for(int u =0;u< 10 - (abc.OpA+abc.OpB) ;u++)
+
+        	printf("    ");
+
+    	printf(" | ");
+
+    	printf(" %s ",Operaciones[abc.CodOperacion]);
+
+    	if(abc.OpA != 0x0)
+    	{
+        	Significado(abc.OpA,auxa);
+        	printf(", ");
+    	}
+
+    	Significado(abc.OpB,auxb);
+    	printf("\n");
+        cant_mueve = abc.OpA + abc.OpB +1;
+
+     }
 
 }
 
@@ -137,8 +187,8 @@ void Op_AB(int8_t Op, Componentes comp, int32_t *aux,int *i)
 void Significado(int8_t op, int32_t auxiliar)
 {
 
-    int8_t aux1=0,aux2=0;
-    stringg Registross[TOTALR] = {"CS","DS"," "," "," ","IP"," "," ","CC","AC","EAX","EBX","ECX","EDX","EEX","EFX"};
+    int8_t aux1=0,aux2=0, aux3=0;
+    stringg Registross[TOTALR] = {"CS","DS","ES","SS","KS","IP","SP","BP","CC","AC","EAX","EBX","ECX","EDX","EEX","EFX"};
 
     switch(op){
 
@@ -146,31 +196,47 @@ void Significado(int8_t op, int32_t auxiliar)
 
             aux1 = (auxiliar >> 2) & 0x03;
             aux2 = (auxiliar >> 4) & 0x0F;
-            if(aux1 == 0b00)                                        // Registro completo
+            if(aux1 == 0b00)//------------------------------------> Registro completo
 
                 printf("%s",Registross[aux2]);
 
             else
-                if (aux1 == 0b01)                                  // 1 byte de registro (XL)
+                if (aux1 == 0b01)//-------------------------------> 1 byte de registro (XL)
 
                     printf("%cL",Registross[aux2][1]);
 
                 else
                         if(aux1 == 0b10)
 
-                            printf("%cH",Registross[aux2][1]);     // 1 byte de registro (XH)
+                            printf("%cH",Registross[aux2][1]);//--> 1 byte de registro (XH)
 
                         else
 
-                            printf("%cX",Registross[aux2][1]);     // 2 byte de registro (AX)
+                            printf("%cX",Registross[aux2][1]);//--> 2 byte de registro (AX)
             break;
 
-        case 0b10:                                                // Es un inmediato
+        case 0b10: //---------------------------------------------> Es un inmediato
 
             printf("%d",auxiliar);
             break;
 
-        case 0b11:                                                // Es memoria
+        case 0b11: // --------------------------------------------> Es memoria
+
+            aux1 = (auxiliar >> 2) & 0X00000003 ; // (0011)
+            if (aux1 == 0x0)
+
+                printf("l");
+
+            else
+                if (aux1 == 0x02)
+
+                    printf("w");
+
+                else
+
+                    if (aux2 == 0x03)
+
+                        printf("b");
 
             aux1 = (auxiliar >> 4) & 0X0000000F ;
             aux2 = (auxiliar >> 8);

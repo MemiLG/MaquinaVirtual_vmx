@@ -199,8 +199,10 @@ void Imprime(Componentes *comp)
             if((formato & 0X02) == 0x02) //Caracteres
 
                 if(nro<32 || nro>255)
+
                     printf("....\t");
                 else
+
                     printf("%c\t", nro);
 
             if((formato & 0x04) == 0x04) //Octal
@@ -219,17 +221,22 @@ void Imprime(Componentes *comp)
                 while(cociente != 1)
                 {
                     if(resto)
+
                         nro_binario[++j] = '1';
                     else
+
                         nro_binario[++j] = '0';
+
                     nro_aux = cociente;
                     cociente = nro_aux / 2;
                     resto = nro_aux & 2;
                 }
 
                 if(resto)
+
                     nro_binario[++j] = '1';
                 else
+
                     nro_binario[++j] = '0';
 
                 printf("%s\t", nro_binario);
