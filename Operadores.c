@@ -116,11 +116,13 @@ void propagar_signo(int *valor, Toperando op)
 {
     int8_t des, byte, SecReg;
 
-    switch(op.tipo){
+    switch(op.tipo)
+    {
         //De registro
         case 1:  SecReg = op.operando >> 2 & 0x3;
 
-                 switch(SecReg){
+                 switch(SecReg)
+                 {
                     //EAX (los 4 bytes)
                     case 0: byte = 4;
                     break;
@@ -305,6 +307,7 @@ void GeneraImagen(Componentes comp)
         fclose(arch);
     }
 }
+
 //---------------------Dos operandos----------------------
 void MOV(Toperando a, Toperando b, Componentes *comp)
 {
@@ -531,10 +534,26 @@ void RND(Toperando a, Toperando b, Componentes *comp)
 //----------------------Un operando-----------------------
 void SYS(Toperando op, Componentes *comp)
 {
-    if(op.operando==1)
-        leer(comp);
-    else //Escribe
-        Imprime(comp);
+    switch(op.operando)
+    {
+        case 1: leer(comp);
+        break;
+
+        case 2: imprime(comp);
+        break;
+
+        case 3: string_read();
+        break;
+
+        case 4: string_write();
+        break;
+
+        case 7: clear_screen();
+        break;
+
+        case 15: breakpoint();
+        break;
+    }
 }
 
 void JMP(Toperando offset, Componentes *comp)
@@ -635,7 +654,6 @@ void call(Toperando op, Componentes *comp)
 }
 
 //----------------------Sin operando-----------------------
-
 void STOP(Componentes *comp)
 {
     if ((*comp).error==0)
