@@ -290,7 +290,7 @@ void breakpoint(Componentes *comp)
 {
     char accion;
 
-    if() //Si existe el .vmi
+    if(comp->img.booimagen) //Si existe el .vmi
     {
         GeneraImagen(*comp);
         scanf("%c", &accion);
