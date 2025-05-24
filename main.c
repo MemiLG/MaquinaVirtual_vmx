@@ -107,6 +107,12 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	pargc.operando = cantparam;
 	fin.operando = -1;
 
+	for (int i=0; i<6; i++){
+        for(int j=0;j<2;j++)
+            printf("%d\t",comp.tabladesegmentos[i][j]);
+        printf("\n");
+	}
+
 	printf("Empieza la subrutina principal\n");
 
 	printf("Error: %d\n",comp.error);
