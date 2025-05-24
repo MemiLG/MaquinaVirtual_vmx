@@ -22,6 +22,7 @@ typedef struct{
 	int registros[TAMR];
 	int tamanio;
 	Imagen img;
+	int8_t sigue_breakpoint;
 }Componentes;
 
 typedef struct{

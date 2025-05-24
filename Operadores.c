@@ -257,6 +257,31 @@ void Imprime(Componentes *comp)
 
 }
 
+void breakpoint(Componentes *comp)
+{
+    char accion;
+
+    if() //Si existe el .vmi
+    {
+        GeneraImagen(*comp);
+        scanf("%c", &accion);
+        switch(accion)
+        {
+            //g = go
+            case 103: comp->sigue_breakpoint = 0;
+            break;
+
+            //q = quit
+            case 113: STOP(comp);
+            break;
+
+            //Enter
+            case 10: comp->sigue_breakpoint = 1;
+            break;
+        }
+    }
+}
+
 void GeneraImagen(Componentes comp)
 {
     FILE *arch;
@@ -551,7 +576,7 @@ void SYS(Toperando op, Componentes *comp)
         case 7: clear_screen();
         break;
 
-        case 15: breakpoint();
+        case 15: breakpoint(comp);
         break;
     }
 }

@@ -23,10 +23,12 @@
 //--------Funciones extras--------
 void ValorOperando(Toperando ,int * ,Componentes *);
 void asignaValor(Toperando , int , Componentes *);
-int32_t mascara(int16_t );
+void propagar_signo(int *, Toperando );
 void Imprime(Componentes *);
 void leer(Componentes *);
+void breakpoint(Componentes *);
 void GeneraImagen(Componentes);
+
 
 //--OPERADORES CON DOS OPERANDOS--
 void MOV (Toperando , Toperando , Componentes *);

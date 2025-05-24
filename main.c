@@ -125,6 +125,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
             EjecutarOperacion(abc,A,B,&comp);
+            if(comp->sigue_breakpoint == 1) //A chequear si va aca
+                breakpoint(&comp);
             TradLogicaFisica(&dirip,comp,&IP_no_caido);
         }
 
@@ -413,6 +415,7 @@ void IniciaComponentes( Componentes *comp ){
 	(*comp).registros[0] = 0x00020000 ;
 	(*comp).error = 0;
 	(*comp).tamanio = 16384;
+	comp->sigue_breakpoint = 0;
 	for(int i=0; i<FIL; i++)
         for (int j=0; j<COL; j++)
             comp->tabladesegmentos[i][j] = 0;
