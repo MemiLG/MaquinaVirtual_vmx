@@ -356,7 +356,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         if (cab.TamanioConst>0){
                             setBaseKS(comp,ultam);
                             setTamanioKS(comp,cab.TamanioConst);
-                            ultam = cab.TamanioConst;
+                            ultam += cab.TamanioConst;
                         }
 
                         setBaseCS(comp,ultam);
@@ -366,13 +366,13 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         if(cab.TamanioData>0){
                             setBaseDS(comp,ultam);
                             setTamanioDS(comp,cab.TamanioData);
-                            ultam = cab.TamanioData;
+                            ultam += cab.TamanioData;
                         }
 
                         if (cab.TamanioExtra>0){
                             setBaseES(comp,ultam);
                             setTamanioES(comp,cab.TamanioExtra);
-                            ultam = cab.TamanioExtra;
+                            ultam += cab.TamanioExtra;
                         }
                         if (cab.TamanioStack>0){
                             setBaseSS(comp,ultam);
