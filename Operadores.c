@@ -597,7 +597,7 @@ void LDH(Toperando a, Toperando b, Componentes *comp)
     int ValorA, ValorB, res;
 
     ValorOperando(a, &ValorA, comp);
-    ValorOperando(b, &ValorB, comp);;
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
     {
