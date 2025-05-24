@@ -257,6 +257,35 @@ void Imprime(Componentes *comp)
 
 }
 
+void string_read(Componentes *comp)
+{
+
+	int tamanio, cant_carmax, dir, no_error, cant_car=0, i=0; // cant_carmax : Cantidad de caracteres máximos ; dir : Desde donde se comienza a guardar la cadena
+	char cadena[60], final = '\0';
+
+	tamanio = 1;
+	dir = (*comp).registros[EDX];
+	TradLogicaFisica(&dir, *comp, &no_error);
+	cant_carmax = (*comp).registros[ECX] & 0x00FF; // CX
+
+	if(no_error)
+	{
+
+		scanf("%s",cadena);
+		while(cant_car <= cant_carmax && cadena[i]!=final)
+		{
+			InsertaMemoria(comp, dir, cadena[i], tamanio);
+			dir++;
+			i++;
+			cant_car++;
+		}
+		InsertaMemoria(comp, dir, final, tamanio);
+
+	}else
+		(*comp).error = 3;
+
+}
+
 void breakpoint(Componentes *comp)
 {
     char accion;
@@ -567,10 +596,10 @@ void SYS(Toperando op, Componentes *comp)
         case 2: imprime(comp);
         break;
 
-        case 3: string_read();
+        case 3: string_read(comp);
         break;
 
-        case 4: string_write();
+        case 4: string_write(comp);
         break;
 
         case 7: clear_screen();
