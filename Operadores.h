@@ -24,7 +24,7 @@
 void ValorOperando(Toperando ,int * ,Componentes *);
 void asignaValor(Toperando , int , Componentes *);
 void propagar_signo(int *, Toperando );
-void Imprime(Componentes *);
+void imprime(Componentes *);
 void leer(Componentes *);
 void breakpoint(Componentes *);
 void GeneraImagen(Componentes);

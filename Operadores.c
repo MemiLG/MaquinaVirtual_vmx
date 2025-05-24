@@ -67,7 +67,6 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 void asignaValor(Toperando a, int ValorB, Componentes *comp)
 {
     int dir, flag=1;
-    int16_t w;
     int8_t CodReg, SecReg, tamanio;
 
     switch(a.tipo)
@@ -173,7 +172,7 @@ void leer(Componentes *comp)
         comp->error = 3;
 }
 
-void Imprime(Componentes *comp)
+void imprime(Componentes *comp)
 {
 
     int ind,i, no_error,nro, cociente, nro_aux, j=-1;
@@ -602,7 +601,7 @@ void SYS(Toperando op, Componentes *comp)
         case 4: string_write(comp);
         break;
 
-        case 7: clear_screen();
+        case 7: system("cls");
         break;
 
         case 15: breakpoint(comp);

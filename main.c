@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                     i++;
                     cantparam = 0;
                     dir = 0;
-                    for (i;i<argc;i++){
+                    for (;i<argc;i++){
                         j=0;
                         puntparam[cantparam] = dir;
                         cantparam++;
@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
             EjecutarOperacion(abc,A,B,&comp);
-            if(comp->sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
+            if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
             TradLogicaFisica(&dirip,comp,&IP_no_caido);
         }
