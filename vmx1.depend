@@ -69,7 +69,7 @@
 	<stdlib.h>
 	"TipoMaquina.h"
 
-1747957324 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\cabecera.c
+1748096039 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\cabecera.c
 	<string.h>
 	"Cabecera.h"
 
@@ -85,17 +85,17 @@
 1748049737 c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
-1748092774 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\operadores.c
+1748107328 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\operadores.c
 	<stdio.h>
 	<stdlib.h>
 	"Operadores.h"
 	"TipoMaquina.h"
 	<stdint.h>
 
-1748092629 c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\operadores.h
+1748095713 c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\operadores.h
 	"TipoMaquina.h"
 
-1748092518 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\main.c
+1748107328 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>

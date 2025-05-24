@@ -5,18 +5,25 @@
 
 int DireccionFisicaValida(int dir, int16_t fila, Componentes comp)
 {
-    return (dir<=comp.tabladesegmentos[fila][1]-1 && dir>=comp.tabladesegmentos[fila][0]);
+    int i, tamanio;
+
+    for(i=0; i<FILA; i++)
+        tamanio += comp.tabladesegmentos[i][1];
+    return (dir<=tamanio && dir>=comp.tabladesegmentos[fila][0]);
 }
 
 void TradLogicaFisica(int *dir, Componentes comp, int *flag)
 {
-    int aux;
+    int aux, i, tamanio;
     int16_t fila;
 
     *flag = 1;
-    fila = *dir >> 16 & 0xFFFF;
+    fila = *dir >> 16 & 0xFFFF; //Segmeneto
     aux = (*dir & 0xFFFF);
-    aux = comp.tabladesegmentos[fila][0] + aux;
+    for(i=0; i<fila; i++) //Desde el PS al segmento anterior al de la fila
+        tamanio += comp.tabladesegmentos[i][1];
+    aux += tamanio;
+    printf("FILA: %d\n", fila);
     if (fila<FIL && DireccionFisicaValida(aux,fila,comp))
         *dir = aux;
     else
