@@ -7,7 +7,7 @@ int DireccionFisicaValida(int dir, int16_t fila, Componentes comp)
 {
     int i, tamanio;
 
-    for(i=0; i<FILA; i++)
+    for(i=0; i<FIL; i++)
         tamanio += comp.tabladesegmentos[i][1];
     return (dir<=tamanio && dir>=comp.tabladesegmentos[fila][0]);
 }
