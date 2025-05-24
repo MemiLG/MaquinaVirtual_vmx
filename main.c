@@ -249,7 +249,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     arch = fopen(argv,"rb");
     if (arch == NULL){
         printf("No se pudo leer el archivo\n");
-        (*comp).error = 5;
+        (*comp).error = 4;
     }
     else{
 
@@ -272,14 +272,18 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 if (cab.version == 1){
                     setBaseCS(comp,0);
                     setTamanioCS(comp,cab.TamanioCodigo);
-                    setBaseDS(comp,cab.TamanioCodigo);
-                    aux = 16884 - cab.TamanioCodigo;
-                    setTamanioDS(comp,aux);
-                    i=0;
-                    while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
-                        (*comp).memoria[i] = lect;
-                        i++;
+                    if (cab.TamanioCodigo<=comp->tamanio){
+                        setBaseDS(comp,cab.TamanioCodigo);
+                        aux = comp->tamanio - cab.TamanioCodigo;
+                        setTamanioDS(comp,aux);
+                        i=0;
+                        while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
+                            (*comp).memoria[i] = lect;
+                            i++;
+                        }
                     }
+                    else
+                        comp->error = 5;
                 }
                 else{
 

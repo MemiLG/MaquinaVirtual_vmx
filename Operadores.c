@@ -288,11 +288,9 @@ void string_read(Componentes *comp)
 void string_write(Componentes *comp)
 {
 
-	int i=0, tamanio, cant_carmax, dir, no_error, cant_car=0, caracter; // cant_carmax : Cantidad de caracteres máximos ; dir : Desde donde se comienza a guardar la cadena
+	int i=0, dir, no_error, caracter; // cant_carmax : Cantidad de caracteres máximos ; dir : Desde donde se comienza a guardar la cadena
 	char cadena[60], final_final = '\0', salto='\n';
 
-
-	tamanio = 1;
 	dir = (*comp).registros[EDX]; //-------------------------------------> Donde inicia la cadena
 	TradLogicaFisica(&dir, *comp, &no_error);
 

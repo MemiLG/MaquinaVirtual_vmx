@@ -28,6 +28,8 @@ void imprime(Componentes *);
 void leer(Componentes *);
 void breakpoint(Componentes *);
 void GeneraImagen(Componentes);
+void string_read(Componentes *);
+void string_write(Componentes *);
 
 
 //--OPERADORES CON DOS OPERANDOS--
