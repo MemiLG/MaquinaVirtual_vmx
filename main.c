@@ -485,12 +485,13 @@ void Llamada_Disassembler(Componentes comp){
 
     if (comp.tabladesegmentos[1][0] != 0)//--------------------------------> Es el KS
     {
+        printf("1\n");
     	inicio = comp.registros[4]; //-------------------------------------> Comienzo desde el Constant segment
         fin_KS = comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0];
         TradLogicaFisica(&fin_KS, comp, &flag);
 
     }else{
-
+        printf("2\n");
         inicio = comp.registros[5]; // -------------------------------------> Comienza desde el Code Segment
         fin_KS = comp.registros[5]-1;
     }
@@ -499,7 +500,7 @@ void Llamada_Disassembler(Componentes comp){
 
     if(flag)
     {
-
+        printf("flag\n");
         while(inicio < fin )
         {
 
@@ -530,6 +531,7 @@ void Llamada_Disassembler(Componentes comp){
 
     }
 */
+            printf("SALIIIIIIIIIII\n");
 }
 
 void CargaRegistros(Componentes *comp){

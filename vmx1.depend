@@ -77,7 +77,7 @@
 	<stdint.h>
 	<string.h>
 
-1748037621 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\tipomaquina.c
+1748111977 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\tipomaquina.c
 	<stdio.h>
 	<stdlib.h>
 	"TipoMaquina.h"
@@ -95,7 +95,7 @@
 1748095713 c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\operadores.h
 	"TipoMaquina.h"
 
-1748107328 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\main.c
+1748111934 source:c:\users\joaqu\documents\facultad\arquitectura de computadoras\trabajo_maquina_virtual\maquinavirtual_vmx\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>

@@ -5,15 +5,18 @@
 
 int DireccionFisicaValida(int dir, int16_t fila, Componentes comp)
 {
-    int i, tamanio=0;
+    int tamanio=0;
 
     tamanio = comp.tabladesegmentos[fila][0] + comp.tabladesegmentos[fila][1];
+    printf("Tamanio %d\n", tamanio);
+    printf("Base %d\n", comp.tabladesegmentos[fila][0]);
+    printf("Direccion %d\n", dir);
     return (dir<=tamanio && dir>=comp.tabladesegmentos[fila][0]);
 }
 
 void TradLogicaFisica(int *dir, Componentes comp, int *flag)
 {
-    int aux, i;
+    int aux;
     int16_t fila;
 
     *flag = 1;
