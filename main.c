@@ -98,14 +98,26 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
 	LeeArchivo(&comp, argv[1]);
 
+	CargaRegistros(&comp);
+
+	printf("FINALIZA EL LEEARCHIVO\n");
+
 	pargc.tipo = pargv.tipo = fin.tipo = 2;
 	pargv.operando = punteroparam;
 	pargc.operando = cantparam;
 	fin.operando = -1;
 
+	printf("Empieza la subrutina principal\n");
+
+	printf("Error: %d\n",comp.error);
 	push(pargv,&comp);
+	printf("Error: %d\n",comp.error);
 	push(pargc,&comp);
+	printf("Error: %d\n",comp.error);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
+
+	printf("Error: %d\n",comp.error);
+	printf("Termina la carga\n");
 
     if (boodisassembler && comp.error == 0){
         Llamada_Disassembler(comp);
@@ -247,7 +259,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
-    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
+    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag=1; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
     uint8_t lect;
     uint16_t tam,aux=0,ultam=0,base=0;
 
@@ -271,7 +283,6 @@ void LeeArchivo(Componentes *comp, char argv[]){
         boo = ValidaEjecucion(cab.identificador,cab.version);
         if (boo){
 
-            printf("Entra1\n");
             tamcad = strlen(argv);
             if (strcmp(argv+(tamcad - 4),".vmx")==0){
 
@@ -295,7 +306,6 @@ void LeeArchivo(Componentes *comp, char argv[]){
 
                     //--LECTURA DE LOS TAMANIOS DE CADA SEGMENTO--
 
-                    printf("ENTRA2\n");
                     tamanioseg += comp->tabladesegmentos[0][1];
 
                     aux = 0;
@@ -337,7 +347,6 @@ void LeeArchivo(Componentes *comp, char argv[]){
                     cab.OffsetEntry = 0;
                     cab.OffsetEntry = (cab.OffsetEntry | aux) | tam;
 
-                    printf("SIGUE ACA\n");
                     //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
                     if (tamanioseg <= comp->tamanio){
 
@@ -373,9 +382,9 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         comp->registros[5] = 0x00020000 | cab.OffsetEntry;
                         comp->registros[6] = 0x00050000 | comp->tabladesegmentos[5][1]; //pone al sp al tope de la pila
 
-
-                        while(fread(&lect,sizeof(uint8_t),1,arch)>0){
-                            dir =  0x00020000;
+                        dir =  0x00020000;
+                        TradLogicaFisica(&dir,*comp,&flag);
+                        while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag){
                             InsertaMemoria(comp,dir,lect,1);
                             dir +=1;
                         }
@@ -533,6 +542,8 @@ void CargaRegistros(Componentes *comp){
     }
 
         comp->registros[3] = 0x00050000;
+
+        comp->registros[SP] = 0x00050000 + comp->tabladesegmentos[5][1];
 }
 
 int DarVuelta(int valor){

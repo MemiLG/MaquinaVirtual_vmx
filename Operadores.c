@@ -702,16 +702,29 @@ void NOT(Toperando a, Componentes *comp)
 
 void push(Toperando op, Componentes *comp)
 {
-    int valor;
-
-    if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
+    int valor, dir, flag =1;
+    printf("entra al push\n");
+    if(comp->registros[SP] - 4 < comp->registros[SS]){ //Si no esta llena
         comp->error = 6;
+        printf("entra al error\n");
+        }
     else
     {
+        printf("entra al else\n");
         comp->registros[SP] -= 4;
+        printf("entra1\n");
         ValorOperando(op, &valor, comp);
+        printf("entra2\n");
         propagar_signo(&valor, op);
-        (*comp).memoria[comp->registros[SP]] = valor;
+        printf("entra3\n");
+        dir = comp->registros[SP];
+        printf("Dir %x\n", dir);
+        TradLogicaFisica(&dir,*comp,&flag);
+        printf("Flag: %d\n", flag);
+        printf("Dir despues de la traduccion: %x\n", dir);
+        InsertaMemoria(comp,dir,valor,4);
+        //(*comp).memoria[dir] = valor;
+        printf("finaliza el else\n");
     }
 }
 
