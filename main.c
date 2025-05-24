@@ -32,6 +32,8 @@ void CargaRegistros (Componentes*);
 int DarVuelta (int valor);
 
 //--EJECUCION--
+
+
 int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingresados por consola. *argv[] es una matriz de punteros a un matrices de caracteres
 {
 
@@ -42,6 +44,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad;
 	uint16_t tamparam = 0;
 
+
 	IniciaComponentes(&comp);
 
     while (i<argc){
@@ -51,8 +54,10 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             comp.tamanio = maxmemoria;
         }
         else
-            if (strcmp(argv[i],"-d")==0)
+            if (strcmp(argv[i],"-d")==0){
+                printf("ENTRA ACA\n");
                 boodisassembler = 1;
+            }
             else
                 if (strcmp(argv[i],"-p")==0){
                     i++;
@@ -266,6 +271,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
         boo = ValidaEjecucion(cab.identificador,cab.version);
         if (boo){
 
+            printf("Entra1\n");
             tamcad = strlen(argv);
             if (strcmp(argv+(tamcad - 4),".vmx")==0){
 
@@ -289,6 +295,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
 
                     //--LECTURA DE LOS TAMANIOS DE CADA SEGMENTO--
 
+                    printf("ENTRA2\n");
                     tamanioseg += comp->tabladesegmentos[0][1];
 
                     aux = 0;
@@ -330,6 +337,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                     cab.OffsetEntry = 0;
                     cab.OffsetEntry = (cab.OffsetEntry | aux) | tam;
 
+                    printf("SIGUE ACA\n");
                     //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
                     if (tamanioseg <= comp->tamanio){
 
