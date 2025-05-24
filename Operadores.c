@@ -260,7 +260,7 @@ void string_read(Componentes *comp)
 {
 
 	int tamanio, cant_carmax, dir, no_error, cant_car=0, i=0; // cant_carmax : Cantidad de caracteres máximos ; dir : Desde donde se comienza a guardar la cadena
-	char cadena[60], final = '\0';
+	char cadena[60], final_final = '\0';
 
 	tamanio = 1;
 	dir = (*comp).registros[EDX];
@@ -271,17 +271,54 @@ void string_read(Componentes *comp)
 	{
 
 		scanf("%s",cadena);
-		while(cant_car <= cant_carmax && cadena[i]!=final)
+		while(cant_car <= cant_carmax && cadena[i]!=final_final)
 		{
 			InsertaMemoria(comp, dir, cadena[i], tamanio);
 			dir++;
 			i++;
 			cant_car++;
 		}
-		InsertaMemoria(comp, dir, final, tamanio);
+		InsertaMemoria(comp, dir, final_final, tamanio);
 
 	}else
 		(*comp).error = 3;
+
+}
+
+void string_write(Componentes *comp)
+{
+
+	int i=0, tamanio, cant_carmax, dir, no_error, cant_car=0, caracter; // cant_carmax : Cantidad de caracteres máximos ; dir : Desde donde se comienza a guardar la cadena
+	char cadena[60], final_final = '\0', salto='\n';
+
+
+	tamanio = 1;
+	dir = (*comp).registros[EDX]; //-------------------------------------> Donde inicia la cadena
+	TradLogicaFisica(&dir, *comp, &no_error);
+
+	if(no_error)
+	{
+
+		caracter = LeerMemoria(*comp,dir,1);
+		while(caracter != final_final)
+		{
+
+			cadena[i] = caracter;
+			caracter = LeerMemoria(*comp,dir,1);
+			dir++;
+			i++;
+
+		}
+		cadena[i]=final_final;
+		printf("%s",cadena);
+		dir++;
+		caracter = LeerMemoria(*comp,dir,1);
+		if(caracter == salto)
+			printf("\n");
+
+	}else
+		(*comp).error = 3;
+
 
 }
 
