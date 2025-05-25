@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         if (comp.error == 2)
             printf("MV finaliza por error de division por 0\n");
         else
-            if(comp.error == 3 ^ dirip > comp.tabladesegmentos[0][1])
+            if(comp.error == 3 ^ dirip > (comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1]))
                 printf("MV finaliza por error de caida de segmento\n");
             else
                 if (comp.error == 4)
@@ -513,15 +513,20 @@ void Llamada_Disassembler(Componentes comp){
         {
             if(inicio >= fin_KS ) //-------------------------------------> fin_KS es el límite de KS, Entra al CS
             {
+
                 if(inicio == fin_KS)
+
                     printf(">");
+
                 instruccion = comp.memoria[inicio];
                 abc = obtener_abc(instruccion);
+
        		}else
                 abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // --------> Entra al KS
 
             Disassembler(comp,abc,inicio,&cant_mueve);
         	inicio += cant_mueve; // -----------------------------------> cant_mueve cantidad quese tiene que mover el IP
+
         }
 
    	 }else

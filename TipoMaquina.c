@@ -142,7 +142,7 @@ void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
 
     	Significado(abc.OpB,auxb);
     	printf("\n");
-        cant_mueve = abc.OpA + abc.OpB +1;
+        *cant_mueve = abc.OpA + abc.OpB +1;
 
      }
 
