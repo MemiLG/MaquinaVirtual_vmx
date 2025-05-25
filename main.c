@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	}
 
     for (int i=0; i<60; i++){
-        printf("%x\t",comp.memoria[0]);
+        printf("%x\t",comp.memoria[i]);
     }
 
 	push(pargv,&comp);
@@ -395,8 +395,10 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         dir =  0x00020000;
                         TradLogicaFisica(&dir,*comp,&flag);
                         while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag){
+                            printf("Dir: %d\n", dir);
                             printf("lectura del archivo %x\n",lect);
                             comp->memoria[dir] = lect;
+                            printf("Lo que entro a memoria: %x\n",comp->memoria[dir]);
                             dir +=1;
                         }
                     }
