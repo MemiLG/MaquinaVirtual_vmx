@@ -154,7 +154,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             EjecutarOperacion(abc,A,B,&comp);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
-            TradLogicaFisica(&dirip,comp,&IP_no_caido);
         }
 
 	}
