@@ -441,15 +441,18 @@ void SWAP(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB;
 
+    printf("ENtra\n");
     if((a.tipo==1 && b.tipo==1) || (a.tipo==3 && b.tipo==3)) //Ambos operandos de registro o memoria
     {
+        printf("ENtra   if\n");
         ValorOperando(a, &ValorA, comp);
         ValorOperando(b, &ValorB, comp);
 
         if ((*comp).error == 0)
         {
-            asignaValor(a, ValorB, comp);
-            asignaValor(b, ValorA, comp);
+            printf("Asigna\n");
+            asignaValor(a, ValorA, comp);
+            asignaValor(b, ValorB, comp);
         }
     }
 }
@@ -711,7 +714,9 @@ void push(Toperando op, Componentes *comp)
         ValorOperando(op, &valor, comp);
         propagar_signo(&valor, op);
         dir = comp->registros[SP];
+        printf("Direccion logica: %d\n", dir);
         TradLogicaFisica(&dir,*comp,&flag);
+        printf("Direccion traducida: %d\n", dir);
         InsertaMemoria(comp,dir,valor,4);
         //(*comp).memoria[dir] = valor;
     }
@@ -733,12 +738,16 @@ void pop(Toperando op, Componentes *comp)
 
 void call(Toperando op, Componentes *comp)
 {
-    if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
+    printf("sigo vivo\n");
+    if(comp->registros[SP] - 4 < comp->registros[SS]){ //Si no esta llena
         comp->error = 6;
+        printf("error\n");}
     else
     {
+        printf("RIPIE\n");
         comp->registros[SP] -= 4;
         (*comp).memoria[comp->registros[SP]] = comp->registros[IP];
+        printf("offset jump: %X\n", op.operando);
         JMP(op, comp);
     }
 }

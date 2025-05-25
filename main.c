@@ -137,13 +137,13 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	while (comp.error == 0 && IP_no_caido)
     {
 
-        dirip = comp.registros[5]; //pone en una variable int la direccion logica de donde apunta ip
+        dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
         if (IP_no_caido){
 
             instruccion = comp.memoria[dirip];
             abc = obtener_abc(instruccion);
-            comp.registros[5] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
+            comp.registros[IP] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
             if(abc.OpB!=0)
                 CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
@@ -151,6 +151,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
+            printf("op: %d   A: %d   B: %d\n", abc.CodOperacion, abc.OpA, abc.OpB);
+            printf("OP a: %d   %d\n", A.tipo, A.operando);
+            printf("OP b: %d   %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
@@ -200,6 +203,8 @@ TDatos obtener_abc(int8_t instruccion){
 
 void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
 
+printf("ENTREEEEEEEEEEEEEEEEE\n");
+printf("oper %d\n", abc.CodOperacion);
     switch (abc.CodOperacion){
 
         case 0x00 : SYS(b, comp);
@@ -220,11 +225,13 @@ void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
             break;
         case 0x08 : NOT(b, comp);
             break;
-        case 0x0B : push(b, comp);
+        case 0x0B : printf("ENTREEEEEEEEEEEEEEEEE\n");
+        push(b, comp);
             break;
         case 0x0C : pop(b, comp);
             break;
-        case 0x0D : call(b, comp);
+        case 0x0D : printf("ENTREEEEEEEEEEEEEEEEE call\n");
+        call(b, comp);
             break;
         case 0x0E: ret(comp);
             break;
