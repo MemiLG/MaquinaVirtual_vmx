@@ -121,6 +121,10 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         printf("\n");
 	}
 
+    for (int i=0; i<60; i++){
+        printf("%x\t",comp.memoria[0]);
+    }
+
 	push(pargv,&comp);
 	push(pargc,&comp);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
@@ -391,7 +395,8 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         dir =  0x00020000;
                         TradLogicaFisica(&dir,*comp,&flag);
                         while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag){
-                            InsertaMemoria(comp,dir,lect,1);
+                            printf("lectura del archivo %x\n",lect);
+                            comp->memoria[dir] = lect;
                             dir +=1;
                         }
                     }
