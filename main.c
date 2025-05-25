@@ -55,7 +55,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         }
         else
             if (strcmp(argv[i],"-d")==0){
-                printf("ENTRA ACA\n");
                 boodisassembler = 1;
             }
             else
@@ -97,10 +96,19 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     }
 
 	LeeArchivo(&comp, argv[1]);
-
+    printf("PS inicio: %X\n", comp.tabladesegmentos[0][0]);
+    printf("PS fin: %X\n", comp.tabladesegmentos[0][0] + comp.tabladesegmentos[0][1]);
+    printf("KS inicio: %X\n", comp.tabladesegmentos[1][0]);
+    printf("KS fin: %X\n", comp.tabladesegmentos[1][0] + comp.tabladesegmentos[1][1]);
+    printf("CS inicio: %X\n", comp.tabladesegmentos[2][0]);
+    printf("CS fin: %X\n", comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1]);
+    printf("DS inicio: %X\n", comp.tabladesegmentos[3][0]);
+    printf("DS fin: %X\n", comp.tabladesegmentos[3][0] + comp.tabladesegmentos[3][1]);
+    printf("ES inicio: %X\n", comp.tabladesegmentos[4][0]);
+    printf("ES fin: %X\n", comp.tabladesegmentos[4][0] + comp.tabladesegmentos[4][1]);
+    printf("SS inicio: %X\n", comp.tabladesegmentos[5][0]);
+    printf("SS fin: %X\n", comp.tabladesegmentos[5][0] + comp.tabladesegmentos[5][1]);
 	CargaRegistros(&comp);
-
-	printf("FINALIZA EL LEEARCHIVO\n");
 
 	pargc.tipo = pargv.tipo = fin.tipo = 2;
 	pargv.operando = punteroparam;
@@ -113,17 +121,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         printf("\n");
 	}
 
-	printf("Empieza la subrutina principal\n");
-
-	printf("Error: %d\n",comp.error);
 	push(pargv,&comp);
-	printf("Error: %d\n",comp.error);
 	push(pargc,&comp);
-	printf("Error: %d\n",comp.error);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
-
-	printf("Error: %d\n",comp.error);
-	printf("Termina la carga\n");
 
     if (boodisassembler && comp.error == 0){
         Llamada_Disassembler(comp);
@@ -485,41 +485,41 @@ void Llamada_Disassembler(Componentes comp){
 
     if (comp.tabladesegmentos[1][0] != 0)//--------------------------------> Es el KS
     {
-        printf("1\n");
-    	inicio = comp.registros[4]; //-------------------------------------> Comienzo desde el Constant segment
+    	inicio = comp.registros[KS]; //-------------------------------------> Comienzo desde el Constant segment
         fin_KS = comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0];
-        TradLogicaFisica(&fin_KS, comp, &flag);
 
     }else{
-        printf("2\n");
-        inicio = comp.registros[5]; // -------------------------------------> Comienza desde el Code Segment
-        fin_KS = comp.registros[5]-1;
+        inicio = comp.registros[CS]; // -------------------------------------> Comienza desde el Code Segment
+        //fin_KS = comp.registros[CS];
     }
-    fin = (comp.tabladesegmentos[0][1] + comp.tabladesegmentos[0][0]); //--> El final va a ser el mismo, en el CS
+    TradLogicaFisica(&fin_KS, comp, &flag);
+    TradLogicaFisica(&inicio,comp,&flag);
+    fin = comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1] + 0x00020000; //--> El final va a ser el mismo, en el CS
     TradLogicaFisica(&fin, comp, &flag);
+    fin_KS = inicio;
+
 
     if(flag)
     {
-        printf("flag\n");
+
         while(inicio < fin )
         {
-
-            if(inicio > fin_KS ) //-------------------------------------> fin_KS es el límite de KS, Entra al CS
+            if(inicio >= fin_KS ) //-------------------------------------> fin_KS es el límite de KS, Entra al CS
             {
-                if(inicio == fin_KS+1)
+                if(inicio == fin_KS)
                     printf(">");
                 instruccion = comp.memoria[inicio];
                 abc = obtener_abc(instruccion);
        		}else
-                abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // ------------> Entra al KS
+                abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // --------> Entra al KS
 
             Disassembler(comp,abc,inicio,&cant_mueve);
-        	inicio += cant_mueve; // ---------------------------------------> cant_mueve cantidad quese tiene que mover el IP
+        	inicio += cant_mueve; // -----------------------------------> cant_mueve cantidad quese tiene que mover el IP
         }
 
    	 }else
 
-        comp.error = 9 ; // Error por disassembler -------------------------> SI todo va bien no debería saltar nunca; :)
+        comp.error = 3 ; // Error por disassembler -------------------------> SI todo va bien no debería saltar nunca; :)
 /*
     while(comp.registros[5] < fin )
     {
@@ -531,7 +531,6 @@ void Llamada_Disassembler(Componentes comp){
 
     }
 */
-            printf("SALIIIIIIIIIII\n");
 }
 
 void CargaRegistros(Componentes *comp){
