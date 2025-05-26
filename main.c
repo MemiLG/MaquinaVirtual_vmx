@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	Componentes comp;
 	Toperando A, B, pargv, pargc, fin;
 	int8_t instruccion ;
-	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad;
+	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad, m=0;
 	uint16_t tamparam = 0;
 
 
@@ -96,18 +96,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     }
 
 	LeeArchivo(&comp, argv[1]);
-    printf("PS inicio: %X\n", comp.tabladesegmentos[0][0]);
-    printf("PS fin: %X\n", comp.tabladesegmentos[0][0] + comp.tabladesegmentos[0][1]);
-    printf("KS inicio: %X\n", comp.tabladesegmentos[1][0]);
-    printf("KS fin: %X\n", comp.tabladesegmentos[1][0] + comp.tabladesegmentos[1][1]);
-    printf("CS inicio: %X\n", comp.tabladesegmentos[2][0]);
-    printf("CS fin: %X\n", comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1]);
-    printf("DS inicio: %X\n", comp.tabladesegmentos[3][0]);
-    printf("DS fin: %X\n", comp.tabladesegmentos[3][0] + comp.tabladesegmentos[3][1]);
-    printf("ES inicio: %X\n", comp.tabladesegmentos[4][0]);
-    printf("ES fin: %X\n", comp.tabladesegmentos[4][0] + comp.tabladesegmentos[4][1]);
-    printf("SS inicio: %X\n", comp.tabladesegmentos[5][0]);
-    printf("SS fin: %X\n", comp.tabladesegmentos[5][0] + comp.tabladesegmentos[5][1]);
+
 	CargaRegistros(&comp);
 
 	pargc.tipo = pargv.tipo = fin.tipo = 2;
@@ -137,6 +126,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	while (comp.error == 0 && IP_no_caido)
     {
 
+        m++;
+        printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
         if (IP_no_caido){
@@ -145,6 +136,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             abc = obtener_abc(instruccion);
             comp.registros[IP] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
+            printf("Instruccion pasada: %x\n",instruccion);
+            printf("Operador a: %x\n", abc.OpA);
+            printf("Operador b: %x\n", abc.OpB);
             if(abc.OpB!=0)
                 CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
 
@@ -397,10 +391,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         dir =  0x00020000;
                         TradLogicaFisica(&dir,*comp,&flag);
                         while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag){
-                            printf("Dir: %d\n", dir);
-                            printf("lectura del archivo %x\n",lect);
                             comp->memoria[dir] = lect;
-                            printf("Lo que entro a memoria: %x\n",comp->memoria[dir]);
                             dir +=1;
                         }
                     }
@@ -463,6 +454,7 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
 
     a->tipo = tipo;
     dir = (*comp).registros[IP];//direccion logica de lo que apunta IP
+    printf("DIRECCION : %X \n",dir);
     TradLogicaFisica(&dir, *comp, &flag); //Traducion a direccion fisica de la posicion apuntada por IP
     printf("Error antes: %d\n", comp->error);
     if(flag){
