@@ -646,7 +646,7 @@ void SYS(Toperando op, Componentes *comp)
 
 void JMP(Toperando offset, Componentes *comp)
 {
-    (*comp).registros[IP] = offset.operando & 0xFFFF;
+    (*comp).registros[IP] =  (*comp).registros[IP] & 0xFFFF0000 | offset.operando & 0xFFFF;
 }
 
 void JZ(Toperando offset, Componentes *comp)
@@ -753,7 +753,9 @@ void call(Toperando op, Componentes *comp)
     {
         comp->registros[SP] -= 4;
         dir = comp->registros[SP];
+        printf("Direccion logica: %X\n", dir);
         TradLogicaFisica(&dir, *comp, &flag);
+        printf("Direccion fisica: %X\n", dir);
         if(flag)
         {
             (*comp).memoria[dir] = comp->registros[IP];
