@@ -151,9 +151,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            printf("op: %d   A: %d   B: %d\n", abc.CodOperacion, abc.OpA, abc.OpB);
-            printf("OP a: %d   %d\n", A.tipo, A.operando);
-            printf("OP b: %d   %d\n", B.tipo, B.operando);
+            printf("operador: %X\n", abc.CodOperacion);
+            printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
+            printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
@@ -203,8 +203,6 @@ TDatos obtener_abc(int8_t instruccion){
 
 void EjecutarOperacion(TDatos abc, Toperando a, Toperando b, Componentes *comp){
 
-printf("ENTREEEEEEEEEEEEEEEEE\n");
-printf("oper %d\n", abc.CodOperacion);
     switch (abc.CodOperacion){
 
         case 0x00 : SYS(b, comp);
@@ -225,13 +223,11 @@ printf("oper %d\n", abc.CodOperacion);
             break;
         case 0x08 : NOT(b, comp);
             break;
-        case 0x0B : printf("ENTREEEEEEEEEEEEEEEEE\n");
-        push(b, comp);
+        case 0x0B : push(b, comp);
             break;
         case 0x0C : pop(b, comp);
             break;
-        case 0x0D : printf("ENTREEEEEEEEEEEEEEEEE call\n");
-        call(b, comp);
+        case 0x0D : call(b, comp);
             break;
         case 0x0E: ret(comp);
             break;
@@ -466,8 +462,9 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
     int dir, bytes=0, flag;
 
     a->tipo = tipo;
-    dir = (*comp).registros[5];//direccion logica de lo que apunta IP
+    dir = (*comp).registros[IP];//direccion logica de lo que apunta IP
     TradLogicaFisica(&dir, *comp, &flag); //Traducion a direccion fisica de la posicion apuntada por IP
+    printf("Error antes: %d\n", comp->error);
     if(flag){
         switch(tipo){
         case 0x01: //registro
@@ -488,6 +485,7 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
         }
     else
         (*comp).error = 3;
+    printf("Error despues: %d\n", comp->error);
 }
 
 void Llamada_Disassembler(Componentes comp){

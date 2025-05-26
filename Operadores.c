@@ -66,7 +66,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 
 void asignaValor(Toperando a, int ValorB, Componentes *comp)
 {
-    int dir, flag=1;
+    int dir, flag;
     int8_t CodReg, SecReg, tamanio;
 
     switch(a.tipo)
@@ -441,18 +441,15 @@ void SWAP(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB;
 
-    printf("ENtra\n");
     if((a.tipo==1 && b.tipo==1) || (a.tipo==3 && b.tipo==3)) //Ambos operandos de registro o memoria
     {
-        printf("ENtra   if\n");
         ValorOperando(a, &ValorA, comp);
         ValorOperando(b, &ValorB, comp);
 
         if ((*comp).error == 0)
         {
-            printf("Asigna\n");
-            asignaValor(a, ValorA, comp);
-            asignaValor(b, ValorB, comp);
+            asignaValor(a, ValorB, comp);
+            asignaValor(b, ValorA, comp);
         }
     }
 }
@@ -706,49 +703,64 @@ void NOT(Toperando a, Componentes *comp)
 void push(Toperando op, Componentes *comp)
 {
     int valor, dir, flag =1;
+
     if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
         comp->error = 6;
     else
     {
         comp->registros[SP] -= 4;
-        ValorOperando(op, &valor, comp);
-        propagar_signo(&valor, op);
         dir = comp->registros[SP];
-        printf("Direccion logica: %d\n", dir);
-        TradLogicaFisica(&dir,*comp,&flag);
-        printf("Direccion traducida: %d\n", dir);
-        InsertaMemoria(comp,dir,valor,4);
-        //(*comp).memoria[dir] = valor;
+        TradLogicaFisica(&dir, *comp, &flag);
+        if(flag)
+        {
+            ValorOperando(op, &valor, comp);
+            propagar_signo(&valor, op);
+            InsertaMemoria(comp, dir, valor, 4);
+        }
+        else
+            comp->error = 3;
     }
 }
 
 void pop(Toperando op, Componentes *comp)
 {
-    int op_aux;
+    int op_aux, dir, flag;
 
     if(comp->registros[SP] > comp->tabladesegmentos[5][1]) //Si no esta vacia
         comp->error = 7;
     else
     {
-        op_aux = (*comp).memoria[comp->registros[SP]];
-        asignaValor(op, op_aux, comp);
-        comp->registros[SP] += 4;
+        dir = comp->registros[SP];
+        TradLogicaFisica(&dir, *comp, &flag);
+        if(flag)
+        {
+            op_aux = (*comp).memoria[dir];
+            asignaValor(op, op_aux, comp);
+            comp->registros[SP] += 4;
+        }
+        else
+            comp->error = 3;
     }
 }
 
 void call(Toperando op, Componentes *comp)
 {
-    printf("sigo vivo\n");
-    if(comp->registros[SP] - 4 < comp->registros[SS]){ //Si no esta llena
+    int dir, flag;
+
+    if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
         comp->error = 6;
-        printf("error\n");}
     else
     {
-        printf("RIPIE\n");
         comp->registros[SP] -= 4;
-        (*comp).memoria[comp->registros[SP]] = comp->registros[IP];
-        printf("offset jump: %X\n", op.operando);
-        JMP(op, comp);
+        dir = comp->registros[SP];
+        TradLogicaFisica(&dir, *comp, &flag);
+        if(flag)
+        {
+            (*comp).memoria[dir] = comp->registros[IP];
+            JMP(op, comp);
+        }
+        else
+            comp->error = 3;
     }
 }
 
@@ -761,11 +773,20 @@ void STOP(Componentes *comp)
 
 void ret(Componentes *comp)
 {
+    int dir, flag;
+
     if(comp->registros[SP] > comp->tabladesegmentos[5][1]) //Si no esta vacia
         comp->error = 7;
     else
     {
-        comp->registros[IP] = comp->memoria[comp->registros[SP]];
-        comp->registros[SP] += 4;
+        dir = comp->registros[SP];
+        TradLogicaFisica(&dir, *comp, &flag);
+        if(flag)
+        {
+            comp->registros[IP] = comp->memoria[dir];
+            comp->registros[SP] += 4;
+        }
+        else
+            comp->error = 3;
     }
 }
