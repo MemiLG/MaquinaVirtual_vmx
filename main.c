@@ -27,7 +27,7 @@ void EjecutarOperacion(TDatos,Toperando,Toperando,Componentes *);
 void LeeArchivo(Componentes *, char argv[ARCHIVO]);
 void IniciaComponentes(Componentes*);
 void CargaOperando(int8_t,Toperando*,Componentes*);
-void Llamada_Disassembler(Componentes );
+void Llamada_Disassembler(Componentes);
 void CargaRegistros (Componentes*);
 int DarVuelta (int valor);
 
@@ -492,35 +492,36 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
 
 void Llamada_Disassembler(Componentes comp){
 
-    int fin, inicio , flag, cant_mueve,fin_KS ; // ------------------------> cant_mueve cantidad quese tiene que mover el IP / inicio : Es de donde empieza el IP si de KS o directamente del CS
+    int fin, inicio , flag, cant_mueve,fin_KS,entrypoint ; // ------------------------------------------------> cant_mueve cantidad quese tiene que mover el IP / inicio : Es de donde empieza el IP si de KS o directamente del CS
     int8_t instruccion;
     TDatos abc;
 
-    if (comp.tabladesegmentos[1][0] != 0)//--------------------------------> Es el KS
+    if (comp.tabladesegmentos[1][0] != 0)//-------------------------------------------------------------------> Es el KS
     {
-    	inicio = comp.registros[KS]; //-------------------------------------> Comienzo desde el Constant segment
-        fin_KS = comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0];
+    	inicio = comp.registros[KS]; //-----------------------------------------------------------------------> Comienzo desde el Constant segment
+        fin_KS = comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0] + 0x00010000 ;
 
     }else{
-        inicio = comp.registros[CS]; // -------------------------------------> Comienza desde el Code Segment
-        //fin_KS = comp.registros[CS];
+        inicio = comp.registros[CS]; // ----------------------------------------------------------------------> Comienza desde el Code Segment
+        fin_KS = comp.registros[CS];
     }
-    TradLogicaFisica(&fin_KS, comp, &flag);
-    TradLogicaFisica(&inicio,comp,&flag);
-    fin = comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1] + 0x00020000; //--> El final va a ser el mismo, en el CS
-    TradLogicaFisica(&fin, comp, &flag);
-    fin_KS = inicio;
 
+    fin = comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1] + 0x00020000; //--------------------------> El final va a ser el mismo, en el CS
+    entrypoint = comp.registros[IP];// -----------------------------------------------------------------------> *CONSULTAR*
+    TradLogicaFisica(&inicio,comp,&flag);
+    TradLogicaFisica(&entrypoint,comp,&flag);
+    TradLogicaFisica(&fin_KS, comp, &flag);
+    TradLogicaFisica(&fin, comp, &flag);
 
     if(flag)
     {
 
         while(inicio < fin )
         {
-            if(inicio >= fin_KS ) //-------------------------------------> fin_KS es el límite de KS, Entra al CS
+            if(inicio >= fin_KS ) //--------------------------------------------------------------> fin_KS es el límite de KS, Entra al CS
             {
 
-                if(inicio == fin_KS)
+                if(inicio == entrypoint)
 
                     printf(">");
 
@@ -528,27 +529,17 @@ void Llamada_Disassembler(Componentes comp){
                 abc = obtener_abc(instruccion);
 
        		}else
-                abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // --------> Entra al KS
+                abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // ---------------------------------> Entra al KS
 
             Disassembler(comp,abc,inicio,&cant_mueve);
-        	inicio += cant_mueve; // -----------------------------------> cant_mueve cantidad quese tiene que mover el IP
+        	inicio += cant_mueve; // ------------------------------------------------------------> cant_mueve cantidad quese tiene que mover el IP
 
         }
 
    	 }else
 
-        comp.error = 3 ; // Error por disassembler -------------------------> SI todo va bien no debería saltar nunca; :)
-/*
-    while(comp.registros[5] < fin )
-    {
+        comp.error = 3 ; // Error por disassembler ---------------------------------------------> SI todo va bien no debería saltar nunca; :)
 
-        instruccion = comp.memoria[comp.registros[5]];
-        abc = obtener_abc(instruccion);
-        Disassembler(comp,abc,comp.registros[5]);
-        comp.registros[5] += abc.OpA + abc.OpB +1;
-
-    }
-*/
 }
 
 void CargaRegistros(Componentes *comp){

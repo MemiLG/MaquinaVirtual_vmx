@@ -34,7 +34,7 @@
 	"TipoMaquina.h"
 	"Cabecera.h"
 
-1747967971 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\cabecera.c
+1748096080 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\cabecera.c
 	<string.h>
 	"Cabecera.h"
 
@@ -42,7 +42,7 @@
 	<stdint.h>
 	<string.h>
 
-1748093009 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\main.c
+1748227017 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -51,20 +51,20 @@
 	"TipoMaquina.h"
 	"Cabecera.h"
 
-1748093009 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.h
+1748095717 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.h
 	"TipoMaquina.h"
 
-1748091098 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.h
+1748225564 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
-1748094090 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.c
+1748223747 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.c
 	<stdio.h>
 	<stdlib.h>
 	"Operadores.h"
 	"TipoMaquina.h"
 	<stdint.h>
 
-1747972186 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.c
+1748227454 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.c
 	<stdio.h>
 	<stdlib.h>
 	"TipoMaquina.h"
