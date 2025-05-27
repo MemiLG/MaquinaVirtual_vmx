@@ -57,8 +57,6 @@ void modificaCC(Componentes *comp, int num)
 void InsertaMemoria(Componentes *comp,int dir,int dato, int byte)
 {
 int i, aux = 0;
-    printf("Direccion pasada: %d\n", dir);
-    printf("Dato pasado %x\n",dato);
     for (i=0;i<byte;i++){
         aux = (dato>>(24-i*8)) & 0xFF;
         (*comp).memoria[dir+i] = aux;

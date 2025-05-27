@@ -148,9 +148,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             printf("operador: %X\n", abc.CodOperacion);
             printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
             printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
-            printf("-------------->>>>>>>>>> ANTES SP: %X\n", comp.registros[SP]);
             EjecutarOperacion(abc,A,B,&comp);
-            printf("-------------->>>>>>>>>> DESPUES SP: %X\n", comp.registros[SP]);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
         }
@@ -456,9 +454,7 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
 
     a->tipo = tipo;
     dir = (*comp).registros[IP];//direccion logica de lo que apunta IP
-    printf("DIRECCION : %X \n",dir);
     TradLogicaFisica(&dir, *comp, &flag); //Traducion a direccion fisica de la posicion apuntada por IP
-    printf("Error antes: %d\n", comp->error);
     if(flag){
         switch(tipo){
         case 0x01: //registro
@@ -481,7 +477,6 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
     }
     else
         (*comp).error = 3;
-    printf("Error despues: %d\n", comp->error);
 }
 
 void Llamada_Disassembler(Componentes comp){
