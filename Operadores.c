@@ -724,9 +724,11 @@ void push(Toperando op, Componentes *comp)
 
 void pop(Toperando op, Componentes *comp)
 {
-    int op_aux, dir, flag;
+    int op_aux, dir, flag, tamanio;
 
-    if(comp->registros[SP] > comp->tabladesegmentos[5][1]) //Si no esta vacia
+    tamanio = comp->tabladesegmentos[5][0] + comp->tabladesegmentos[5][1];
+
+    if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;
     else
     {
@@ -773,9 +775,11 @@ void STOP(Componentes *comp)
 
 void ret(Componentes *comp)
 {
-    int dir, flag, aux=0, i;
+    int dir, flag, aux=0, i, tamanio;
 
-    if(comp->registros[SP] > comp->tabladesegmentos[5][1]) //Si no esta vacia
+    tamanio = comp->tabladesegmentos[5][0] + comp->tabladesegmentos[5][1];
+
+    if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;
     else
     {
