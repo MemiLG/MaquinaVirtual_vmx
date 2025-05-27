@@ -98,6 +98,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	LeeArchivo(&comp, argv[1]);
 
 	CargaRegistros(&comp);
+	printf("jashdkjah\n");
 
 	pargc.tipo = pargv.tipo = fin.tipo = 2;
 	pargv.operando = punteroparam;
