@@ -779,6 +779,8 @@ void ret(Componentes *comp)
 
     tamanio = comp->tabladesegmentos[5][0] + comp->tabladesegmentos[5][1];
 
+    printf("Error ret: %d", comp->error);
+    printf("SP: %X\n", comp->registros[SP]);
     if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;
     else
@@ -796,4 +798,5 @@ void ret(Componentes *comp)
         else
             comp->error = 3;
     }
+    printf("Error ret: %d", comp->error);
 }
