@@ -702,7 +702,7 @@ void NOT(Toperando a, Componentes *comp)
 
 void push(Toperando op, Componentes *comp)
 {
-    int valor, dir, flag =1;
+    int valor, dir, flag;
 
     if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
         comp->error = 6;
@@ -726,7 +726,7 @@ void pop(Toperando op, Componentes *comp)
 {
     int op_aux, dir, flag, tamanio;
 
-    tamanio = comp->tabladesegmentos[5][0] + comp->tabladesegmentos[5][1];
+    tamanio = 0x0005000 + comp->tabladesegmentos[5][1];
 
     if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;
@@ -777,7 +777,7 @@ void ret(Componentes *comp)
 {
     int dir, flag, aux=0, i, tamanio;
 
-    tamanio = comp->tabladesegmentos[5][0] + comp->tabladesegmentos[5][1];
+    tamanio = 0x00050000 + comp->tabladesegmentos[5][1];
 
     printf("Error ret: %d", comp->error);
     printf("SP: %X\n", comp->registros[SP]);

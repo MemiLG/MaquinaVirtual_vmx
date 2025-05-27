@@ -148,7 +148,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             printf("operador: %X\n", abc.CodOperacion);
             printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
             printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
+            printf("-------------->>>>>>>>>> ANTES SP: %X\n", comp.registros[SP]);
             EjecutarOperacion(abc,A,B,&comp);
+            printf("-------------->>>>>>>>>> DESPUES SP: %X\n", comp.registros[SP]);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
         }
