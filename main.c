@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         if (comp.error == 2)
             printf("MV finaliza por error de division por 0\n");
         else
-            if(comp.error == 3 ^ dirip > (comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1]))
+            if((comp.error == 3) ^ (dirip > (comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1])))
                 printf("MV finaliza por error de caida de segmento\n");
             else
                 if (comp.error == 4)
@@ -472,9 +472,11 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
             bytes = 0;
             break;
         }
-        (*a).operando = LeerMemoria(*comp,dir,bytes);
-        (*comp).registros[5] += bytes; //suma la cantidad de bytes que se movio al offset (mueve IP)
+        if(bytes == 0){
+            (*a).operando = LeerMemoria(*comp,dir,bytes);
+            (*comp).registros[5] += bytes; //suma la cantidad de bytes que se movio al offset (mueve IP)
         }
+    }
     else
         (*comp).error = 3;
     printf("Error despues: %d\n", comp->error);
