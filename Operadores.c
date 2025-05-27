@@ -726,7 +726,7 @@ void pop(Toperando op, Componentes *comp)
 {
     int op_aux, dir, flag, tamanio;
 
-    tamanio = 0x0005000 + comp->tabladesegmentos[5][1];
+    tamanio = 0x00050000 + comp->tabladesegmentos[5][1];
 
     if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;

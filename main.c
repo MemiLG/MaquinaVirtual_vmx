@@ -470,7 +470,7 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
             bytes = 0;
             break;
         }
-        if(bytes == 0){
+        if(bytes != 0){
             (*a).operando = LeerMemoria(*comp,dir,bytes);
             (*comp).registros[5] += bytes; //suma la cantidad de bytes que se movio al offset (mueve IP)
         }
