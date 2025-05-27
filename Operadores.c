@@ -753,12 +753,10 @@ void call(Toperando op, Componentes *comp)
     {
         comp->registros[SP] -= 4;
         dir = comp->registros[SP];
-        printf("Direccion logica: %X\n", dir);
         TradLogicaFisica(&dir, *comp, &flag);
-        printf("Direccion fisica: %X\n", dir);
         if(flag)
         {
-            (*comp).memoria[dir] = comp->registros[IP];
+            InsertaMemoria(comp, dir, comp->registros[IP], 4);
             JMP(op, comp);
         }
         else
@@ -775,7 +773,7 @@ void STOP(Componentes *comp)
 
 void ret(Componentes *comp)
 {
-    int dir, flag;
+    int dir, flag, aux=0, i;
 
     if(comp->registros[SP] > comp->tabladesegmentos[5][1]) //Si no esta vacia
         comp->error = 7;
@@ -785,7 +783,10 @@ void ret(Componentes *comp)
         TradLogicaFisica(&dir, *comp, &flag);
         if(flag)
         {
-            comp->registros[IP] = comp->memoria[dir];
+            for(i=0; i<4; i++)
+                aux |= comp->memoria[dir + i] << 24 - i*8;
+
+            comp->registros[IP] = aux;
             comp->registros[SP] += 4;
         }
         else
