@@ -42,7 +42,7 @@
 	<stdint.h>
 	<string.h>
 
-1748227017 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\main.c
+1748532338 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -57,14 +57,14 @@
 1748225564 c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
-1748223747 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.c
+1748529848 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\operadores.c
 	<stdio.h>
 	<stdlib.h>
 	"Operadores.h"
 	"TipoMaquina.h"
 	<stdint.h>
 
-1748227454 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.c
+1748532372 source:c:\users\patroclo\onedrive\documentos\github\maquinavirtual_vmx\tipomaquina.c
 	<stdio.h>
 	<stdlib.h>
 	"TipoMaquina.h"

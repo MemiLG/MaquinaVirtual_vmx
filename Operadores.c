@@ -42,9 +42,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 		case 0b11:
 		    pos = (op.operando>>4)& 0xF;
             pos2 = comp->registros[pos];
-            printf("Valor del pos2 antes de sumarle el offset %x\n",pos2);
 			pos2 += (op.operando>>8)& 0xFFFF;
-			printf ("Direccion logica pasada pos2: %x\n",pos2);
 			TradLogicaFisica(&pos2, *comp,&fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);
@@ -773,7 +771,7 @@ void call(Toperando op, Componentes *comp)
 void STOP(Componentes *comp)
 {
     if ((*comp).error==0)
-        (*comp).error = 4;
+        (*comp).error = 8;
 }
 
 void ret(Componentes *comp)
@@ -782,8 +780,8 @@ void ret(Componentes *comp)
 
     tamanio = 0x00050000 + comp->tabladesegmentos[5][1];
 
-    printf("Error ret: %d", comp->error);
-    printf("SP: %X\n", comp->registros[SP]);
+    //printf("Error ret: %d", comp->error);
+    //printf("SP: %X\n", comp->registros[SP]);
     if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;
     else
@@ -801,5 +799,5 @@ void ret(Componentes *comp)
         else
             comp->error = 3;
     }
-    printf("Error ret: %d", comp->error);
+   // printf("Error ret: %d", comp->error);
 }

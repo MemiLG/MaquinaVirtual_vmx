@@ -119,6 +119,10 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
     if (boodisassembler && comp.error == 0){
+        printf("Entra al disassemble ---------------- ANTES DE ENTRAR\n");
+        printf("LIMITE DEL KS%d \n",comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0]);
+        printf("LIMITE DE CS %d \n",comp.tabladesegmentos [2][0] + comp.tabladesegmentos[2][1]);
+        printf("-----------------------------------------------------");
         Llamada_Disassembler(comp);
     }
 
@@ -126,8 +130,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	while (comp.error == 0 && IP_no_caido)
     {
 
-        m++;
-        printf("Iteracion n: %d\n", m);
+        //m++;
+        //printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
         if (IP_no_caido){
@@ -136,18 +140,18 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             abc = obtener_abc(instruccion);
             comp.registros[IP] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
-            printf("Instruccion pasada: %x\n",instruccion);
-            printf("Operador a: %x\n", abc.OpA);
-            printf("Operador b: %x\n", abc.OpB);
+            //printf("Instruccion pasada: %x\n",instruccion);
+            //printf("Operador a: %x\n", abc.OpA);
+            //printf("Operador b: %x\n", abc.OpB);
             if(abc.OpB!=0)
                 CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
 
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            printf("operador: %X\n", abc.CodOperacion);
-            printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
-            printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
+           // printf("operador: %X\n", abc.CodOperacion);
+            //printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
+            //printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
@@ -367,7 +371,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
 
                         setBaseCS(comp,ultam);
                         setTamanioCS(comp,cab.TamanioCodigo);
-                        ultam = cab.TamanioCodigo;
+                        ultam += cab.TamanioCodigo;
 
                         if(cab.TamanioData>0){
                             setBaseDS(comp,ultam);
@@ -481,14 +485,22 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
 
 void Llamada_Disassembler(Componentes comp){
 
-    int fin, inicio , flag, cant_mueve,fin_KS,entrypoint ; // ------------------------------------------------> cant_mueve cantidad quese tiene que mover el IP / inicio : Es de donde empieza el IP si de KS o directamente del CS
+    int fin, inicio , flag = 1, cant_mueve,fin_KS,entrypoint ; // ------------------------------------------------> cant_mueve cantidad quese tiene que mover el IP / inicio : Es de donde empieza el IP si de KS o directamente del CS
     int8_t instruccion;
     TDatos abc;
 
-    if (comp.tabladesegmentos[1][0] != 0)//-------------------------------------------------------------------> Es el KS
+    printf("Ingresa aca\n");
+
+    printf("LIMITE DEL KS%X \n",comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0]);
+    printf("LIMITE DE CS %X \n",comp.tabladesegmentos [2][0] + comp.tabladesegmentos[2][1]);
+
+    if (comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0] != 0x00)//-------------------------------------------------------------------> Es el KS
     {
+        printf("Entro al KS\n");
     	inicio = comp.registros[KS]; //-----------------------------------------------------------------------> Comienzo desde el Constant segment
         fin_KS = comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0] + 0x00010000 ;
+        printf("Inicio %X\n",inicio);
+        printf("fin KS %X\n",fin_KS);
 
     }else{
         inicio = comp.registros[CS]; // ----------------------------------------------------------------------> Comienza desde el Code Segment
@@ -496,15 +508,22 @@ void Llamada_Disassembler(Componentes comp){
     }
 
     fin = comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1] + 0x00020000; //--------------------------> El final va a ser el mismo, en el CS
-    entrypoint = comp.registros[IP];// -----------------------------------------------------------------------> *CONSULTAR*
+    printf("FIN FIN %X\n",fin);
+    entrypoint = comp.registros[IP];
     TradLogicaFisica(&inicio,comp,&flag);
     TradLogicaFisica(&entrypoint,comp,&flag);
     TradLogicaFisica(&fin_KS, comp, &flag);
     TradLogicaFisica(&fin, comp, &flag);
+    printf("LUEGO DE LA TRADUCCIÓN LÓGICA\n");
+    printf("INICIO : %X\n",inicio);
+    printf("FIN KS : %X\n",fin_KS);
+    printf("FINFINFINFIN : %X\n",fin);
+    printf("FLAG %X", flag);
 
     if(flag)
     {
 
+        printf("Ingresa a mostrar\n");
         while(inicio < fin )
         {
             if(inicio >= fin_KS ) //--------------------------------------------------------------> fin_KS es el límite de KS, Entra al CS

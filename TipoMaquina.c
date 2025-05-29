@@ -16,18 +16,18 @@ void TradLogicaFisica(int *dir, Componentes comp, int *flag)
     int aux;
     int16_t fila;
 
-    printf("Valor pasado: %x\n",*dir);
+    printf("-------------------------INGRSA A TRADUCCIÓN LOGICA----------------------------------\n");
     *flag = 1;
     fila = *dir >> 16 & 0xFFFF; //Segmeneto
-    printf("Segmento de dir: %d\n", fila);
+    printf("FILA : %X\n", fila);
     aux = (*dir & 0xFFFF);
-    printf("Offset de dir: %d\n",aux);
+    printf("LOS MENOS SIGNIFICATIVOS %X\n",aux);
     aux += comp.tabladesegmentos[fila][0];
-    printf("Offset sumado con la base del segmento %d\n", aux);
     if (fila<FIL && DireccionFisicaValida(aux,fila,comp))
         *dir = aux;
     else
         *flag = 0;
+    printf("-------------------------FIN DE TRADUCCION LOGICA -------------------------------------\n");
 }
 
 int LeerMemoria(Componentes comp, int dir, int bytes)
