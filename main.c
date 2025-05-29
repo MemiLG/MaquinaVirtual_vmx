@@ -99,7 +99,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
 	CargaRegistros(&comp);
 
-
 	pargc.tipo = pargv.tipo = fin.tipo = 2;
 	pargv.operando = punteroparam;
 	pargc.operando = cantparam;
@@ -147,9 +146,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
             printf("operador: %X\n", abc.CodOperacion);
-            printf("Tipo opA: %d   operando: %x\n", A.tipo, A.operando);
-            printf("Tipo opB: %d   operando: %x\n", B.tipo, B.operando);
-            printf("Error antes de ejecutar: %d\n",comp.error);
+            printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
+            printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);

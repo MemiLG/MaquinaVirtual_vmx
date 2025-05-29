@@ -337,7 +337,8 @@ void breakpoint(Componentes *comp)
             break;
 
             //q = quit
-            case 113: STOP(comp);
+            case 113: comp->sigue_breakpoint = 0;
+                      STOP(comp);
             break;
 
             //Enter
