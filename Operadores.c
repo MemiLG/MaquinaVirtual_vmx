@@ -42,7 +42,9 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 		case 0b11:
 		    pos = (op.operando>>4)& 0xF;
             pos2 = comp->registros[pos];
+            printf("Valor del pos2 antes de sumarle el offset %x\n",pos2);
 			pos2 += (op.operando>>8)& 0xFFFF;
+			printf ("Direccion logica pasada pos2: %x\n",pos2);
 			TradLogicaFisica(&pos2, *comp,&fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);

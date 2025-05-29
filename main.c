@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	LeeArchivo(&comp, argv[1]);
 
 	CargaRegistros(&comp);
-	printf("jashdkjah\n");
+
 
 	pargc.tipo = pargv.tipo = fin.tipo = 2;
 	pargv.operando = punteroparam;
@@ -147,8 +147,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
             printf("operador: %X\n", abc.CodOperacion);
-            printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
-            printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
+            printf("Tipo opA: %d   operando: %x\n", A.tipo, A.operando);
+            printf("Tipo opB: %d   operando: %x\n", B.tipo, B.operando);
+            printf("Error antes de ejecutar: %d\n",comp.error);
             EjecutarOperacion(abc,A,B,&comp);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
