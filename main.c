@@ -118,14 +118,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	push(pargc,&comp);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
-    if (boodisassembler && comp.error == 0){
-        printf("Entra al disassemble ---------------- ANTES DE ENTRAR\n");
-        printf("LIMITE DEL KS%d \n",comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0]);
-        printf("LIMITE DE CS %d \n",comp.tabladesegmentos [2][0] + comp.tabladesegmentos[2][1]);
-        printf("-----------------------------------------------------");
+    if (boodisassembler && comp.error == 0)
         Llamada_Disassembler(comp);
-    }
-
 
 	while (comp.error == 0 && IP_no_caido)
     {
@@ -502,45 +496,31 @@ void CargaOperando(int8_t tipo, Toperando *a, Componentes *comp){
 
 void Llamada_Disassembler(Componentes comp){
 
-    int fin, inicio , flag = 1, cant_mueve,fin_KS,entrypoint ; // ------------------------------------------------> cant_mueve cantidad quese tiene que mover el IP / inicio : Es de donde empieza el IP si de KS o directamente del CS
+    int fin, inicio , flag = 1, cant_mueve,fin_KS,entrypoint ; // ---------------------------------------------> cant_mueve cantidad quese tiene que mover el IP / inicio : Es de donde empieza el IP si de KS o directamente del CS
     int8_t instruccion;
     TDatos abc;
 
-    printf("Ingresa aca\n");
-
-    printf("LIMITE DEL KS%X \n",comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0]);
-    printf("LIMITE DE CS %X \n",comp.tabladesegmentos [2][0] + comp.tabladesegmentos[2][1]);
-
-    if (comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0] != 0x00)//-------------------------------------------------------------------> Es el KS
+    if (comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0] != 0x00)//---------------------------------> Es el KS
     {
-        printf("Entro al KS\n");
+
     	inicio = comp.registros[KS]; //-----------------------------------------------------------------------> Comienzo desde el Constant segment
-        fin_KS = comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0] + 0x00010000 ;
-        printf("Inicio %X\n",inicio);
-        printf("fin KS %X\n",fin_KS);
+        fin_KS = comp.tabladesegmentos [1][1] + comp.tabladesegmentos[1][0];
 
     }else{
         inicio = comp.registros[CS]; // ----------------------------------------------------------------------> Comienza desde el Code Segment
         fin_KS = comp.registros[CS];
+        TradLogicaFisica(&fin_KS, comp, &flag);
     }
 
-    fin = comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1] + 0x00020000; //--------------------------> El final va a ser el mismo, en el CS
-    printf("FIN FIN %X\n",fin);
+    fin = comp.tabladesegmentos [2][0] + comp.tabladesegmentos[2][1]; //-------------------------------------> El final va a ser el mismo, en el CS
     entrypoint = comp.registros[IP];
     TradLogicaFisica(&inicio,comp,&flag);
     TradLogicaFisica(&entrypoint,comp,&flag);
-    TradLogicaFisica(&fin_KS, comp, &flag);
-    TradLogicaFisica(&fin, comp, &flag);
-    printf("LUEGO DE LA TRADUCCIÓN LÓGICA\n");
-    printf("INICIO : %X\n",inicio);
-    printf("FIN KS : %X\n",fin_KS);
-    printf("FINFINFINFIN : %X\n",fin);
-    printf("FLAG %X", flag);
 
     if(flag)
     {
 
-        printf("Ingresa a mostrar\n");
+
         while(inicio < fin )
         {
             if(inicio >= fin_KS ) //--------------------------------------------------------------> fin_KS es el límite de KS, Entra al CS
@@ -556,9 +536,11 @@ void Llamada_Disassembler(Componentes comp){
        		}else
                 abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // ---------------------------------> Entra al KS
 
+            cant_mueve = 0;
             Disassembler(comp,abc,inicio,&cant_mueve);
         	inicio += cant_mueve; // ------------------------------------------------------------> cant_mueve cantidad quese tiene que mover el IP
-
+        //    printf("CANTIDAD QUE SE MUEVE %d \n", cant_mueve);
+       //     printf("PUNTERO %d \n", inicio);
         }
 
    	 }else

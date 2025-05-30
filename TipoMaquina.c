@@ -16,18 +16,15 @@ void TradLogicaFisica(int *dir, Componentes comp, int *flag)
     int aux;
     int16_t fila;
 
-    printf("-------------------------INGRSA A TRADUCCIÓN LOGICA----------------------------------\n");
     *flag = 1;
-    fila = *dir >> 16 & 0xFFFF; //Segmeneto
-    printf("FILA : %X\n", fila);
+    fila = *dir >> 16 & 0xFFFF;
     aux = (*dir & 0xFFFF);
-    printf("LOS MENOS SIGNIFICATIVOS %X\n",aux);
     aux += comp.tabladesegmentos[fila][0];
     if (fila<FIL && DireccionFisicaValida(aux,fila,comp))
         *dir = aux;
     else
         *flag = 0;
-    printf("-------------------------FIN DE TRADUCCION LOGICA -------------------------------------\n");
+
 }
 
 int LeerMemoria(Componentes comp, int dir, int bytes)
@@ -77,26 +74,26 @@ void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
     int ind=i , terminator = 0x00, ind_cad, cant_caracteres,limite_cadena;
     char cad[8];
 
-    printf("[%04X] %02X ",ind,comp.memoria[ind]);
+    printf("[%04X]",ind,comp.memoria[ind]);
 
     if(abc.OpA == 0x00 &&  abc.OpB == 0x00 && abc.CodOperacion == 0x00 )//-----------------------------> Esta en el KS
     {
+
         ind_cad = 0;
         cant_caracteres = 0;
         while( comp.memoria[ind] != terminator )
         {
-            ind++;
             cant_caracteres ++;
-            if(cant_caracteres == 7)
+            if(cant_caracteres == 6)
 
                 printf(" ..");
 
             else
-                if(cant_caracteres <7)
+                if(cant_caracteres < 6)
 
                     printf(" %02X ",comp.memoria[ind]);
 
-            if(comp.memoria[ind] > 0x30 && comp.memoria[ind]<0x5B )
+            if(comp.memoria[ind] >= 0x30 && comp.memoria[ind]<0x5B )
 
                 cad[ind_cad] = comp.memoria[ind];
 
@@ -105,26 +102,28 @@ void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
                 cad[ind_cad] = '.';
 
             ind_cad ++;
+            ind++;
         }
 
-        for(int u =0;u< 10 - cant_caracteres ;u++)
+        if(comp.memoria[ind] == terminator && cant_caracteres <= 6)
 
-       		 printf("    ");
+            printf("00");
+
+
+
+        for(int u =0;u< 15 - cant_caracteres ;u++)
+
+            printf("    ");
 
         printf(" | ");
-
-        if(comp.memoria[ind] == terminator && cant_caracteres == 7 )
-
-            printf(" 00");
-
-        cad[ind_cad] = '\0';
-        printf(" %s \n",cad);
+        cad[ind_cad] = 0x00;
+        printf("''%s''\n",cad);
         *cant_mueve = cant_caracteres+1;
-
 
     }else{ // ------------------------------------------------------------------------> // Esta en el CodeSegment
 
     	auxa=auxb=0X0;
+    	printf(" %02X ",comp.memoria[ind]);
         Op_AB(abc.OpB,comp,&auxb,&ind);
     	Op_AB(abc.OpA,comp,&auxa,&ind);
 
