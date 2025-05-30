@@ -718,6 +718,8 @@ void push(Toperando op, Componentes *comp)
             ValorOperando(op, &valor, comp);
             propagar_signo(&valor, op);
             InsertaMemoria(comp, dir, valor, 4);
+            //for (int i=0;i<4;i++)
+                //printf("%x\n",comp->memoria[dir+i]);
         }
         else
             comp->error = 3;
@@ -760,6 +762,7 @@ void call(Toperando op, Componentes *comp)
         TradLogicaFisica(&dir, *comp, &flag);
         if(flag)
         {
+            printf("LO QUE GUARDA CALL EN LA PILA ES: %x\n",comp->registros[IP]);
             InsertaMemoria(comp, dir, comp->registros[IP], 4);
             JMP(op, comp);
         }
@@ -796,6 +799,7 @@ void ret(Componentes *comp)
 
             comp->registros[IP] = aux;
             comp->registros[SP] += 4;
+            printf("IP DESPUES DEL RET: %x\n",comp->registros[IP]);
         }
         else
             comp->error = 3;

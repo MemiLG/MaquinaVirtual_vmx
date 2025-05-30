@@ -67,12 +67,12 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                         puntparam[cantparam] = dir;
                         cantparam++;
                         while(argv[i][j]){
-                            InsertaMemoria(&comp,dir,argv[i][j],1);
+                            comp.memoria[dir] = argv[i][j];
                             tamparam++;
                             dir +=1;
                             j++;
                         }
-                        InsertaMemoria(&comp,dir,0,1);
+                        comp.memoria[dir] = argv[i][j];
                         tamparam++;
                         dir +=1;
                     }
@@ -110,13 +110,15 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         printf("\n");
 	}
 
-    for (int i=0; i<200; i++){
-        printf("%x\t",comp.memoria[i]);
-    }
-
 	push(pargv,&comp);
 	push(pargc,&comp);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
+
+	for (int i=0; i<207; i++){
+        printf("%x\t",comp.memoria[i]);
+    }
+    printf("\n");
+
 
     if (boodisassembler && comp.error == 0)
         Llamada_Disassembler(comp);
@@ -128,6 +130,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         //printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
+        printf("ERROR AL COMIENZO: %d\n", IP_no_caido);
         if (IP_no_caido){
 
             instruccion = comp.memoria[dirip];
@@ -143,12 +146,18 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-           // printf("operador: %X\n", abc.CodOperacion);
+            printf("operador: %X\n", abc.CodOperacion);
             //printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
             //printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
+            printf("Error: %d\n", comp.error);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
+            printf("EBX: %x\n", comp.registros[EBX]);
+            for (int i=106; i<207; i++){
+                printf("%x\t",comp.memoria[i]);
+            }
+            printf("\n");
         }
 
 	}
