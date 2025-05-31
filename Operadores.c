@@ -721,8 +721,10 @@ void push(Toperando op, Componentes *comp)
             ValorOperando(op, &valor, comp);
             propagar_signo(&valor, op);
             InsertaMemoria(comp, dir, valor, 4);
-            //for (int i=0;i<4;i++)
-                //printf("%x\n",comp->memoria[dir+i]);
+            printf("------------------------------------------ push \n");
+            for (int i=0;i<4;i++)
+                printf("%x\n",comp->memoria[dir+i]);
+            printf("------------------------------------------ fin push \n");
         }
         else
             comp->error = 3;

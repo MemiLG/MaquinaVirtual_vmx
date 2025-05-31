@@ -2,69 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+	<File name="Operadores.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4185" topLine="131" />
-		</Cursor>
-		<Folding>
-			<Collapse line="192" />
-			<Collapse line="204" />
-			<Collapse line="270" />
-			<Collapse line="463" />
-			<Collapse line="475" />
-			<Collapse line="505" />
-			<Collapse line="580" />
-		</Folding>
-	</File>
-	<File name="Operadores.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="712" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Cabecera.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="335" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Cabecera.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="186" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="TipoMaquina.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1560" topLine="24" />
-		</Cursor>
-	</File>
-	<File name="TipoMaquina.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="-3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5815" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="6" />
-			<Collapse line="30" />
-			<Collapse line="48" />
-			<Collapse line="58" />
-			<Collapse line="69" />
-			<Collapse line="152" />
-			<Collapse line="193" />
-			<Collapse line="262" />
-			<Collapse line="265" />
-			<Collapse line="268" />
-			<Collapse line="271" />
-			<Collapse line="274" />
-			<Collapse line="277" />
-			<Collapse line="280" />
-			<Collapse line="283" />
-			<Collapse line="286" />
-			<Collapse line="289" />
-			<Collapse line="292" />
-			<Collapse line="295" />
-		</Folding>
-	</File>
-	<File name="Operadores.c" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2519" topLine="78" />
+			<Cursor1 position="18676" topLine="501" />
 		</Cursor>
 		<Folding>
 			<Collapse line="261" />
@@ -82,5 +22,62 @@
 			<Collapse line="614" />
 			<Collapse line="628" />
 		</Folding>
+	</File>
+	<File name="Cabecera.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="186" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5458" topLine="131" />
+		</Cursor>
+		<Folding>
+			<Collapse line="193" />
+			<Collapse line="205" />
+			<Collapse line="271" />
+			<Collapse line="464" />
+			<Collapse line="476" />
+			<Collapse line="506" />
+			<Collapse line="581" />
+		</Folding>
+	</File>
+	<File name="Cabecera.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="335" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Operadores.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="712" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="TipoMaquina.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1572" topLine="17" />
+		</Cursor>
+		<Folding>
+			<Collapse line="6" />
+			<Collapse line="30" />
+			<Collapse line="48" />
+			<Collapse line="194" />
+			<Collapse line="263" />
+			<Collapse line="266" />
+			<Collapse line="269" />
+			<Collapse line="272" />
+			<Collapse line="275" />
+			<Collapse line="278" />
+			<Collapse line="281" />
+			<Collapse line="284" />
+			<Collapse line="287" />
+			<Collapse line="290" />
+			<Collapse line="293" />
+			<Collapse line="296" />
+		</Folding>
+	</File>
+	<File name="TipoMaquina.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1560" topLine="24" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
