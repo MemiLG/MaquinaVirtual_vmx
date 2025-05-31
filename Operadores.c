@@ -409,6 +409,7 @@ void MOV(Toperando a, Toperando b, Componentes *comp)
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
+
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)
@@ -785,7 +786,6 @@ void ret(Componentes *comp)
     int dir, flag, aux=0, i, tamanio;
 
     tamanio = 0x00050000 + comp->tabladesegmentos[5][1];
-
     //printf("Error ret: %d", comp->error);
     //printf("SP: %X\n", comp->registros[SP]);
     if(comp->registros[SP] > tamanio) //Si no esta vacia
