@@ -130,7 +130,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         //printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
-        printf("ERROR AL COMIENZO: %d\n", IP_no_caido);
+        printf("IP_no_caido pre ejecucion: %d\n", IP_no_caido);
+        printf("IP pre ejecucion: %X\n", comp.registros[IP]);
         if (IP_no_caido){
 
             instruccion = comp.memoria[dirip];
@@ -150,13 +151,12 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             //printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
             //printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
-            printf("Error: %d\n", comp.error);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
-            printf("EBX: %x\n", comp.registros[EBX]);
-            for (int i=106; i<207; i++){
-                printf("%x\t",comp.memoria[i]);
-            }
+           // printf("EBX: %x\n", comp.registros[EBX]);
+           // for (int i=106; i<207; i++)
+               // printf("%x\t",comp.memoria[i]);
+
             printf("\n");
         }
 

@@ -104,3 +104,38 @@
 	"TipoMaquina.h"
 	"Cabecera.h"
 
+1748691044 source:c:\users\geren\onedrive\documentos\joaco\mv\maquinavirtual_vmx\cabecera.c
+	<string.h>
+	"Cabecera.h"
+
+1748691044 c:\users\geren\onedrive\documentos\joaco\mv\maquinavirtual_vmx\cabecera.h
+	<stdint.h>
+	<string.h>
+
+1748691044 source:c:\users\geren\onedrive\documentos\joaco\mv\maquinavirtual_vmx\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	"Operadores.h"
+	"TipoMaquina.h"
+	"Cabecera.h"
+
+1748691044 c:\users\geren\onedrive\documentos\joaco\mv\maquinavirtual_vmx\operadores.h
+	"TipoMaquina.h"
+
+1748691044 c:\users\geren\onedrive\documentos\joaco\mv\maquinavirtual_vmx\tipomaquina.h
+	<stdint.h>
+
+1748691044 source:c:\users\geren\onedrive\documentos\joaco\mv\maquinavirtual_vmx\tipomaquina.c
+	<stdio.h>
+	<stdlib.h>
+	"TipoMaquina.h"
+
+1748693759 source:c:\users\geren\onedrive\documentos\joaco\mv\maquinavirtual_vmx\operadores.c
+	<stdio.h>
+	<stdlib.h>
+	"Operadores.h"
+	"TipoMaquina.h"
+	<stdint.h>
+

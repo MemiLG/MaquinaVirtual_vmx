@@ -50,9 +50,11 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
                 switch(tamanio)
                 {
                     case 2: *aux &= 0xFFFF;
+                            *aux = *aux << 16 >> 16;
                     break;
 
                     case 3: *aux &= 0xFF;
+                            *aux = *aux << 24 >> 24;
                     break;
                 }
 			}
