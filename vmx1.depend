@@ -20,12 +20,12 @@
 1748091067 c:\arqui\mv\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
-1748626586 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c
+1748706044 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c
 	<stdio.h>
 	<stdlib.h>
 	"TipoMaquina.h"
 
-1748639822 source:c:\arqui\mv\maquinavirtual_vmx\main.c
+1748706044 source:c:\arqui\mv\maquinavirtual_vmx\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>

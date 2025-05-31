@@ -133,8 +133,7 @@ void propagar_signo(int *valor, Toperando op)
                     break;
 
                     //AH (3er byte)
-                    case 2: byte = 2;
-                            *valor &= 0xFFFFFF00;
+                    case 2: byte = 1;
                     break;
 
                     //AX (2 bytes)
