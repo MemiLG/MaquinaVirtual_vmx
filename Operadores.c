@@ -290,7 +290,7 @@ void string_write(Componentes *comp)
 {
 
 	int i=0, dir, no_error, caracter; // cant_carmax : Cantidad de caracteres máximos ; dir : Desde donde se comienza a guardar la cadena
-	char cadena[60], final_final =0x00, salto='\n';
+	char cadena[60], final_final =0x00, salto=0x0A;
 
 	dir = (*comp).registros[EDX]; //-------------------------------------> Donde inicia la cadena
 	TradLogicaFisica(&dir, *comp, &no_error);
@@ -300,21 +300,21 @@ void string_write(Componentes *comp)
 
         printf("[%04X] ",dir);
 		caracter = LeerMemoria(*comp,dir,1);
-		while(caracter != final_final)
+		while(caracter != final_final && caracter != salto)
 		{
 
 			cadena[i] = caracter;
-			caracter = LeerMemoria(*comp,dir,1);
 			dir++;
 			i++;
+			caracter = LeerMemoria(*comp,dir,1);
 
 		}
 		cadena[i]=final_final;
 		printf(" ''%s '' ",cadena);
-		dir++;
-		caracter = LeerMemoria(*comp,dir,1);
-		if(caracter == salto)
-			printf("\n");
+		//dir++;
+		//caracter = LeerMemoria(*comp,dir,1);
+		//if(caracter == salto)
+			//printf("\n");
 
 	}else
 		(*comp).error = 3;

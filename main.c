@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	push(pargc,&comp);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
-	for (int i=0; i<207; i++){
+	for (int i=0; i<550; i++){
         printf("%x\t",comp.memoria[i]);
     }
     printf("\n");
@@ -155,8 +155,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 breakpoint(&comp);
            // printf("EBX: %x\n", comp.registros[EBX]);
            // printf("--->BP %X \n",comp.registros[BP]);
-            //for (int i=106; i<207; i++)
-               // printf("%x\t",comp.memoria[i]);
+            //for (int i=106; i<550; i++)
+                //printf("%x\t",comp.memoria[i]);
 
            // printf("\n");
         }
@@ -308,10 +308,13 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         aux = comp->tamanio - cab.TamanioCodigo;
                         setTamanioDS(comp,aux);
                         i=0;
+                        printf("LECTURA DE ARCHIVO\n");
                         while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
                             (*comp).memoria[i] = lect;
+                            printf("lectura : %X\n", lect);
                             i++;
                         }
+                        printf("FIN LECTURA DE ARCHIVO\n");
                     }
                     else
                         comp->error = 5;
