@@ -7,7 +7,7 @@ int DireccionFisicaValida(int dir, int16_t fila, Componentes comp)
 {
     int tamanio=0;
 
-    tamanio = comp.tabladesegmentos[fila][0] + comp.tabladesegmentos[fila][1];
+    tamanio = comp.tabladesegmentos[fila][0] + comp.tabladesegmentos[fila][1] + (fila << 16);
     return (dir<=tamanio && dir>=comp.tabladesegmentos[fila][0]);
 }
 
@@ -60,7 +60,7 @@ void InsertaMemoria(Componentes *comp,int dir,int dato, int byte)
 int i, aux = 0;
     for (i=0;i<byte;i++){
         aux = (dato>>(24-i*8)) & 0xFF;
-        printf("AUX DE INSERTA MEMORIA %X\n", aux);
+        //printf("AUX DE INSERTA MEMORIA %X\n", aux);
         (*comp).memoria[dir+i] = aux;
     }
 }

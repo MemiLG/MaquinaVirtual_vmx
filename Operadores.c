@@ -100,7 +100,7 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
                 dir = (*comp).registros[CodReg]; //puntero contenido por el registro
-                dir += a.operando >> 8 & 0xFFFF; //Le sumo el offset del operando
+                dir += (dir + a.operando >> 8 & 0xFFFF) & 0xFFFF; //Le sumo el offset del operando
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
                 {
@@ -408,7 +408,7 @@ void MOV(Toperando a, Toperando b, Componentes *comp)
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
-
+    printf("Error asignaValor: %d\n", comp->error);
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)
@@ -720,10 +720,10 @@ void push(Toperando op, Componentes *comp)
             ValorOperando(op, &valor, comp);
             propagar_signo(&valor, op);
             InsertaMemoria(comp, dir, valor, 4);
-            printf("------------------------------------------ push \n");
+           /* printf("------------------------------------------ push \n");
             for (int i=0;i<4;i++)
                 printf("%x\n",comp->memoria[dir+i]);
-            printf("------------------------------------------ fin push \n");
+            printf("------------------------------------------ fin push \n");*/
         }
         else
             comp->error = 3;
