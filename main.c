@@ -308,13 +308,10 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         aux = comp->tamanio - cab.TamanioCodigo;
                         setTamanioDS(comp,aux);
                         i=0;
-                        printf("LECTURA DE ARCHIVO\n");
                         while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
                             (*comp).memoria[i] = lect;
-                            printf("lectura : %X\n", lect);
                             i++;
                         }
-                        printf("FIN LECTURA DE ARCHIVO\n");
                     }
                     else
                         comp->error = 5;
