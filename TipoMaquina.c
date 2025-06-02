@@ -60,7 +60,6 @@ void InsertaMemoria(Componentes *comp,int dir,int dato, int byte)
 int i, aux = 0;
     for (i=0;i<byte;i++){
         aux = (dato>>(24-i*8)) & 0xFF;
-        printf("AUX DE INSERTA MEMORIA %X\n", aux);
         (*comp).memoria[dir+i] = aux;
     }
 }

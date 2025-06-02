@@ -110,7 +110,7 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
                 dir = (*comp).registros[CodReg]; //puntero contenido por el registro
-                dir += (dir + a.operando >> 8 & 0xFFFF) & 0xFFFF; //Le sumo el offset del operando
+                dir += (a.operando >> 8 & 0xFFFF);//Le sumo el offset del operando
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
                 {
@@ -200,15 +200,12 @@ void imprime(Componentes *comp)
         tamanio_ch =( (*comp).registros[ECX] >> 8 ) & 0xFF ;
         formato = (*comp).registros[EAX] & 0xFF ;
 
-        printf("-----------VALOR DE ECX: %x\n", (*comp).registros[ECX]);
-        printf("------------VALOR DE EAX %x\n", (*comp).registros[EAX]);
 
         for( i=0 ; i < cantidad_cl ; i++)
         {
 
             printf("[%04X] : ",ind);
             nro= LeerMemoria(*comp, ind , tamanio_ch);//Devuelve numero de 32 bits
-            printf("------------ VALOR NRO : %x\n", nro);
             if((formato & 0x01) == 0x01 ) //Decimal
 
                 printf("%d\t", nro);
@@ -311,7 +308,7 @@ void string_write(Componentes *comp)
 	if(no_error)
 	{
 
-        printf("[%04X] ",dir);
+        //printf("[%04X] ",dir);
 		caracter = LeerMemoria(*comp,dir,1);
 		while(caracter != final_final && caracter != salto)
 		{
@@ -421,7 +418,6 @@ void MOV(Toperando a, Toperando b, Componentes *comp)
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
-    printf("Error asignaValor: %d\n", comp->error);
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)
@@ -444,14 +440,11 @@ void SUB(Toperando a, Toperando b, Componentes *comp)
     int ValorA, ValorB, res;
 
     ValorOperando(a, &ValorA, comp);
-    printf("--------------------Valor de A en sub: %d\n", ValorA);
     ValorOperando(b, &ValorB, comp);
-    printf("--------------------Valor de B en sub: %d\n", ValorB);
 
     if ((*comp).error == 0)
     {
         res = ValorA - ValorB;
-        printf("----------------------Respuesta del sub: %d\n", res);
         asignaValor(a, res, comp);
         modificaCC(comp, res);
     }
@@ -782,7 +775,6 @@ void call(Toperando op, Componentes *comp)
         TradLogicaFisica(&dir, *comp, &flag);
         if(flag)
         {
-            printf("LO QUE GUARDA CALL EN LA PILA ES: %x\n",comp->registros[IP]);
             InsertaMemoria(comp, dir, comp->registros[IP], 4);
             JMP(op, comp);
         }
@@ -818,7 +810,6 @@ void ret(Componentes *comp)
 
             comp->registros[IP] = aux;
             comp->registros[SP] += 4;
-            printf("IP DESPUES DEL RET: %x\n",comp->registros[IP]);
         }
         else
             comp->error = 3;

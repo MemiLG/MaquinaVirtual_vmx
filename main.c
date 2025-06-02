@@ -104,20 +104,20 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	pargc.operando = cantparam;
 	fin.operando = -1;
 
-	for (int i=0; i<6; i++){
+	/*for (int i=0; i<6; i++){
         for(int j=0;j<2;j++)
             printf("%d\t",comp.tabladesegmentos[i][j]);
         printf("\n");
-	}
+	}*/
 
 	push(pargv,&comp);
 	push(pargc,&comp);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
-	for (int i=0; i<207; i++){
+	/*for (int i=0; i<207; i++){
         printf("%x\t",comp.memoria[i]);
     }
-    printf("\n");
+    printf("\n");*/
 
 
     if (boodisassembler && comp.error == 0)
@@ -147,18 +147,18 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            printf("operador: %X\n", abc.CodOperacion);
+            //printf("operador: %X\n", abc.CodOperacion);
             //printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
             //printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
-            printf("EBX: %x\n", comp.registros[EBX]);
+           // printf("EBX: %x\n", comp.registros[EBX]);
            // printf("--->BP %X \n",comp.registros[BP]);
-            for (int i=106; i<207; i++)
-                printf("%x\t",comp.memoria[i]);
+            //for (int i=106; i<207; i++)
+               // printf("%x\t",comp.memoria[i]);
 
-            printf("\n");
+           // printf("\n");
         }
 
 	}
