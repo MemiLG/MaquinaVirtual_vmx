@@ -7,7 +7,7 @@
 	<stdint.h>
 	<string.h>
 
-1748638458 source:c:\arqui\mv\maquinavirtual_vmx\operadores.c
+1748820379 source:c:\arqui\mv\maquinavirtual_vmx\operadores.c
 	<stdio.h>
 	<stdlib.h>
 	"Operadores.h"
@@ -20,12 +20,12 @@
 1748091067 c:\arqui\mv\maquinavirtual_vmx\tipomaquina.h
 	<stdint.h>
 
-1748706044 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c
+1748754121 source:c:\arqui\mv\maquinavirtual_vmx\tipomaquina.c
 	<stdio.h>
 	<stdlib.h>
 	"TipoMaquina.h"
 
-1748706044 source:c:\arqui\mv\maquinavirtual_vmx\main.c
+1748759342 source:c:\arqui\mv\maquinavirtual_vmx\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>

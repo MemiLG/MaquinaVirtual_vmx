@@ -46,7 +46,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 			TradLogicaFisica(&pos2, *comp,&fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);
-                tamanio = op.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
+                tamanio = (~op.operando) & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
                 switch(tamanio)
                 {
                     case 2: *aux &= 0xFFFF;
@@ -84,15 +84,15 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
                     break;
 
                     //AL (4to byte)
-                    case 1: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFFFF00 ^ ValorB & 0xFF;
+                    case 1: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFFFF00 ^ ((ValorB >> 24) & 0xFF);
                     break;
 
                     //AH (3er byte)
-                    case 2: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF00FF ^ (ValorB & 0xFF)<<8;
+                    case 2: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF00FF ^ ((ValorB >> 24) & 0xFF)<<8;
                     break;
 
                     //AX (2 bytes)
-                    case 3: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF0000 ^ ValorB & 0xFFFF;
+                    case 3: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF0000 ^ ((ValorB >> 16) & 0xFFFF);
                     break;
                  }
         break;
@@ -190,12 +190,15 @@ void imprime(Componentes *comp)
         tamanio_ch =( (*comp).registros[ECX] >> 8 ) & 0xFF ;
         formato = (*comp).registros[EAX] & 0xFF ;
 
+        printf("-----------VALOR DE ECX: %x\n", (*comp).registros[ECX]);
+        printf("------------VALOR DE EAX %x\n", (*comp).registros[EAX]);
 
         for( i=0 ; i < cantidad_cl ; i++)
         {
 
             printf("[%04X] : ",ind);
             nro= LeerMemoria(*comp, ind , tamanio_ch);//Devuelve numero de 32 bits
+            printf("------------ VALOR NRO : %x\n", nro);
             if((formato & 0x01) == 0x01 ) //Decimal
 
                 printf("%d\t", nro);
