@@ -68,7 +68,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 
 void asignaValor(Toperando a, int ValorB, Componentes *comp)
 {
-    int dir, flag;
+    int dir, flag, i=0;
     int8_t CodReg, SecReg, tamanio;
 
     switch(a.tipo)
@@ -84,15 +84,25 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
                     break;
 
                     //AL (4to byte)
-                    case 1: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFFFF00 ^ ((ValorB >> 24) & 0xFF);
+                    case 1:
+                        while(i<4 && (ValorB & 0xFF)== 0){
+                            ValorB = ValorB >> 8;
+                            i++;
+                        }
+                        (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFFFF00 ^ ((ValorB) & 0xFF);
                     break;
 
                     //AH (3er byte)
-                    case 2: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF00FF ^ ((ValorB >> 24) & 0xFF)<<8;
+                    case 2:
+                        while(i<4 && (ValorB & 0xFF)== 0){
+                            ValorB = ValorB >> 8;
+                            i++;
+                        }
+                        (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF00FF ^ ((ValorB) & 0xFF)<<8;
                     break;
 
                     //AX (2 bytes)
-                    case 3: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF0000 ^ ((ValorB >> 16) & 0xFFFF);
+                    case 3: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF0000 ^ ((ValorB) & 0xFFFF);
                     break;
                  }
         break;
@@ -105,7 +115,7 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
                 if(flag)
                 {
                     tamanio = a.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
-                    InsertaMemoria(comp, dir+tamanio, ValorB, 4-tamanio);
+                    InsertaMemoria(comp, dir, ValorB, 4-tamanio);
                 }
                 else
                     (*comp).error = 3;
@@ -434,11 +444,14 @@ void SUB(Toperando a, Toperando b, Componentes *comp)
     int ValorA, ValorB, res;
 
     ValorOperando(a, &ValorA, comp);
+    printf("--------------------Valor de A en sub: %d\n", ValorA);
     ValorOperando(b, &ValorB, comp);
+    printf("--------------------Valor de B en sub: %d\n", ValorB);
 
     if ((*comp).error == 0)
     {
         res = ValorA - ValorB;
+        printf("----------------------Respuesta del sub: %d\n", res);
         asignaValor(a, res, comp);
         modificaCC(comp, res);
     }
