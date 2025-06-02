@@ -111,6 +111,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	}*/
 
 	push(pargv,&comp);
+	printf("1 - push error: %d\n", comp.error);
 	push(pargc,&comp);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
@@ -147,7 +148,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            //printf("operador: %X\n", abc.CodOperacion);
+            printf("Operador: %X\n", abc.CodOperacion);
             //printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
             //printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
