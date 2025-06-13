@@ -127,21 +127,17 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	while (comp.error == 0 && IP_no_caido)
     {
 
-        //m++;
+        m++;
         //printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
-       // printf("IP_no_caido pre ejecucion: %d\n", IP_no_caido);
-       // printf("IP pre ejecucion: %X\n", comp.registros[IP]);
+
         if (IP_no_caido){
 
             instruccion = comp.memoria[dirip];
             abc = obtener_abc(instruccion);
             comp.registros[IP] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
-            //printf("Instruccion pasada: %x\n",instruccion);
-            //printf("Operador a: %x\n", abc.OpA);
-            //printf("Operador b: %x\n", abc.OpB);
             if(abc.OpB!=0)
                 CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
 
@@ -149,9 +145,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
             printf("Operador: %X\n", abc.CodOperacion);
-            //printf("Tipo opA: %d   operando: %d\n", A.tipo, A.operando);
-            //printf("Tipo opB: %d   operando: %d\n", B.tipo, B.operando);
             EjecutarOperacion(abc,A,B,&comp);
+            printf("EAX pos ejecucion: %X\n", comp.registros[EAX]);
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
            // printf("EBX: %x\n", comp.registros[EBX]);
@@ -163,6 +158,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         }
 
 	}
+	printf("Iteracion n: %d\n", m);
 
 
 	if (comp.error == 1 )

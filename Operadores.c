@@ -22,7 +22,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 			}
 			else if (segmento == 0b10){ //toma el 3er byte AH
 				*aux = (*aux>>8)& 0xFF;
-				des = 16;
+				des = 24;
 			}
 			else if (segmento == 0b11){ //registro de 2 bytes (dos ultimos bytes)
 				*aux = *aux & 0xFFFF;
@@ -42,19 +42,19 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 		case 0b11:
 		    pos = (op.operando>>4)& 0xF;
             pos2 = comp->registros[pos];
-			pos2 += (op.operando>>8)& 0xFFFF;
+			pos2 = ((((op.operando>>8)& 0xFFFF) + pos2) & 0xFFFF) + (pos2 & 0xFFFF0000);
 			TradLogicaFisica(&pos2, *comp,&fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);
-                tamanio = (~op.operando) & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
+                tamanio = op.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
                 switch(tamanio)
                 {
-                    case 2: *aux &= 0xFFFF;
-                            *aux = *aux << 16 >> 16;
+                    case 2: *aux &= 0xFFFF0000;
+                            *aux = *aux >> 16;
                     break;
 
-                    case 3: *aux &= 0xFF;
-                            *aux = *aux << 24 >> 24;
+                    case 3: *aux &= 0xFF000000;
+                            *aux = *aux >> 24;
                     break;
                 }
 			}
@@ -68,7 +68,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 
 void asignaValor(Toperando a, int ValorB, Componentes *comp)
 {
-    int dir, flag, i=0;
+    int dir, flag;
     int8_t CodReg, SecReg, tamanio;
 
     switch(a.tipo)
@@ -84,25 +84,15 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
                     break;
 
                     //AL (4to byte)
-                    case 1:
-                        while(i<4 && (ValorB & 0xFF)== 0){
-                            ValorB = ValorB >> 8;
-                            i++;
-                        }
-                        (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFFFF00 ^ ((ValorB) & 0xFF);
+                    case 1: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFFFF00 ^ ValorB & 0xFF;
                     break;
 
                     //AH (3er byte)
-                    case 2:
-                        while(i<4 && (ValorB & 0xFF)== 0){
-                            ValorB = ValorB >> 8;
-                            i++;
-                        }
-                        (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF00FF ^ ((ValorB) & 0xFF)<<8;
+                    case 2: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF00FF ^ (ValorB & 0xFF)<<8;
                     break;
 
                     //AX (2 bytes)
-                    case 3: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF0000 ^ ((ValorB) & 0xFFFF);
+                    case 3: (*comp).registros[CodReg] = (*comp).registros[CodReg] & 0xFFFF0000 ^ ValorB & 0xFFFF;
                     break;
                  }
         break;
@@ -111,9 +101,7 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
         case 3: CodReg = a.operando >> 4 & 0xF;
                 dir = (*comp).registros[CodReg]; //puntero contenido por el registro
                 dir = ((dir + (a.operando >> 8 & 0xFFFF)) & 0xFFFF) + (dir & 0xFFFF0000);//Le sumo el offset del operando
-                printf("Direccion logica: %X\n", dir);
                 TradLogicaFisica(&dir, *comp, &flag);
-                printf("Direccion fisica: %X\n", dir);
                 if(flag)
                 {
                     tamanio = a.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
@@ -729,7 +717,9 @@ void push(Toperando op, Componentes *comp)
         if(flag)
         {
             ValorOperando(op, &valor, comp);
+            printf("Valor en el push pre propagacion de signo: %X\n", valor);
             propagar_signo(&valor, op);
+            printf("Valor en el push pos propagacion de signo: %X\n", valor);
             InsertaMemoria(comp, dir, valor, 4);
            /* printf("------------------------------------------ push \n");
             for (int i=0;i<4;i++)
@@ -755,7 +745,7 @@ void pop(Toperando op, Componentes *comp)
         TradLogicaFisica(&dir, *comp, &flag);
         if(flag)
         {
-            op_aux = (*comp).memoria[dir];
+            op_aux = LeerMemoria(*comp, dir, 4);
             asignaValor(op, op_aux, comp);
             comp->registros[SP] += 4;
         }
@@ -768,6 +758,7 @@ void call(Toperando op, Componentes *comp)
 {
     int dir, flag;
 
+    printf("Direccion SP en el call: %d\n", comp->registros[SP]);
     if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
         comp->error = 6;
     else
@@ -797,8 +788,7 @@ void ret(Componentes *comp)
     int dir, flag, aux=0, i, tamanio;
 
     tamanio = 0x00050000 + comp->tabladesegmentos[5][1];
-    //printf("Error ret: %d", comp->error);
-    //printf("SP: %X\n", comp->registros[SP]);
+
     if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;
     else
@@ -816,5 +806,4 @@ void ret(Componentes *comp)
         else
             comp->error = 3;
     }
-   // printf("Error ret: %d", comp->error);
 }
