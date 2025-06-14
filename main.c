@@ -408,17 +408,17 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         }
                         else {
                             i=1;
-                            while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag && i<comp->tabladesegmentos[2][1]){
+                            while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag && i<=comp->tabladesegmentos[2][1]){
                                 comp->memoria[dir] = lect;
                                 dir+=1;
                                 i++;
                             }
                             dir = 0x00010000;
                             TradLogicaFisica(&dir,*comp,&flag);
-                            while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag){
+                            do{
                                 comp->memoria[dir] = lect;
                                 dir+=1;
-                            }
+                            }while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag);
                         }
                     }
                     else
