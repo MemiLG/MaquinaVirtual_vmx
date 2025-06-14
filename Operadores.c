@@ -717,9 +717,7 @@ void push(Toperando op, Componentes *comp)
         if(flag)
         {
             ValorOperando(op, &valor, comp);
-            printf("Valor en el push pre propagacion de signo: %X\n", valor);
             propagar_signo(&valor, op);
-            printf("Valor en el push pos propagacion de signo: %X\n", valor);
             InsertaMemoria(comp, dir, valor, 4);
            /* printf("------------------------------------------ push \n");
             for (int i=0;i<4;i++)

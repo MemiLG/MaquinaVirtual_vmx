@@ -41,8 +41,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	Componentes comp;
 	Toperando A, B, pargv, pargc, fin;
 	int8_t instruccion ;
-	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad, m=0;
+	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad, m=0, flag;
 	uint16_t tamparam = 0;
+	int dir2;
 
 
 	IniciaComponentes(&comp);
@@ -147,14 +148,17 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             printf("Operador: %X\n", abc.CodOperacion);
             EjecutarOperacion(abc,A,B,&comp);
             printf("EAX pos ejecucion: %X\n", comp.registros[EAX]);
+
+            dir2 = comp.registros[BP];
+            if(m>110)
+            {
+                TradLogicaFisica(&dir2, comp, &flag);
+                printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));
+            }
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
-           // printf("EBX: %x\n", comp.registros[EBX]);
-           // printf("--->BP %X \n",comp.registros[BP]);
             //for (int i=106; i<207; i++)
                // printf("%x\t",comp.memoria[i]);
-
-           // printf("\n");
         }
 
 	}
