@@ -5,6 +5,17 @@
 #include <stdint.h> //para usar int8_t
 
 //--------------------Funciones extras--------------------
+/*void InsertaMemoria2(Componentes *comp, int dir, int dato, int tamanio)
+{
+    int i, aux=0;
+
+    for (i=0; i<tamanio; i++)
+    {
+        aux = dato >> ((tamanio-1)*8 - i*8) & 0xFF;
+        (*comp).memoria[dir + i] = aux;
+    }
+}*/
+
 void ValorOperando(Toperando op, int *aux, Componentes *comp)
 {
     int8_t segmento, tamanio;
@@ -42,7 +53,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 		case 0b11:
 		    pos = (op.operando>>4)& 0xF;
             pos2 = comp->registros[pos];
-			pos2 = ((((op.operando>>8)& 0xFFFF) + pos2) & 0xFFFF) + (pos2 & 0xFFFF0000);
+			pos2 = ((op.operando>>8)& 0xFFFF) + pos2;
 			TradLogicaFisica(&pos2, *comp,&fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);
@@ -100,7 +111,7 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
                 dir = (*comp).registros[CodReg]; //puntero contenido por el registro
-                dir = ((dir + (a.operando >> 8 & 0xFFFF)) & 0xFFFF) + (dir & 0xFFFF0000);//Le sumo el offset del operando
+                dir += a.operando >> 8 & 0xFFF;//Le sumo el offset del operando
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
                 {
@@ -111,46 +122,6 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
                     (*comp).error = 3;
         break;
     }
-}
-
-void propagar_signo(int *valor, Toperando op)
-{
-    int8_t des, byte, SecReg;
-
-    switch(op.tipo)
-    {
-        //De registro
-        case 1:  SecReg = op.operando >> 2 & 0x3;
-
-                 switch(SecReg)
-                 {
-                    //EAX (los 4 bytes)
-                    case 0: byte = 4;
-                    break;
-
-                    //AL (4to byte)
-                    case 1: byte = 1;
-                    break;
-
-                    //AH (3er byte)
-                    case 2: byte = 1;
-                    break;
-
-                    //AX (2 bytes)
-                    case 3: byte = 2;
-                    break;
-                 }
-        break;
-
-        //Inmediato
-        case 2: byte = 2;
-
-        //Memoria
-        case 3: byte = 3;
-    }
-
-    des = (4-byte)*8;
-    *valor = (*valor << des) >> des;
 }
 
 void leer(Componentes *comp)
@@ -717,7 +688,6 @@ void push(Toperando op, Componentes *comp)
         if(flag)
         {
             ValorOperando(op, &valor, comp);
-            propagar_signo(&valor, op);
             InsertaMemoria(comp, dir, valor, 4);
            /* printf("------------------------------------------ push \n");
             for (int i=0;i<4;i++)

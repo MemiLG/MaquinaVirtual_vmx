@@ -23,7 +23,6 @@
 //--------Funciones extras--------
 void ValorOperando(Toperando ,int * ,Componentes *);
 void asignaValor(Toperando , int , Componentes *);
-void propagar_signo(int *, Toperando );
 void imprime(Componentes *);
 void leer(Componentes *);
 void breakpoint(Componentes *);

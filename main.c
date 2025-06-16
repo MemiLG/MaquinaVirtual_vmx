@@ -139,22 +139,32 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             abc = obtener_abc(instruccion);
             comp.registros[IP] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
+            printf("----------------------------------------------\n");
+            dir2 = comp.registros[BP];
+            printf("comp.reg: %X\n", comp.registros[BP]);
+            printf("dir2: %X\n", dir2);
+            if(m > 110)
+                printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));
             if(abc.OpB!=0)
                 CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
 
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
+            if(m > 110)
+                printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));
             printf("Operador: %X\n", abc.CodOperacion);
             EjecutarOperacion(abc,A,B,&comp);
-            printf("EAX pos ejecucion: %X\n", comp.registros[EAX]);
 
             dir2 = comp.registros[BP];
             if(m>110)
             {
                 TradLogicaFisica(&dir2, comp, &flag);
+                printf("SP: %X\n", comp.registros[SP]);
+                printf("BP: %X\n", comp.registros[BP]);
                 printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));
             }
+            printf("----------------------------------------------\n");
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
             //for (int i=106; i<207; i++)
