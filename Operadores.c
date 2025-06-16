@@ -5,17 +5,6 @@
 #include <stdint.h> //para usar int8_t
 
 //--------------------Funciones extras--------------------
-/*void InsertaMemoria2(Componentes *comp, int dir, int dato, int tamanio)
-{
-    int i, aux=0;
-
-    for (i=0; i<tamanio; i++)
-    {
-        aux = dato >> ((tamanio-1)*8 - i*8) & 0xFF;
-        (*comp).memoria[dir + i] = aux;
-    }
-}*/
-
 void ValorOperando(Toperando op, int *aux, Componentes *comp)
 {
     int8_t segmento, tamanio;

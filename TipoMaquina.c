@@ -55,15 +55,6 @@ void modificaCC(Componentes *comp, int num)
             (*comp).registros[8] = (*comp).registros[8] | 0x40000000;
 }
 
-/*void InsertaMemoria(Componentes *comp,int dir,int dato, int byte)
-{
-int i, aux = 0;
-    for (i=0;i<byte;i++){
-        aux = (dato>>(24-i*8)) & 0xFF;
-        (*comp).memoria[dir+i] = aux;
-    }
-}*/
-
 void InsertaMemoria(Componentes *comp, int dir, int dato, int tamanio)
 {
     int i, aux=0;
