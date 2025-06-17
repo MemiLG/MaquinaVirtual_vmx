@@ -10,11 +10,6 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
     int8_t segmento, tamanio;
     int pos, pos2, fl=1, des=0;
 
-    printf("~~~~~~~~~~~~~~\n");
-    printf("VALOR DEL OPERANDO: %x\n",op.operando);
-    printf("TIPO DEL OPERANDO: %x\n",op.tipo);
-    printf("~~~~~~~~~~~~~~\n");
-
 	switch(op.tipo){ //sacar el dato del operando
 		case 0b01:
 		    segmento = (op.operando>>2) & 0x3; //caso 01: registro
@@ -45,21 +40,13 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
             break;
 
 		case 0b11:
-		    printf("ENTRA\n");
 		    pos = (op.operando>>4)& 0xF;
-		    printf("VALOR DE POS: %x\n",pos);
             pos2 = comp->registros[pos];
-            printf("VALOR DE EAX: %x\n",pos2);
 			pos2 = ((op.operando>>8)& 0xFFFF) + pos2;
-			printf("VALOR DE POS2: %x\n",pos2);
 			TradLogicaFisica(&pos2, *comp,&fl);
-			printf("VALOR DE LA FLAG: %d\n",fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);
                 tamanio = op.operando & 0x3; //0 = l = 4 bytes       2 = w = 2 bytes     3 = b = 1 byte
-                printf("\n");
-                printf("VALOR DEL TAMANIO: %d\n",tamanio);
-                printf("\n");
                 switch(tamanio)
                 {
                     case 2: *aux &= 0xFFFF0000;
@@ -377,17 +364,17 @@ void MOV(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorB;
 
-    printf("###################\n");
+    /*printf("###################\n");
     printf("VALOR DE A: %x\n",a.operando);
-    printf("VALOR DE B: %x\n",b.operando);
+    printf("VALOR DE B: %x\n",b.operando);*/
 
     ValorOperando(b, &ValorB, comp);
 
-    printf("VALOR OBTENIDO PARA B: %x\n",ValorB);
+    //printf("VALOR OBTENIDO PARA B: %x\n",ValorB);
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
-    printf("###################\n");
+    //printf("###################\n");
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)
@@ -476,13 +463,13 @@ void CMP(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    printf("VALOR DE A PASADO: %x\n",a.operando);
+    //printf("VALOR DE A PASADO: %x\n",a.operando);
     ValorOperando(a, &ValorA, comp);
-    printf("Valor de A: %x\n",ValorA);
-    printf("ERROR DESPUES DEL PRIMER VALOR OPERANDO: %d\n",comp->error);
+    //printf("Valor de A: %x\n",ValorA);
+   // printf("ERROR DESPUES DEL PRIMER VALOR OPERANDO: %d\n",comp->error);
     ValorOperando(b, &ValorB, comp);
-    printf("Valor de B: %x\n",ValorB);
-    printf("ERROR ANTES DE HACER LA COMPARACION: %d\n",comp->error);
+    //printf("Valor de B: %x\n",ValorB);
+   // printf("ERROR ANTES DE HACER LA COMPARACION: %d\n",comp->error);
 
     if ((*comp).error == 0)
     {
@@ -740,7 +727,7 @@ void call(Toperando op, Componentes *comp)
 {
     int dir, flag;
 
-    printf("Direccion SP en el call: %d\n", comp->registros[SP]);
+    //printf("Direccion SP en el call: %d\n", comp->registros[SP]);
     if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
         comp->error = 6;
     else
