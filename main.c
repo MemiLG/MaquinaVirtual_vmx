@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     {
 
         m++;
-        //printf("Iteracion n: %d\n", m);
+        printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
 
@@ -140,20 +140,24 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             comp.registros[IP] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
             printf("----------------------------------------------\n");
-            dir2 = comp.registros[BP];
+            /*dir2 = comp.registros[BP];
             printf("comp.reg: %X\n", comp.registros[BP]);
             printf("dir2: %X\n", dir2);
             if(m > 110)
-                printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));
+                printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));*/
             if(abc.OpB!=0)
                 CargaOperando(abc.OpB,&B,&comp);//Carga el valor del operando b y mueve IP
 
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            if(m > 110)
-                printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));
+            /*if(m > 110)
+                printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));*/
             printf("Operador: %X\n", abc.CodOperacion);
+            printf("Tipo de operando A: %x\n",A.tipo);
+            printf("Operando A: %x\n",A.operando);
+            printf("Tipo de operando B: %x\n",B.tipo);
+            printf("Operando B: %x\n",B.operando);
             EjecutarOperacion(abc,A,B,&comp);
 
             dir2 = comp.registros[BP];
@@ -161,13 +165,15 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             {
                 TradLogicaFisica(&dir2, comp, &flag);
                 printf("SP: %X\n", comp.registros[SP]);
+                printf("ECX: %X\n", comp.registros[ECX]);
+                printf("EAX: %X\n", comp.registros[EAX]);
                 printf("BP: %X\n", comp.registros[BP]);
                 printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));
             }
             printf("----------------------------------------------\n");
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
-            //for (int i=106; i<207; i++)
+            //for (int i=3510; i<3610; i++)
                // printf("%x\t",comp.memoria[i]);
         }
 
