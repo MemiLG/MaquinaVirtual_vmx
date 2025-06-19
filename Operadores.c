@@ -742,7 +742,7 @@ void ret(Componentes *comp)
 {
     int dir, flag, aux=0, i, tamanio;
 
-    tamanio = 0x00050000 + comp->tabladesegmentos[5][1];
+    tamanio = comp->registros[SS] + comp->tabladesegmentos[5][1];
 
     if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;
