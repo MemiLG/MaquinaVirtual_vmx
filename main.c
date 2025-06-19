@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
 	LeeArchivo(&comp, argv[1]);
 
-	CargaRegistros(&comp);
+	//CargaRegistros(&comp);
 
 	pargc.tipo = pargv.tipo = fin.tipo = 2;
 	pargv.operando = punteroparam;
@@ -124,6 +124,12 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
     if (boodisassembler && comp.error == 0)
         Llamada_Disassembler(comp);
+
+    /*printf("KS: %x\n",comp.registros[KS]);
+    printf("CS: %x\n",comp.registros[CS]);
+    printf("DS: %x\n",comp.registros[DS]);
+    printf("ES: %x\n",comp.registros[ES]);
+    printf("SS: %x\n",comp.registros[SS]);*/
 
 	while (comp.error == 0 && IP_no_caido)
     {
@@ -153,15 +159,15 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
             /*if(m > 110)
                 printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));*/
-            /*printf("Operador: %X\n", abc.CodOperacion);
-            printf("Tipo de operando A: %x\n",A.tipo);
-            printf("Operando A: %x\n",A.operando);
-            printf("Tipo de operando B: %x\n",B.tipo);
-            printf("Operando B: %x\n",B.operando);*/
+            //printf("Operador: %X\n", abc.CodOperacion);
+            //printf("Tipo de operando A: %x\n",A.tipo);
+            //printf("Operando A: %x\n",A.operando);
+            //printf("Tipo de operando B: %x\n",B.tipo);
+            //printf("Operando B: %x\n",B.operando);
             EjecutarOperacion(abc,A,B,&comp);
 
             dir2 = comp.registros[BP];
-            /*if(m>200)
+           /* if(m>1)
             {
                 TradLogicaFisica(&dir2, comp, &flag);
                 printf("SP: %X\n", comp.registros[SP]);
@@ -175,7 +181,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             //printf("----------------------------------------------\n");
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
-            /*for (int i=0; i<35; i++)
+            /*printf("#############STACK SEGMENT##################\n");
+            for (int i=3000; i<3202; i++)
                 printf("%x\t",comp.memoria[i]);
             printf("\n");*/
         }
@@ -205,7 +212,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                             if (comp.error == 7)
                                 printf("MV finaliza por error de Stack underflow");
                             else
-                                printf("MV finaliza exitosamente con 0 errores\n");
+                                printf("MV finaliza exitosamente\n");
     return 0;
 }
 
@@ -293,7 +300,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
-    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag=1; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
+    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag = 1, contsegment = 0; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
     uint8_t lect;
     uint16_t tam,aux=0,ultam=0,base=0;
 
@@ -384,39 +391,71 @@ void LeeArchivo(Componentes *comp, char argv[]){
                     //--CARGA DE LA TABLA DE SEGMENTOS COMPLETA--
                     if (tamanioseg <= comp->tamanio){
 
-                        if (comp->tabladesegmentos[0][1]>0)
+                        if (comp->tabladesegmentos[0][1]>0){
                             ultam = comp->tabladesegmentos[0][1];
+                            contsegment++;
+                            }
+                        else
+                            comp->cant_seg_vacios++;
 
                         if (cab.TamanioConst>0){
                             setBaseKS(comp,ultam);
                             setTamanioKS(comp,cab.TamanioConst);
                             ultam += cab.TamanioConst;
+                            comp->registros[KS] = (contsegment)<<16;
+                            contsegment++;
+                        }
+                        else{
+                            comp->cant_seg_vacios++;
+                            comp->registros[KS] = -1;
                         }
 
                         setBaseCS(comp,ultam);
                         setTamanioCS(comp,cab.TamanioCodigo);
                         ultam += cab.TamanioCodigo;
+                        comp->registros[CS] = (contsegment)<<16;
+                        contsegment++;
 
                         if(cab.TamanioData>0){
                             setBaseDS(comp,ultam);
                             setTamanioDS(comp,cab.TamanioData);
                             ultam += cab.TamanioData;
+                            comp->registros[DS] = (contsegment)<<16;
+                            contsegment++;
+                        }
+                        else{
+                            comp->cant_seg_vacios++;
+                            comp->registros[DS] = -1;
                         }
 
                         if (cab.TamanioExtra>0){
                             setBaseES(comp,ultam);
                             setTamanioES(comp,cab.TamanioExtra);
                             ultam += cab.TamanioExtra;
+                            comp->registros[ES] = (contsegment)<<16;
+                            contsegment++;
                         }
+                        else{
+                            comp->cant_seg_vacios++;
+                            comp->registros[ES] = -1;
+                        }
+
                         if (cab.TamanioStack>0){
                             setBaseSS(comp,ultam);
                             setTamanioSS(comp,cab.TamanioStack);
+                            comp->registros[SS] = (contsegment)<<16;
+                            contsegment++;
+                        }
+                        else{
+                            comp->cant_seg_vacios++;
+                            comp->registros[SS] = -1;
                         }
 
-                        comp->registros[5] = 0x00020000 | cab.OffsetEntry;
-                        comp->registros[6] = 0x00050000 | comp->tabladesegmentos[5][1]; //pone al sp al tope de la pila
 
-                        dir =  0x00020000;
+                        comp->registros[IP] = comp->registros[CS] | cab.OffsetEntry;
+                        comp->registros[SP] = comp->registros[SS] | comp->tabladesegmentos[5][1]; //pone al sp al tope de la pila
+
+                        dir =  comp->registros[CS];
                         TradLogicaFisica(&dir,*comp,&flag);
 
                         if (comp->tabladesegmentos[1][1] == 0){
@@ -432,7 +471,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                                 dir+=1;
                                 i++;
                             }
-                            dir = 0x00010000;
+                            dir = comp->registros[KS];
                             TradLogicaFisica(&dir,*comp,&flag);
                             do{
                                 comp->memoria[dir] = lect;
@@ -484,9 +523,9 @@ void LeeArchivo(Componentes *comp, char argv[]){
 
 void IniciaComponentes( Componentes *comp ){
 
-	(*comp).registros[0] = 0x00020000 ;
 	(*comp).error = 0;
 	(*comp).tamanio = 16384;
+	(*comp).cant_seg_vacios = 0;
 	comp->sigue_breakpoint = 0;
 	for(int i=0; i<FIL; i++)
         for (int j=0; j<COL; j++)

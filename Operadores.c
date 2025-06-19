@@ -270,7 +270,7 @@ void string_write(Componentes *comp)
 
 		}
 		cadena[i]=final_final;
-		printf(" ''%s '' ",cadena);
+		printf(" ''%s '' \n",cadena);
 		//dir++;
 		//caracter = LeerMemoria(*comp,dir,1);
 		//if(caracter == salto)
@@ -364,17 +364,11 @@ void MOV(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorB;
 
-    /*printf("###################\n");
-    printf("VALOR DE A: %x\n",a.operando);
-    printf("VALOR DE B: %x\n",b.operando);*/
-
     ValorOperando(b, &ValorB, comp);
 
-    //printf("VALOR OBTENIDO PARA B: %x\n",ValorB);
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
-    //printf("###################\n");
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)
@@ -463,13 +457,9 @@ void CMP(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorA, ValorB, res;
 
-    //printf("VALOR DE A PASADO: %x\n",a.operando);
     ValorOperando(a, &ValorA, comp);
-    //printf("Valor de A: %x\n",ValorA);
-   // printf("ERROR DESPUES DEL PRIMER VALOR OPERANDO: %d\n",comp->error);
+
     ValorOperando(b, &ValorB, comp);
-    //printf("Valor de B: %x\n",ValorB);
-   // printf("ERROR ANTES DE HACER LA COMPARACION: %d\n",comp->error);
 
     if ((*comp).error == 0)
     {
@@ -690,10 +680,6 @@ void push(Toperando op, Componentes *comp)
         {
             ValorOperando(op, &valor, comp);
             InsertaMemoria(comp, dir, valor, 4);
-           /* printf("------------------------------------------ push \n");
-            for (int i=0;i<4;i++)
-                printf("%x\n",comp->memoria[dir+i]);
-            printf("------------------------------------------ fin push \n");*/
         }
         else
             comp->error = 3;
@@ -704,7 +690,7 @@ void pop(Toperando op, Componentes *comp)
 {
     int op_aux, dir, flag, tamanio;
 
-    tamanio = 0x00050000 + comp->tabladesegmentos[5][1];
+    tamanio = comp->registros[SS] + comp->tabladesegmentos[5][1];
 
     if(comp->registros[SP] > tamanio) //Si no esta vacia
         comp->error = 7;

@@ -13,14 +13,20 @@ int DireccionFisicaValida(int dir, int16_t fila, Componentes comp)
 
 void TradLogicaFisica(int *dir, Componentes comp, int *flag)
 {
-    int aux;
+    int aux,i,j;
     int16_t fila;
 
     *flag = 1;
     fila = *dir >> 16 & 0xFFFF;
+    i=j=-1;
+    do{
+        j++;
+        if(comp.tabladesegmentos[j][1]!=0)
+            i++;
+    }while((comp.tabladesegmentos[j][1]==0 || i!=fila) && j<5);
     aux = (*dir & 0xFFFF);
-    aux += comp.tabladesegmentos[fila][0];
-    if (fila<FIL && DireccionFisicaValida(aux,fila,comp))
+    aux += comp.tabladesegmentos[j][0];
+    if (fila<FIL && DireccionFisicaValida(aux,j,comp))
         *dir = aux;
     else
         *flag = 0;
