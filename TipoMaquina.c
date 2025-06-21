@@ -119,7 +119,7 @@ void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
 
 
 
-        for(int u =0;u< 15 - cant_caracteres ;u++)
+        for(int u =0;u< 30 - cant_caracteres ;u++)
 
             printf("    ");
 

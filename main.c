@@ -116,10 +116,10 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	push(pargc,&comp);
 	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
-	/*for (int i=0; i<207; i++){
+	for (int i=0; i<207; i++){
         printf("%x\t",comp.memoria[i]);
     }
-    printf("\n");*/
+    printf("\n");
 
 
     if (boodisassembler && comp.error == 0)
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     {
 
         m++;
-        //printf("Iteracion n: %d\n", m);
+        printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
 
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             abc = obtener_abc(instruccion);
             comp.registros[IP] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
-            //printf("----------------------------------------------\n");
+            printf("----------------------------------------------\n");
             /*dir2 = comp.registros[BP];
             printf("comp.reg: %X\n", comp.registros[BP]);
             printf("dir2: %X\n", dir2);
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
             /*if(m > 110)
                 printf("BP + 12: %X\n", LeerMemoria(comp, dir2+12, 4));*/
-            //printf("Operador: %X\n", abc.CodOperacion);
+            printf("Operador: %X\n", abc.CodOperacion);
             //printf("Tipo de operando A: %x\n",A.tipo);
             //printf("Operando A: %x\n",A.operando);
             //printf("Tipo de operando B: %x\n",B.tipo);
@@ -300,9 +300,9 @@ void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
-    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag = 1, contsegment = 0; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
-    uint8_t lect;
-    uint16_t tam,aux=0,ultam=0,base=0;
+    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag = 1, contsegment = 0,g; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
+    int8_t lect;
+    uint16_t tam=0,aux=0,ultam=0,base=0;
 
     arch = fopen(argv,"rb");
     if (arch == NULL){
@@ -312,7 +312,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     else{
 
         fread(&ident,sizeof(str),1,arch);
-        fread(&lect,sizeof(uint8_t),1,arch);
+        fread(&lect,sizeof(int8_t),1,arch);
         fread(&tam,sizeof(uint16_t),1,arch);
         strcpy(cab.identificador,ident.ident);
         aux = (tam>>8) & 0xFF;
@@ -335,7 +335,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         aux = comp->tamanio - cab.TamanioCodigo;
                         setTamanioDS(comp,aux);
                         i=0;
-                        while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
+                        while(fread(&lect,sizeof(int8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
                             (*comp).memoria[i] = lect;
                             i++;
                         }
@@ -459,14 +459,14 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         TradLogicaFisica(&dir,*comp,&flag);
 
                         if (comp->tabladesegmentos[1][1] == 0){
-                            while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag){
+                            while(fread(&lect,sizeof(int8_t),1,arch)>0 && flag){
                                 comp->memoria[dir] = lect;
                                 dir +=1;
                             }
                         }
                         else {
                             i=1;
-                            while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag && i<=comp->tabladesegmentos[2][1]){
+                            while(fread(&lect,sizeof(int8_t),1,arch)>0 && flag && i<=comp->tabladesegmentos[2][1]){
                                 comp->memoria[dir] = lect;
                                 dir+=1;
                                 i++;
@@ -476,7 +476,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
                             do{
                                 comp->memoria[dir] = lect;
                                 dir+=1;
-                            }while(fread(&lect,sizeof(uint8_t),1,arch)>0 && flag);
+                            }while(fread(&lect,sizeof(int8_t),1,arch)>0 && flag);
                         }
                     }
                     else
@@ -490,21 +490,35 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 for(int j=0; j<16; j++){
                     fread(&lect4,4,1,arch);
                     comp->registros[j] = DarVuelta(lect4);
+                    printf("Registros %d: %x\n",j,comp->registros[j]);
                 }
+                i=0;
                 for (int j=0; j<6; j++){
                     fread(&lect4,4,1,arch);
-                    tamanioseg = DarVuelta(lect4);
-                    base = tamanioseg;
-                    tam = tamanioseg<<16;
-                    tamtot += tam;
-                    comp->tabladesegmentos[j][0] = base;
-                    comp->tabladesegmentos[j][1] = tam;
+                        tamanioseg = DarVuelta(lect4);
+                        if(lect4!=-1){
+                            base = tamanioseg>>16;
+                            tam = tamanioseg;
+                            tamtot += tam;
+                            if((j==0 && comp->registros[KS]==0) || (j==1 && comp->registros[KS]==-1) || (j>=2 && comp->registros[i-2]==-1))
+                                i++;
+                            comp->tabladesegmentos[i][0] = base;
+                            comp->tabladesegmentos[i][1] = tam;
+                            i++;
+                        }
+                }
+
+                for (int i=0; i<6; i++){
+                    for(int j=0;j<2;j++)
+                        printf("%d\t",comp->tabladesegmentos[i][j]);
+                printf("\n");
                 }
                 if(tamtot<=comp->tamanio){
-                    for(int j=0;j<2;j++) //lee los 2 valores que sobran de la tabla de segmentos
+                    for(int j=0;j<2;j++){ //lee los 2 valores que sobran de la tabla de segmentos
                         fread(&lect4,4,1,arch);
+                    }
                     i=0;
-                    while(fread(&lect,sizeof(uint8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
+                    while(fread(&lect,sizeof(int8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo).
                         (*comp).memoria[i] = lect;
                         i++;
                     }
