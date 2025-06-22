@@ -98,8 +98,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
 	LeeArchivo(&comp, argv[1]);
 
-	//CargaRegistros(&comp);
-
     tamcad = strlen(argv[1]);
     if (strcmp(argv[1]+(tamcad - 4),".vmx")==0){
         pargc.tipo = pargv.tipo = fin.tipo = 2;
@@ -140,7 +138,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         //printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
-        printf("dirip: %x\n",dirip);
 
         if (IP_no_caido){
 
@@ -154,7 +151,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            printf("Operador: %X\n", abc.CodOperacion);
+            //printf("Operador: %X\n", abc.CodOperacion);
 
             EjecutarOperacion(abc,A,B,&comp);
 
@@ -625,26 +622,6 @@ void Llamada_Disassembler(Componentes comp){
 
         comp.error = 3 ; // Error por disassembler ---------------------------------------------> SI todo va bien no debería saltar nunca; :)
 
-}
-
-void CargaRegistros(Componentes *comp){
-    if (comp->tabladesegmentos[1][1]>0)
-        comp->registros[4] = 0x00010000;
-    else
-        comp->registros[4] = -1;
-    if(comp->tabladesegmentos[3][1]>0)
-        comp->registros[1] = 0x00030000;
-    else
-        comp->registros[1] = -1;
-    if(comp->tabladesegmentos[4][1]>0)
-        comp->registros[2] = 0x00040000;
-    else{
-        comp->registros[2] = -1;
-    }
-
-        comp->registros[3] = 0x00050000;
-
-        comp->registros[SP] = 0x00050000 + comp->tabladesegmentos[5][1];
 }
 
 int DarVuelta(int valor){
