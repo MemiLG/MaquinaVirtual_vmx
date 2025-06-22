@@ -37,7 +37,7 @@ typedef struct {
 
 }TDatos;
 
-int DireccionFisicaValida(int ,int16_t ,Componentes );
+int DireccionFisicaValida(int ,int ,Componentes );
 void modificaCC(Componentes*, int );
 int LeerMemoria(Componentes , int , int );
 void TradLogicaFisica(int*, Componentes , int*);

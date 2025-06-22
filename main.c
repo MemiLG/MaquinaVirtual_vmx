@@ -178,6 +178,8 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
                 printf("BP + 12: %x\n", LeerMemoria(comp, dir2+12, 4));
                 printf("BP + 8: %x\n", LeerMemoria(comp, dir2+8, 4));
             }*/
+            if(m>1)
+                printf("BP: %X\n", comp.registros[BP]);
             //printf("----------------------------------------------\n");
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
@@ -611,19 +613,24 @@ void Llamada_Disassembler(Componentes comp){
 
                 if(inicio == entrypoint)
 
-                    printf(">");
+                    printf("\n>");
+
+                else
+
+                    printf(" ");
 
                 instruccion = comp.memoria[inicio];
                 abc = obtener_abc(instruccion);
 
        		}else
-                abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // ---------------------------------> Entra al KS
+       		{
+       		    abc.OpA = abc.OpB = abc.CodOperacion = 0x00; // ---------------------------------> Entra al KS
+       		    printf(" ");
+       		}
 
             cant_mueve = 0;
             Disassembler(comp,abc,inicio,&cant_mueve);
         	inicio += cant_mueve; // ------------------------------------------------------------> cant_mueve cantidad quese tiene que mover el IP
-        //    printf("CANTIDAD QUE SE MUEVE %d \n", cant_mueve);
-       //     printf("PUNTERO %d \n", inicio);
         }
 
    	 }else

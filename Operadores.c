@@ -99,8 +99,13 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
 
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
+                printf("OPERANDO DE MEMORIA: %x\n",a.operando);
+                printf("codigo de registro extraido: %d\n",CodReg);
                 dir = (*comp).registros[CodReg]; //puntero contenido por el registro
-                dir += a.operando >> 8 & 0xFFF;//Le sumo el offset del operando
+                printf("PUNTERO DEL REGISTRO EN ASIGNA VALOR: %x\n",dir);
+                dir += a.operando >> 8 & 0xFFFF;//Le sumo el offset del operando
+                printf("EL OFFSET QUE LE SUMA %d\n",a.operando >> 8 & 0xFFF);
+                printf("PUNTERO DEL REGISTRO EN ASIGNA VALOR DESPUES DE HABERLE SUMADO UN OFFSET: %x\n",dir);
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
                 {
@@ -363,12 +368,14 @@ void GeneraImagen(Componentes comp)
 void MOV(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorB;
-
+    printf("AAAAA\n");
     ValorOperando(b, &ValorB, comp);
+    printf("BBBBBBBBBBB\n");
 
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
+    printf("CCCCCC\n");
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)

@@ -3,19 +3,25 @@
 #include "TipoMaquina.h"
 #define TOTAL 31
 
-int DireccionFisicaValida(int dir, int16_t fila, Componentes comp)
+/*int DireccionFisicaValida(int dir, int fila, Componentes comp)
 {
     int tamanio=0;
 
     tamanio = comp.tabladesegmentos[fila][0] + comp.tabladesegmentos[fila][1] + (fila << 16);
     return (dir<=tamanio && dir>=comp.tabladesegmentos[fila][0]);
-}
+}*/
+int DireccionFisicaValida(int dir, int fila, Componentes comp){
+    int cotasup=0;
 
+    cotasup = comp.tabladesegmentos[fila][0] + comp.tabladesegmentos[fila][1];
+    return (dir<=cotasup && dir>=comp.tabladesegmentos[fila][0]);
+}
 void TradLogicaFisica(int *dir, Componentes comp, int *flag)
 {
     int aux,i,j;
     int16_t fila;
 
+    printf("Direccion logica: %x\n",*dir);
     *flag = 1;
     fila = *dir >> 16 & 0xFFFF;
     i=j=-1;
@@ -26,6 +32,7 @@ void TradLogicaFisica(int *dir, Componentes comp, int *flag)
     }while((comp.tabladesegmentos[j][1]==0 || i!=fila) && j<5);
     aux = (*dir & 0xFFFF);
     aux += comp.tabladesegmentos[j][0];
+    printf("Calculo aux: %d\n",aux);
     if (fila<FIL && DireccionFisicaValida(aux,j,comp))
         *dir = aux;
     else
@@ -79,10 +86,10 @@ void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
 
     stringg Operaciones[TOTAL] = {"SYS","JMP","JZ","JP","JN","JNZ","JNP","JNN","NOT","","","PUSH","POP","CALL","RET","STOP","MOV","ADD","SUB","SWAP","MUL","DIV","CMP","SHL","SHR","AND","OR","XOR","LDL","LDH","RND"};
     int32_t auxb,auxa;
-    int ind=i , terminator = 0x00, ind_cad, cant_caracteres,limite_cadena;
+    int ind=i , terminator = 0x00, ind_cad, cant_caracteres,limite_cadena, espacios=0;
     char cad[8];
 
-    printf("[%04X]",ind,comp.memoria[ind]);
+    printf("[%04X]",ind); //comp.memoria[ind]
 
     if(abc.OpA == 0x00 &&  abc.OpB == 0x00 && abc.CodOperacion == 0x00 )//-----------------------------> Esta en el KS
     {
@@ -92,16 +99,20 @@ void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
         while( comp.memoria[ind] != terminator )
         {
             cant_caracteres ++;
-            if(cant_caracteres == 6)
-
+            if(cant_caracteres == 7)
+            {
+                espacios += 3;
                 printf(" ..");
+            }
 
             else
-                if(cant_caracteres < 6)
-
+                if(cant_caracteres < 7)
+                {
+                    espacios += 4;
                     printf(" %02X ",comp.memoria[ind]);
+                }
 
-            if(comp.memoria[ind] >= 0x30 && comp.memoria[ind]<0x5B )
+            if(comp.memoria[ind] > 31 && comp.memoria[ind] < 255 &&  comp.memoria[ind] != 127)
 
                 cad[ind_cad] = comp.memoria[ind];
 
@@ -117,11 +128,9 @@ void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
 
             printf("00");
 
+        for(int u=0; u < 44-espacios; u++)
 
-
-        for(int u =0;u< 30 - cant_caracteres ;u++)
-
-            printf("    ");
+            printf(" ");
 
         printf(" | ");
         cad[ind_cad] = 0x00;
@@ -157,34 +166,10 @@ void Disassembler(Componentes comp,TDatos abc, int i,int* cant_mueve)
 
 }
 
-void Op_AB(int8_t Op, Componentes comp, int32_t *aux,int *i)
+void Op_AB(int8_t finall, Componentes comp, int32_t *aux,int *i)
 {
 
-   int finall,inicio=1;
-
-   switch(Op){
-
-        case 0b00 :
-
-            finall = 0; // No entra nunca al ciclo for
-            break;
-
-        case 0b01 :     // Es registro
-
-            finall = 1;
-            break;
-
-        case 0b10 :     // Es inmediato
-
-            finall = 2;
-            break;
-
-        case 0b11 :     // Es memoria
-
-            finall = 3;
-            break;
-
-   }
+   int inicio=1;
 
     while ( inicio <= finall ){
 
@@ -236,7 +221,7 @@ void Significado(int8_t op, int32_t auxiliar)
 
         case 0b11: // --------------------------------------------> Es memoria
 
-            aux1 = (auxiliar >> 2) & 0X00000003 ; // (0011)
+            aux1 = auxiliar & 0X3 ; // (0011)
             if (aux1 == 0x0)
 
                 printf("l");
@@ -248,7 +233,7 @@ void Significado(int8_t op, int32_t auxiliar)
 
                 else
 
-                    if (aux2 == 0x03)
+                    if (aux1 == 0x03)
 
                         printf("b");
 
@@ -260,7 +245,13 @@ void Significado(int8_t op, int32_t auxiliar)
 
             else
 
-                printf("[%s]",Registross[aux1]);
+                if(aux2 < 0)
+
+                    printf("[%s - %d]",Registross[aux1],aux2*-1);
+
+                else
+
+                    printf("[%s]",Registross[aux1]);
             break;
     }
 
