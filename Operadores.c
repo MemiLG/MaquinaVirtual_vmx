@@ -588,7 +588,6 @@ void RND(Toperando a, Toperando b, Componentes *comp)
 //----------------------Un operando-----------------------
 void SYS(Toperando op, Componentes *comp)
 {
-    printf("#####################SYS#################\n");
     switch(op.operando)
     {
         case 1: leer(comp);

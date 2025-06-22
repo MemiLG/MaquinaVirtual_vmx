@@ -16,6 +16,7 @@ int DireccionFisicaValida(int dir, int fila, Componentes comp){
     cotasup = comp.tabladesegmentos[fila][0] + comp.tabladesegmentos[fila][1];
     return (dir<=cotasup && dir>=comp.tabladesegmentos[fila][0]);
 }
+
 void TradLogicaFisica(int *dir, Componentes comp, int *flag)
 {
     int aux,i,j;
@@ -214,6 +215,7 @@ void Significado(int8_t op, int32_t auxiliar)
 
         case 0b10: //---------------------------------------------> Es un inmediato
 
+            auxiliar = auxiliar << 16 >> 16;
             printf("%d",auxiliar);
             break;
 
