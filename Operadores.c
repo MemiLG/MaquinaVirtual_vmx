@@ -70,6 +70,7 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
 {
     int dir, flag;
     int8_t CodReg, SecReg, tamanio;
+    short offset;
 
     switch(a.tipo)
     {
@@ -99,13 +100,9 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
 
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
-                printf("OPERANDO DE MEMORIA: %x\n",a.operando);
-                printf("codigo de registro extraido: %d\n",CodReg);
                 dir = (*comp).registros[CodReg]; //puntero contenido por el registro
-                printf("PUNTERO DEL REGISTRO EN ASIGNA VALOR: %x\n",dir);
-                dir += a.operando >> 8 & 0xFFFF;//Le sumo el offset del operando
-                printf("EL OFFSET QUE LE SUMA %d\n",a.operando >> 8 & 0xFFF);
-                printf("PUNTERO DEL REGISTRO EN ASIGNA VALOR DESPUES DE HABERLE SUMADO UN OFFSET: %x\n",dir);
+                offset = a.operando >> 8;
+                dir += offset;
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
                 {
@@ -368,14 +365,11 @@ void GeneraImagen(Componentes comp)
 void MOV(Toperando a, Toperando b, Componentes *comp)
 {
     int ValorB;
-    printf("AAAAA\n");
-    ValorOperando(b, &ValorB, comp);
-    printf("BBBBBBBBBBB\n");
 
+    ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
         asignaValor(a, ValorB, comp);
-    printf("CCCCCC\n");
 }
 
 void ADD(Toperando a, Toperando b, Componentes *comp)
@@ -594,6 +588,7 @@ void RND(Toperando a, Toperando b, Componentes *comp)
 //----------------------Un operando-----------------------
 void SYS(Toperando op, Componentes *comp)
 {
+    printf("#####################SYS#################\n");
     switch(op.operando)
     {
         case 1: leer(comp);
@@ -720,7 +715,6 @@ void call(Toperando op, Componentes *comp)
 {
     int dir, flag;
 
-    //printf("Direccion SP en el call: %d\n", comp->registros[SP]);
     if(comp->registros[SP] - 4 < comp->registros[SS]) //Si no esta llena
         comp->error = 6;
     else

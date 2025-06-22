@@ -135,6 +135,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     {
 
         m++;
+        printf("----------------------------------------------\n");
         printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
@@ -145,7 +146,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             abc = obtener_abc(instruccion);
             comp.registros[IP] += 0x00000001; //Mueve el puntero de IP a la proxima instruccion (le suma 1 al offset);
 
-            printf("----------------------------------------------\n");
             /*dir2 = comp.registros[BP];
             printf("comp.reg: %X\n", comp.registros[BP]);
             printf("dir2: %X\n", dir2);

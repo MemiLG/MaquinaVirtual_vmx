@@ -21,7 +21,6 @@ void TradLogicaFisica(int *dir, Componentes comp, int *flag)
     int aux,i,j;
     int16_t fila;
 
-    printf("Direccion logica: %x\n",*dir);
     *flag = 1;
     fila = *dir >> 16 & 0xFFFF;
     i=j=-1;
@@ -32,7 +31,6 @@ void TradLogicaFisica(int *dir, Componentes comp, int *flag)
     }while((comp.tabladesegmentos[j][1]==0 || i!=fila) && j<5);
     aux = (*dir & 0xFFFF);
     aux += comp.tabladesegmentos[j][0];
-    printf("Calculo aux: %d\n",aux);
     if (fila<FIL && DireccionFisicaValida(aux,j,comp))
         *dir = aux;
     else
