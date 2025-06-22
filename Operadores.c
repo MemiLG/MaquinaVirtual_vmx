@@ -9,6 +9,7 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 {
     int8_t segmento, tamanio;
     int pos, pos2, fl=1, des=0;
+    short offset;
 
 	switch(op.tipo){ //sacar el dato del operando
 		case 0b01:
@@ -42,7 +43,8 @@ void ValorOperando(Toperando op, int *aux, Componentes *comp)
 		case 0b11:
 		    pos = (op.operando>>4)& 0xF;
             pos2 = comp->registros[pos];
-			pos2 = ((op.operando>>8)& 0xFFFF) + pos2;
+            offset = op.operando>>8;
+			pos2 += offset;
 			TradLogicaFisica(&pos2, *comp,&fl);
 			if (fl){
                 *aux = LeerMemoria(*comp, pos2, 4);
