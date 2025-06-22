@@ -100,21 +100,22 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 
 	//CargaRegistros(&comp);
 
-	pargc.tipo = pargv.tipo = fin.tipo = 2;
-	pargv.operando = punteroparam;
-	pargc.operando = cantparam;
-	fin.operando = -1;
+    tamcad = strlen(argv[1]);
+    if (strcmp(argv[1]+(tamcad - 4),".vmx")==0){
+        pargc.tipo = pargv.tipo = fin.tipo = 2;
+        pargv.operando = punteroparam;
+        pargc.operando = cantparam;
+        fin.operando = -1;
 
-	/*for (int i=0; i<6; i++){
+        push(pargv,&comp);
+        push(pargc,&comp);
+        push(fin,&comp);
+    }
+    /*for (int i=0; i<6; i++){
         for(int j=0;j<2;j++)
             printf("%d\t",comp.tabladesegmentos[i][j]);
         printf("\n");
 	}*/
-
-	push(pargv,&comp);
-	//printf("1 - push error: %d\n", comp.error);
-	push(pargc,&comp);
-	push(fin,&comp); //seria el ret de la subrutina principal (ver si esta bien)
 
 	/*for (int i=0; i<207; i++){
         printf("%x\t",comp.memoria[i]);
@@ -152,7 +153,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            printf("Operador: %X\n", abc.CodOperacion);
+            //printf("Operador: %X\n", abc.CodOperacion);
 
             EjecutarOperacion(abc,A,B,&comp);
 
@@ -174,7 +175,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
             /*printf("#############STACK SEGMENT##################\n");
-            for (int i=3000; i<3202; i++)
+            for (int i=1313; i<1414; i++)
                 printf("%x\t",comp.memoria[i]);
             printf("\n");*/
         }
@@ -482,7 +483,6 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 for(int j=0; j<16; j++){
                     fread(&lect4,4,1,arch);
                     comp->registros[j] = DarVuelta(lect4);
-                    printf("Registros %d: %x\n",j,comp->registros[j]);
                 }
                 i=0;
                 for (int j=0; j<6; j++){
@@ -500,11 +500,6 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         }
                 }
 
-                for (int i=0; i<6; i++){
-                    for(int j=0;j<2;j++)
-                        printf("%d\t",comp->tabladesegmentos[i][j]);
-                printf("\n");
-                }
                 if(tamtot<=comp->tamanio){
                     for(int j=0;j<2;j++){ //lee los 2 valores que sobran de la tabla de segmentos
                         fread(&lect4,4,1,arch);
