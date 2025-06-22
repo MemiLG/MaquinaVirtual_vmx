@@ -153,8 +153,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            //printf("Operador: %X\n", abc.CodOperacion);
-            //printf("IP: %x\n",comp.registros[IP]);
+            printf("Operador: %X\n", abc.CodOperacion);
 
             EjecutarOperacion(abc,A,B,&comp);
 

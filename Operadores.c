@@ -160,6 +160,11 @@ void imprime(Componentes *comp)
 
             printf("[%04X] : ",ind);
             nro= LeerMemoria(*comp, ind , tamanio_ch);//Devuelve numero de 32 bits
+
+            if((formato & 0x08) == 0x08) //Hexadecimal
+
+                printf("%X\t", nro);
+
             if((formato & 0x01) == 0x01 ) //Decimal
 
                 printf("%d\t", nro);
@@ -177,10 +182,6 @@ void imprime(Componentes *comp)
             if((formato & 0x04) == 0x04) //Octal
 
                 printf("%o\t", nro);
-
-            if((formato & 0x08) == 0x08) //Hexadecimal
-
-                printf("%X\t", nro);
 
             if ((formato & 0x10) == 0x10) //Binario
             {
