@@ -3,18 +3,11 @@
 #include "TipoMaquina.h"
 #define TOTAL 31
 
-/*int DireccionFisicaValida(int dir, int fila, Componentes comp)
-{
-    int tamanio=0;
-
-    tamanio = comp.tabladesegmentos[fila][0] + comp.tabladesegmentos[fila][1] + (fila << 16);
-    return (dir<=tamanio && dir>=comp.tabladesegmentos[fila][0]);
-}*/
 int DireccionFisicaValida(int dir, int fila, Componentes comp){
     int cotasup=0;
 
     cotasup = comp.tabladesegmentos[fila][0] + comp.tabladesegmentos[fila][1];
-    return (dir<=cotasup && dir>=comp.tabladesegmentos[fila][0]);
+    return (dir<cotasup && dir>=comp.tabladesegmentos[fila][0]);
 }
 
 void TradLogicaFisica(int *dir, Componentes comp, int *flag)
