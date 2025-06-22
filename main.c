@@ -140,6 +140,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         //printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
+        printf("dirip: %x\n",dirip);
 
         if (IP_no_caido){
 
@@ -183,29 +184,31 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	}
 	//printf("Iteracion n: %d\n", m);
 
-
 	if (comp.error == 1 )
         printf("MV finaliza por error de instruccion invalida\n");
     else
         if (comp.error == 2)
             printf("MV finaliza por error de division por 0\n");
         else
-            if((comp.error == 3) ^ (dirip > (comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1])))
+            if((comp.error == 3) && (dirip > (comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1])))
                 printf("MV finaliza por error de caida de segmento\n");
             else
-                if (comp.error == 4)
-                    printf("MV finaliza por error de archivo\n");
+                if(comp.error == 3)
+                printf("MV finaliza por error de caida de segmento\n");
                 else
-                    if (comp.error == 5)
-                        printf("MV finaliza por error de memoria insuficiente");
+                    if (comp.error == 4)
+                        printf("MV finaliza por error de archivo\n");
                     else
-                        if (comp.error == 6)
-                            printf("MV finaliza por error de stack overflow");
+                        if (comp.error == 5)
+                            printf("MV finaliza por error de memoria insuficiente");
                         else
-                            if (comp.error == 7)
-                                printf("MV finaliza por error de Stack underflow");
+                            if (comp.error == 6)
+                                printf("MV finaliza por error de stack overflow");
                             else
-                                printf("MV finaliza exitosamente\n");
+                                if (comp.error == 7)
+                                    printf("MV finaliza por error de Stack underflow");
+                                else
+                                    printf("MV finaliza exitosamente\n");
     return 0;
 }
 
