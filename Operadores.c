@@ -696,7 +696,7 @@ void pop(Toperando op, Componentes *comp)
 
     tamanio = comp->registros[SS] + comp->tabladesegmentos[5][1];
 
-    if(comp->registros[SP] > tamanio) //Si no esta vacia
+    if(comp->registros[SP] >= tamanio) //Si no esta vacia
         comp->error = 7;
     else
     {
@@ -747,7 +747,7 @@ void ret(Componentes *comp)
 
     tamanio = comp->registros[SS] + comp->tabladesegmentos[5][1];
 
-    if(comp->registros[SP] > tamanio) //Si no esta vacia
+    if(comp->registros[SP] >= tamanio) //Si no esta vacia
         comp->error = 7;
     else
     {
