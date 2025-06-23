@@ -108,45 +108,9 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         push(pargc,&comp);
         push(fin,&comp);
     }
-    /*for (int i=0; i<6; i++){
-        for(int j=0;j<2;j++)
-            printf("%d\t",comp.tabladesegmentos[i][j]);
-        printf("\n");
-	}*/
-
-	/*for (int i=0; i<207; i++){
-        printf("%x\t",comp.memoria[i]);
-    }
-    printf("\n");*/
-
 
     if (boodisassembler && comp.error == 0)
         Llamada_Disassembler(comp);
-
-    printf("KS: %x\n",comp.registros[KS]);
-    printf("Base del KS: %d\n", comp.tabladesegmentos[1][0]);
-    printf("Fin del KS: %d\n", comp.tabladesegmentos[1][0] + comp.tabladesegmentos[1][1]);
-    printf("\n");
-
-    printf("CS: %x\n",comp.registros[CS]);
-    printf("Base del CS: %d\n", comp.tabladesegmentos[2][0]);
-    printf("Fin del CS: %d\n", comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1]);
-    printf("\n");
-
-    printf("DS: %x\n",comp.registros[DS]);
-    printf("Base del DS: %d\n", comp.tabladesegmentos[3][0]);
-    printf("Fin del DS: %d\n", comp.tabladesegmentos[3][0] + comp.tabladesegmentos[3][1]);
-    printf("\n");
-
-    printf("ES: %x\n",comp.registros[ES]);
-    printf("Base del ES: %d\n", comp.tabladesegmentos[4][0]);
-    printf("Fin del ES: %d\n", comp.tabladesegmentos[4][0] + comp.tabladesegmentos[4][1]);
-    printf("\n");
-
-    printf("SS: %x\n",comp.registros[SS]);
-    printf("Base del SS: %d\n", comp.tabladesegmentos[5][0]);
-    printf("Fin del SS: %d\n", comp.tabladesegmentos[5][0] + comp.tabladesegmentos[5][1]);
-    printf("\n");
 
 	while (comp.error == 0 && IP_no_caido)
     {

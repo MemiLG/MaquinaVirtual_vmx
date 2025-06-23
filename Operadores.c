@@ -120,11 +120,13 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
 void leer(Componentes *comp)
 {
     int i, cant_celdas, num, dir, tamanio, no_error;
+    int16_t formato;
 
     cant_celdas = (*comp).registros[ECX] & 0xFF; //CL
     tamanio = (*comp).registros[ECX] >> 8 & 0xFF; //CH
     dir = (*comp).registros[EDX];
     TradLogicaFisica(&dir, *comp, &no_error);
+    formato = (*comp).registros[EAX] & 0xFF;
 
     printf("[%04X]: ", dir);
     if(no_error)
@@ -133,16 +135,16 @@ void leer(Componentes *comp)
             if((formato & 0x08) == 0x08) //Hexadecimal
                 scanf("%X", &num);
 
-            if((formato & 0x01) == 0x01 ) //Decimal
+            if((formato & 0x01) == 0x01) //Decimal
                 scanf("%d", &num);
 
-            if((formato & 0X02) == 0x02){ //Caracteres
+            if((formato & 0X02) == 0x02) //Caracteres
                 scanf("%c", &num);
 
             if((formato & 0x04) == 0x04) //Octal
                 scanf("%c", &num);
 
-            if ((formato & 0x10) == 0x10) //Binario
+            if((formato & 0x10) == 0x10) //Binario
                 scanf("%s", &num);
 
             InsertaMemoria(comp, dir, num, tamanio);
