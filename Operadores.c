@@ -130,7 +130,21 @@ void leer(Componentes *comp)
     if(no_error)
         for(i=0; i<cant_celdas; i++)
         {
-            scanf("%d", &num);
+            if((formato & 0x08) == 0x08) //Hexadecimal
+                scanf("%X", &num);
+
+            if((formato & 0x01) == 0x01 ) //Decimal
+                scanf("%d", &num);
+
+            if((formato & 0X02) == 0x02){ //Caracteres
+                scanf("%c", &num);
+
+            if((formato & 0x04) == 0x04) //Octal
+                scanf("%c", &num);
+
+            if ((formato & 0x10) == 0x10) //Binario
+                scanf("%s", &num);
+
             InsertaMemoria(comp, dir, num, tamanio);
             dir += tamanio;
         }
