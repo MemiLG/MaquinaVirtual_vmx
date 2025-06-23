@@ -9,18 +9,8 @@
 typedef struct{
     char ident[5];
 }str;
-/*
-    CORTES DE EJECUCION DE LA MV:
 
-    Si comp.error = 1: Corta la ejecucion por el error de instruccion invalida
-    Si comp.error = 2: Corta la ejecucion por el error de division por cero
-    Si comp.error = 3: Corta la ejecucion por el error de caida de segmento
-    Si comp.error = 4: Corta por archivo no compatible.
-    Si comp.error = 5: Corta por memoria insuficiente.
-    Si comp.error = 6: Corta por Stack overflow.
-    Si comp.error = 7: Corta por Stack underflow.
 
-*/
 //--PROTOTIPOS--
 TDatos obtener_abc(int8_t);
 void EjecutarOperacion(TDatos,Toperando,Toperando,Componentes *);
@@ -116,7 +106,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     {
 
         m++;
-        //printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
 
@@ -132,8 +121,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            printf("Operador: %X\n", abc.CodOperacion);
-
             EjecutarOperacion(abc,A,B,&comp);
 
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
@@ -141,7 +128,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         }
 
 	}
-	//printf("Iteracion n: %d\n", m);
 
 	if (comp.error == 1 )
         printf("MV finaliza por error de instruccion invalida\n");

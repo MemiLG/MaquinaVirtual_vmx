@@ -285,7 +285,6 @@ void string_write(Componentes *comp)
 	if(no_error)
 	{
 
-        //printf("[%04X] ",dir);
 		caracter = LeerMemoria(*comp,dir,1);
 		while(caracter != final_final && caracter != salto)
 		{
@@ -298,10 +297,6 @@ void string_write(Componentes *comp)
 		}
 		cadena[i]=final_final;
 		printf(" ''%s '' \n",cadena);
-		//dir++;
-		//caracter = LeerMemoria(*comp,dir,1);
-		//if(caracter == salto)
-			//printf("\n");
 
 	}else
 		(*comp).error = 3;

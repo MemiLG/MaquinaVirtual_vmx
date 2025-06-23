@@ -43,7 +43,7 @@ int LeerMemoria(Componentes comp, int dir, int bytes)
         result |= aux;
     }
 
-    if (comp.registros[5]>>16){ //Entra si esta en el ds (cambiar en la segunda parte de la mv)
+    if (comp.registros[5]>>16){
         des = (4-bytes)*8;
         result = (result << des) >> des;
     }
