@@ -476,6 +476,7 @@ void IniciaComponentes( Componentes *comp ){
 	(*comp).tamanio = 16384;
 	(*comp).cant_seg_vacios = 0;
 	comp->sigue_breakpoint = 0;
+	comp->img.booimagen = 0;
 	for(int i=0; i<FIL; i++)
         for (int j=0; j<COL; j++)
             comp->tabladesegmentos[i][j] = 0;
