@@ -142,10 +142,15 @@ void leer(Componentes *comp)
                 scanf("%c", &num);
 
             if((formato & 0x04) == 0x04) //Octal
-                scanf("%c", &num);
+                scanf("%o", &num);
 
             if((formato & 0x10) == 0x10) //Binario
-                scanf("%s", &num);
+            {
+                char binario[33];
+
+                scanf("%s", binario);
+                num = strtol(binario, NULL, 2);
+            }
 
             InsertaMemoria(comp, dir, num, tamanio);
             dir += tamanio;
