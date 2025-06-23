@@ -126,6 +126,7 @@ void leer(Componentes *comp)
     dir = (*comp).registros[EDX];
     TradLogicaFisica(&dir, *comp, &no_error);
 
+    printf("[%04X]: ", dir);
     if(no_error)
         for(i=0; i<cant_celdas; i++)
         {
@@ -462,7 +463,6 @@ void CMP(Toperando a, Toperando b, Componentes *comp)
     int ValorA, ValorB, res;
 
     ValorOperando(a, &ValorA, comp);
-
     ValorOperando(b, &ValorB, comp);
 
     if ((*comp).error == 0)
@@ -650,9 +650,8 @@ void JNP(Toperando offset, Componentes *comp)
 
 void JNN(Toperando offset, Componentes *comp)
 {
-    if(((*comp).registros[CC] >> 31 & 0x1) == 0){
+    if(((*comp).registros[CC] >> 31 & 0x1) == 0)
         JMP(offset, comp);
-    }
 }
 
 void NOT(Toperando a, Componentes *comp)

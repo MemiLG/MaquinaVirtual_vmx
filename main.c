@@ -43,7 +43,6 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	int8_t instruccion ;
 	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad, m=0, flag;
 	uint16_t tamparam = 0;
-	int dir2;
 
 
 	IniciaComponentes(&comp);
@@ -124,17 +123,35 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     if (boodisassembler && comp.error == 0)
         Llamada_Disassembler(comp);
 
-    /*printf("KS: %x\n",comp.registros[KS]);
+    printf("KS: %x\n",comp.registros[KS]);
+    printf("Base del KS: %d\n", comp.tabladesegmentos[1][0]);
+    printf("Fin del KS: %d\n", comp.tabladesegmentos[1][0] + comp.tabladesegmentos[1][1]);
+    printf("\n");
+
     printf("CS: %x\n",comp.registros[CS]);
+    printf("Base del CS: %d\n", comp.tabladesegmentos[2][0]);
+    printf("Fin del CS: %d\n", comp.tabladesegmentos[2][0] + comp.tabladesegmentos[2][1]);
+    printf("\n");
+
     printf("DS: %x\n",comp.registros[DS]);
+    printf("Base del DS: %d\n", comp.tabladesegmentos[3][0]);
+    printf("Fin del DS: %d\n", comp.tabladesegmentos[3][0] + comp.tabladesegmentos[3][1]);
+    printf("\n");
+
     printf("ES: %x\n",comp.registros[ES]);
-    printf("SS: %x\n",comp.registros[SS]);*/
+    printf("Base del ES: %d\n", comp.tabladesegmentos[4][0]);
+    printf("Fin del ES: %d\n", comp.tabladesegmentos[4][0] + comp.tabladesegmentos[4][1]);
+    printf("\n");
+
+    printf("SS: %x\n",comp.registros[SS]);
+    printf("Base del SS: %d\n", comp.tabladesegmentos[5][0]);
+    printf("Fin del SS: %d\n", comp.tabladesegmentos[5][0] + comp.tabladesegmentos[5][1]);
+    printf("\n");
 
 	while (comp.error == 0 && IP_no_caido)
     {
 
         m++;
-        //printf("----------------------------------------------\n");
         //printf("Iteracion n: %d\n", m);
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
@@ -151,31 +168,15 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
-            //printf("Operador: %X\n", abc.CodOperacion);
+            printf("Operador: %X\n", abc.CodOperacion);
 
             EjecutarOperacion(abc,A,B,&comp);
 
-            dir2 = comp.registros[BP];
-           /* if(m>1)
-            {
-                TradLogicaFisica(&dir2, comp, &flag);
-                printf("SP: %X\n", comp.registros[SP]);
-                printf("ECX: %X\n", comp.registros[ECX]);
-                printf("EAX: %X\n", comp.registros[EAX]);
-                printf("EDX: %X\n", comp.registros[EDX]);
-                printf("BP: %X\n", comp.registros[BP]);
-                printf("BP + 12: %x\n", LeerMemoria(comp, dir2+12, 4));
-                printf("BP + 8: %x\n", LeerMemoria(comp, dir2+8, 4));
-            }*/
-            /*if(m>1)
-                printf("BP: %X\n", comp.registros[BP]);*/
-            //printf("----------------------------------------------\n");
+            printf("EBX: %X\n", comp.registros[EBX]);
+            printf("EDX: %X\n", comp.registros[EDX]);
+
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
                 breakpoint(&comp);
-            /*printf("#############STACK SEGMENT##################\n");
-            for (int i=1313; i<1414; i++)
-                printf("%x\t",comp.memoria[i]);
-            printf("\n");*/
         }
 
 	}
