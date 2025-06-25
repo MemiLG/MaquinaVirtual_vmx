@@ -21,6 +21,7 @@ typedef struct{
 	int error;
 	int registros[TAMR];
 	int tamanio;
+	int version;
 	int cant_seg_vacios;
 	Imagen img;
 	int8_t sigue_breakpoint;

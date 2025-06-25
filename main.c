@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	LeeArchivo(&comp, argv[1]);
 
     tamcad = strlen(argv[1]);
-    if (strcmp(argv[1]+(tamcad - 4),".vmx")==0){
+    if (strcmp(argv[1]+(tamcad - 4),".vmx")==0 && comp.version == 2){
         pargc.tipo = pargv.tipo = fin.tipo = 2;
         pargv.operando = punteroparam;
         pargc.operando = cantparam;
@@ -269,6 +269,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
             if (strcmp(argv+(tamcad - 4),".vmx")==0){
 
                 if (cab.version == 1){
+                    comp->version = 1;
                     setBaseCS(comp,0);
                     setTamanioCS(comp,cab.TamanioCodigo);
                     if (cab.TamanioCodigo<=comp->tamanio){
@@ -279,6 +280,11 @@ void LeeArchivo(Componentes *comp, char argv[]){
                         while(fread(&lect,sizeof(int8_t),1,arch)>0){ //se supone que lee exactamente lo que dice la cabecera (por lo tanto no se cae del segmento de codigo). Preguntar si esta bien en clase
                             (*comp).memoria[i] = lect;
                             i++;
+
+                        comp->registros[CS] = 00000000;
+                        comp->registros[DS] = 00010000;
+
+                        comp->registros[IP] = comp->registros[CS];
                         }
                     }
                     else
@@ -287,6 +293,8 @@ void LeeArchivo(Componentes *comp, char argv[]){
                 else{
 
                     //--LECTURA DE LOS TAMANIOS DE CADA SEGMENTO--
+
+                    comp->version = 2;
 
                     tamanioseg += comp->tabladesegmentos[0][1];
 
