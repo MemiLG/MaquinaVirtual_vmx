@@ -103,8 +103,10 @@ void asignaValor(Toperando a, int ValorB, Componentes *comp)
         //Memoria
         case 3: CodReg = a.operando >> 4 & 0xF;
                 dir = (*comp).registros[CodReg]; //puntero contenido por el registro
+              //  printf("Contenido del registro: %X\n", dir);
                 offset = a.operando >> 8;
                 dir += offset;
+               // printf("Direccion logica: %X\n", dir);
                 TradLogicaFisica(&dir, *comp, &flag);
                 if(flag)
                 {

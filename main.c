@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	Componentes comp;
 	Toperando A, B, pargv, pargc, fin;
 	int8_t instruccion ;
-	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad, m=0, flag;
+	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad;
 	uint16_t tamparam = 0;
 
 
@@ -102,10 +102,11 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
     if (boodisassembler && comp.error == 0)
         Llamada_Disassembler(comp);
 
+   // printf("CS: %X\n", comp.registros[CS]);
+   // printf("DS: %X\n", comp.registros[DS]);
 	while (comp.error == 0 && IP_no_caido)
     {
 
-        m++;
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
 
@@ -121,6 +122,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
             if(abc.OpA!=0)
                 CargaOperando(abc.OpA,&A,&comp);//Carga el valor del operando a y mueve IP
 
+            //printf("Operador: %X\n", abc.CodOperacion);
             EjecutarOperacion(abc,A,B,&comp);
 
             if(comp.sigue_breakpoint == 1 && !(abc.CodOperacion==0 && B.operando==15))
@@ -241,7 +243,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
-    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag = 1, contsegment = 0,g; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
+    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag = 1, contsegment = 0; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
     int8_t lect;
     uint16_t tam=0,aux=0,ultam=0,base=0;
 
@@ -281,8 +283,8 @@ void LeeArchivo(Componentes *comp, char argv[]){
                             (*comp).memoria[i] = lect;
                             i++;
 
-                        comp->registros[CS] = 00000000;
-                        comp->registros[DS] = 00010000;
+                        comp->registros[CS] = 0x00000000;
+                        comp->registros[DS] = 0x00010000;
 
                         comp->registros[IP] = comp->registros[CS];
                         }
