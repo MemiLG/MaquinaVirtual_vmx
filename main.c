@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
 	Componentes comp;
 	Toperando A, B, pargv, pargc, fin;
 	int8_t instruccion ;
-	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad, m=0, flag;
+	int dirip, IP_no_caido=1, maxmemoria = 16384, boodisassembler = 0, cantparam=0, i=2, j,dir,puntparam[10]={0}, punteroparam = -1, tamcad;
 	uint16_t tamparam = 0;
 
 
@@ -85,9 +85,11 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         i++;
     }
 
+    printf("CS: %X\n", comp.registros[CS]);
 	LeeArchivo(&comp, argv[1]);
+	printf("IP: %X\n", comp.registros[IP]);
 
-    tamcad = strlen(argv[1]);
+    /*tamcad = strlen(argv[1]);
     if (strcmp(argv[1]+(tamcad - 4),".vmx")==0){
         pargc.tipo = pargv.tipo = fin.tipo = 2;
         pargv.operando = punteroparam;
@@ -97,15 +99,23 @@ int main(int argc, char *argv[]) // argc indica la cantidad de argumentos ingres
         push(pargv,&comp);
         push(pargc,&comp);
         push(fin,&comp);
+    }*/
+
+    printf("CS: %X\n", comp.registros[CS]);
+    for(int i=0; i<6; i++)
+    {
+        printf("Base del segmento %d: %X\n", i, comp.tabladesegmentos[i][0]);
+        printf("Fin del segmento %d: %X\n", i, comp.tabladesegmentos[i][0] + comp.tabladesegmentos[i][1]);
     }
 
+    printf("Error: %d\n", comp.error);
+    printf("boodisassembler: %d\n", boodisassembler);
     if (boodisassembler && comp.error == 0)
         Llamada_Disassembler(comp);
 
 	while (comp.error == 0 && IP_no_caido)
     {
 
-        m++;
         dirip = comp.registros[IP]; //pone en una variable int la direccion logica de donde apunta ip
         TradLogicaFisica(&dirip,comp,&IP_no_caido);
 
@@ -241,7 +251,7 @@ void LeeArchivo(Componentes *comp, char argv[]){
     FILE *arch;
     Theader cab;
     str ident;
-    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag = 1, contsegment = 0,g; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
+    int boo,i,tamanioseg = 0, dir, lect4, tamcad, tamtot, flag = 1, contsegment = 0; //tamanioseg es un  acumulador que servira para corroborar que la memoria sea suficiente a la hora de cargar el programa
     int8_t lect;
     uint16_t tam=0,aux=0,ultam=0,base=0;
 
@@ -533,6 +543,7 @@ void Llamada_Disassembler(Componentes comp){
 
     fin = comp.tabladesegmentos [2][0] + comp.tabladesegmentos[2][1]; //-------------------------------------> El final va a ser el mismo, en el CS
     entrypoint = comp.registros[IP];
+    printf("IP en llamada a disassembler: %X\n", comp.registros[IP]);
     TradLogicaFisica(&inicio,comp,&flag);
     TradLogicaFisica(&entrypoint,comp,&flag);
 
