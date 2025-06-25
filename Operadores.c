@@ -365,9 +365,13 @@ void GeneraImagen(Componentes comp)
         }
 
         for(int i=0;i<6;i++){
-            tabla = comp.tabladesegmentos[i][0]<<16;
-            tabla |= comp.tabladesegmentos[i][1];
-            tamem += comp.tabladesegmentos[i][1];
+            if(comp.tabladesegmentos[i][1]!=0){
+                tabla = comp.tabladesegmentos[i][0]<<16;
+                tabla |= comp.tabladesegmentos[i][1];
+                tamem += comp.tabladesegmentos[i][1];
+            }
+            else
+                tabla = -1;
             fwrite(&tabla,sizeof(int),1,arch);
         }
         for(int i=0;i<2;i++)
